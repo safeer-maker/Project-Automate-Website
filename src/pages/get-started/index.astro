@@ -1,0 +1,128 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import FormField from '../../components/forms/FormField.astro';
+import Button from '../../components/ui/Button.astro';
+import PlaceholderFormScript from '../../components/forms/PlaceholderFormScript.astro';
+---
+
+<PageLayout
+	title="Get Started"
+	description="Tell us about your project and our team will follow up to schedule your private consultation."
+>
+	<section class="section">
+		<div class="container form-wrap">
+			<SectionHeading eyebrow="Get Started" title="Submit Your Project Request" subtitle="Share a few details and our team will follow up to schedule your private consultation." />
+
+			<form data-placeholder-form>
+				<fieldset>
+					<legend>Contact Details</legend>
+					<div class="form-grid">
+						<FormField label="Name" name="name" required />
+						<FormField label="Email" name="email" type="email" required />
+						<FormField label="Number" name="phone" type="tel" required />
+						<FormField label="City" name="city" />
+						<FormField label="Address" name="address" placeholder="Type your Address" />
+						<FormField label="Zip Code" name="zip" />
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Project Details</legend>
+					<div class="form-grid">
+						<FormField label="Current Project Phase" name="project_phase" />
+						<FormField label="Projected Start Date" name="start_date" type="date" />
+						<FormField label="Primary Project Interest" name="project_interest" />
+					</div>
+					<FormField label="Message / Project Goals" name="message" type="textarea" />
+				</fieldset>
+
+				<fieldset>
+					<legend>Upload Plans</legend>
+					<div class="form-grid">
+						<FormField label="First Floor" name="plan_first_floor" type="file" accept=".jpg,.jpeg,.gif,.png" />
+						<FormField label="Second Floor" name="plan_second_floor" type="file" accept=".jpg,.jpeg,.gif,.png" />
+						<FormField label="Third Floor" name="plan_third_floor" type="file" accept=".jpg,.jpeg,.gif,.png" />
+						<FormField label="Additional Files" name="plan_additional" type="file" accept=".jpg,.jpeg,.gif,.png" />
+					</div>
+				</fieldset>
+
+				<label class="consent">
+					<input type="checkbox" name="sms_consent" />
+					I agree to receive SMS updates about my project from PROJECT: automate. Message and data rates may apply.
+				</label>
+				<p class="consent-note">By submitting, you agree to our <a href="/terms-and-conditions/">Terms</a> and <a href="/privacy-policy/">Privacy Policy</a>.</p>
+
+				<Button type="submit" variant="primary" size="lg">Submit Project Request</Button>
+			</form>
+
+			<div class="form-success" data-form-success hidden>
+				<h3>Thank you — we'll be in touch.</h3>
+				<p>Your project request has been received. A member of our team will follow up shortly.</p>
+			</div>
+		</div>
+	</section>
+	<PlaceholderFormScript />
+</PageLayout>
+
+<style>
+	.form-wrap {
+		max-width: 780px;
+		padding-block: var(--space-8) var(--space-24);
+	}
+
+	fieldset {
+		border: none;
+		border-top: 1px solid var(--color-border);
+		padding: var(--space-6) 0;
+		margin: 0;
+	}
+
+	legend {
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		color: var(--color-accent);
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		padding: 0;
+		margin-bottom: var(--space-4);
+	}
+
+	.form-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-4);
+		margin-bottom: var(--space-4);
+	}
+
+	.consent {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-2);
+		font-size: var(--text-xs);
+		color: var(--color-text-muted);
+		margin-block: var(--space-6);
+	}
+
+	.consent-note {
+		font-size: var(--text-xs);
+		margin-bottom: var(--space-6);
+	}
+	.consent-note a {
+		color: var(--color-accent);
+	}
+
+	.form-success {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-8);
+		text-align: center;
+	}
+
+	@media (max-width: 600px) {
+		.form-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,65 @@
+---
+interface Props {
+	label: string;
+	name: string;
+	type?: string;
+	required?: boolean;
+	placeholder?: string;
+	options?: string[];
+	accept?: string;
+}
+
+const { label, name, type = 'text', required = false, placeholder, options, accept } = Astro.props;
+const id = `field-${name}`;
+---
+
+<div class="form-field">
+	<label for={id}>{label}{required && <span class="required">*</span>}</label>
+	{options ? (
+		<select id={id} name={name} required={required}>
+			<option value="" disabled selected>{placeholder ?? 'Select an option'}</option>
+			{options.map((option) => (
+				<option value={option}>{option}</option>
+			))}
+		</select>
+	) : type === 'textarea' ? (
+		<textarea id={id} name={name} required={required} placeholder={placeholder} rows="4"></textarea>
+	) : (
+		<input id={id} name={name} type={type} required={required} placeholder={placeholder} accept={accept} />
+	)}
+</div>
+
+<style>
+	.form-field {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	label {
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+	}
+
+	.required {
+		color: var(--color-accent);
+		margin-left: var(--space-1);
+	}
+
+	input,
+	select,
+	textarea {
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		color: var(--color-white);
+		padding: var(--space-3);
+	}
+
+	input:focus,
+	select:focus,
+	textarea:focus {
+		outline: none;
+		border-color: var(--color-accent);
+	}
+</style>

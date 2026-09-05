@@ -1,0 +1,131 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+
+const solutions = [
+	{
+		title: 'Smart Home Automation',
+		description: 'Effortless control of your entire home from one intuitive system.',
+		image: '/images/home/pillar-control.webp',
+		href: '/control-systems/',
+	},
+	{
+		title: 'Lighting Control',
+		description: 'Intelligent lighting that enhances comfort, architecture, and everyday living.',
+		image: '/images/home/pillar-lighting.webp',
+		href: '/lighting-control-systems/',
+	},
+	{
+		title: 'Audio Solutions',
+		description: 'Immersive entertainment that blends beautifully into every living space.',
+		image: '/images/home/pillar-audio.png',
+		href: '/audio-video-solutions/',
+	},
+	{
+		title: 'Cinema Rooms & Media Spaces',
+		description: 'Immersive sound and picture tailored to your home and lifestyle.',
+		image: '/images/home/pillar-cinema.webp',
+		href: '/home-cinama/',
+	},
+	{
+		title: 'Security Solutions',
+		description: 'Integrated security that keeps your home protected and connected.',
+		image: '/images/home/pillar-security.webp',
+		href: '/security-systems/',
+	},
+	{
+		title: 'Motorized Shades & Draperies',
+		description: 'Elegant shading that brings effortless control of light, privacy, and comfort.',
+		image: '/images/home/pillar-shades.webp',
+		href: '/motorized-shades-and-drapery/',
+	},
+	{
+		title: 'Energy Management',
+		description: 'Smarter power systems that keep your home efficient, resilient, and connected.',
+		image: '/images/home/pillar-energy.webp',
+		href: '/energy-moment/',
+	},
+	{
+		title: 'Access Control & Intercom',
+		description: 'Intuitive control of every entry point, from the gate to the front door.',
+		image: '/images/home/pillar-access-control.webp',
+		href: '/access-control-and-intercom/',
+	},
+];
+---
+
+<section class="section solutions">
+	<div class="container">
+		<SectionHeading
+			eyebrow="The Experience"
+			title="We create intelligent living environments where comfort, control and design work as one."
+			subtitle="Seamlessly enhancing everyday life with clarity, simplicity, and precision."
+		/>
+
+		<div class="grid">
+			{solutions.map((item) => (
+				<a class="card" href={item.href}>
+					<div class="card-image">
+						<img src={item.image} alt="" loading="lazy" width="600" height="400" />
+					</div>
+					<h3>{item.title}</h3>
+					<p>{item.description}</p>
+				</a>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--space-6);
+	}
+
+	.card {
+		display: block;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		transition: border-color var(--transition-base), transform var(--transition-base);
+	}
+
+	.card:hover {
+		border-color: var(--color-accent);
+		transform: translateY(-4px);
+	}
+
+	.card-image {
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+	}
+
+	.card-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.card h3 {
+		font-size: var(--text-lg);
+		margin: var(--space-4) var(--space-4) var(--space-2);
+	}
+
+	.card p {
+		font-size: var(--text-sm);
+		margin: 0 var(--space-4) var(--space-4);
+	}
+
+	@media (max-width: 1100px) {
+		.grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

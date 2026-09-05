@@ -1,0 +1,84 @@
+---
+import SectionHeading from '../ui/SectionHeading.astro';
+
+const steps = [
+	{
+		title: 'Understand',
+		description: 'We begin with your lifestyle, your space, and how you want your home to feel and function.',
+	},
+	{
+		title: 'Design',
+		description: 'Every system is thoughtfully planned around the architecture, interior design, and requirements of your home.',
+	},
+	{
+		title: 'Integrate',
+		description: 'Every system is installed, connected, and programmed with precision and minimal visual impact.',
+	},
+	{
+		title: 'Refine',
+		description: 'We test, personalize, and fine-tune every detail until your complete experience feels effortless.',
+	},
+];
+---
+
+<section class="section process">
+	<div class="container">
+		<SectionHeading
+			eyebrow="Our Process"
+			title="From Vision to<br />Effortless Living."
+			subtitle="Every PROJECT: automate system begins with understanding how you live. From initial design through installation and ongoing support, every detail is carefully considered to create technology that feels natural, reliable, and beautifully integrated."
+		/>
+
+		<ol class="steps">
+			{steps.map((step, i) => (
+				<li class="step">
+					<span class="step-number">{String(i + 1).padStart(2, '0')}</span>
+					<h3>{step.title}</h3>
+					<p>{step.description}</p>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.steps {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--space-8);
+	}
+
+	.step {
+		border-top: 1px solid var(--color-border);
+		padding-top: var(--space-6);
+	}
+
+	.step-number {
+		display: block;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-bold);
+		color: var(--color-accent);
+		margin-bottom: var(--space-3);
+	}
+
+	.step h3 {
+		margin-bottom: var(--space-2);
+	}
+
+	.step p {
+		font-size: var(--text-sm);
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.steps {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.steps {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

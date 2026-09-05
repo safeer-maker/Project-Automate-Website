@@ -1,0 +1,18 @@
+<script>
+	document.querySelectorAll('[data-placeholder-form]').forEach((form) => {
+		form.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const successEl = form.parentElement?.querySelector('[data-form-success]');
+			if (successEl instanceof HTMLElement) {
+				form.classList.add('is-hidden');
+				successEl.hidden = false;
+			}
+		});
+	});
+</script>
+
+<style is:global>
+	form.is-hidden {
+		display: none;
+	}
+</style>

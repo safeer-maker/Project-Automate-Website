@@ -1,0 +1,73 @@
+---
+interface Scene {
+	title: string;
+	description: string;
+}
+
+interface Props {
+	eyebrow: string;
+	title: string;
+	scenes: Scene[];
+}
+
+const { eyebrow, title, scenes } = Astro.props;
+---
+
+<section class="section daily-experience">
+	<div class="container">
+		<div class="heading">
+			<span class="eyebrow">{eyebrow}</span>
+			<h2>{title}</h2>
+		</div>
+		<ul class="scenes">
+			{scenes.map((scene) => (
+				<li>
+					<h3>{scene.title}</h3>
+					<p>{scene.description}</p>
+				</li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.heading {
+		max-width: 600px;
+		margin-bottom: var(--space-12);
+	}
+
+	.scenes {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--space-6);
+	}
+
+	.scenes li {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-6);
+	}
+
+	.scenes h3 {
+		font-size: var(--text-lg);
+		color: var(--color-accent);
+		margin-bottom: var(--space-2);
+	}
+
+	.scenes p {
+		font-size: var(--text-sm);
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.scenes {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	@media (max-width: 560px) {
+		.scenes {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

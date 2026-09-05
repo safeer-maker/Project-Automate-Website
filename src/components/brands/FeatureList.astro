@@ -1,0 +1,64 @@
+---
+interface Feature {
+	title: string;
+	description: string;
+}
+
+interface Props {
+	eyebrow: string;
+	title: string;
+	features: Feature[];
+}
+
+const { eyebrow, title, features } = Astro.props;
+---
+
+<section class="section feature-list">
+	<div class="container">
+		<div class="heading">
+			<span class="eyebrow">{eyebrow}</span>
+			<h2>{title}</h2>
+		</div>
+		<ul class="features">
+			{features.map((feature) => (
+				<li>
+					<h3>{feature.title}</h3>
+					<p>{feature.description}</p>
+				</li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.heading {
+		max-width: 600px;
+		margin-bottom: var(--space-12);
+	}
+
+	.features {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-8);
+	}
+
+	.features li {
+		border-top: 1px solid var(--color-border);
+		padding-top: var(--space-4);
+	}
+
+	.features h3 {
+		font-size: var(--text-xl);
+		margin-bottom: var(--space-2);
+	}
+
+	.features p {
+		margin: 0;
+	}
+
+	@media (max-width: 700px) {
+		.features {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

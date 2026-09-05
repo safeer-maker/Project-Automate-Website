@@ -1,0 +1,53 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Intelligent Lighting Control',
+		description: 'One system. Every experience connected — from a single switch to whole-home architectural lighting.',
+		image: '/images/solutions/lighting/feature-1.webp',
+	},
+	{
+		title: 'Architectural Lighting Control',
+		description: 'Elegant control, perfectly tuned to the architecture and mood of every room.',
+		image: '/images/solutions/lighting/feature-2.webp',
+	},
+	{
+		title: 'Effortless Lighting Control',
+		description: 'Light that moves with your life — automated scenes that adapt as your day changes.',
+		image: '/images/solutions/lighting/why-choose-us.webp',
+	},
+];
+
+const scenes = [
+	{ title: 'Morning', description: 'Lights rise gently, shades open and your home prepares naturally for the day ahead.' },
+	{ title: 'Entertaining', description: 'One touch creates the ideal atmosphere through coordinated lighting, music and climate.' },
+	{ title: 'Relaxing', description: 'The room softens, the shades close and your favourite playlist begins effortlessly.' },
+	{ title: 'Goodnight', description: 'Lights, entertainment and selected home functions shut down through one simple scene.' },
+];
+---
+
+<ServiceLayout
+	title="Lighting Control Systems"
+	description="Intelligent, architectural lighting control from PROJECT: automate — elegant light that moves with your life."
+	heroImage="/images/solutions/lighting/hero.webp"
+	eyebrow="Elegant Light Control"
+	heroTitle="Light That Moves With Your Life"
+	heroSubtitle="Key features of an intelligent lighting control system, tuned to the architecture and rhythm of your home."
+>
+	<CapabilityList eyebrow="Key Features" title="Intelligent lighting that enhances comfort, architecture, and everyday living." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="Technology that becomes part of the way you live." scenes={scenes} />
+
+	<section class="section power-system">
+		<div class="container">
+			<SectionHeading eyebrow="A Smarter Power System" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</ServiceLayout>

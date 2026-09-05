@@ -1,0 +1,35 @@
+---
+import Button from '../ui/Button.astro';
+---
+
+<section class="cta-banner">
+	<div class="container">
+		<h2>Ready to Automate Your Home?</h2>
+		<p>Intelligent technology, designed around your lifestyle.</p>
+		<div class="actions">
+			<Button href="/schedule/" variant="primary" size="lg">Schedule Consultation</Button>
+			<Button href="/budget-calculator/" variant="outline" size="lg">HTA Budget Calculator</Button>
+		</div>
+	</div>
+</section>
+
+<style>
+	.cta-banner {
+		padding-block: var(--space-24);
+		text-align: center;
+		background: linear-gradient(135deg, var(--color-surface), var(--color-navy));
+		border-top: 1px solid var(--color-border);
+	}
+
+	.cta-banner p {
+		font-size: var(--text-lg);
+		margin-bottom: var(--space-8);
+	}
+
+	.actions {
+		display: flex;
+		justify-content: center;
+		gap: var(--space-4);
+		flex-wrap: wrap;
+	}
+</style>

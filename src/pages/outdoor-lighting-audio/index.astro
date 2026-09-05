@@ -1,0 +1,97 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import FormField from '../../components/forms/FormField.astro';
+import Button from '../../components/ui/Button.astro';
+import PlaceholderFormScript from '../../components/forms/PlaceholderFormScript.astro';
+---
+
+<PageLayout
+	title="Outdoor Lighting & Audio"
+	description="Landscape lighting and outdoor audio systems designed for effortless indoor-outdoor living. Request a consultation today."
+>
+	<section class="section">
+		<div class="container form-wrap">
+			<SectionHeading
+				eyebrow="Outdoor Lighting & Audio"
+				title="Request a Consultation"
+				subtitle="Tell us about your outdoor space and we'll follow up to design the right lighting and audio experience for it."
+			/>
+
+			<form data-placeholder-form>
+				<div class="form-grid">
+					<FormField label="First Name" name="first_name" required />
+					<FormField label="Last Name" name="last_name" required />
+					<FormField label="Email Address" name="email" type="email" required />
+					<FormField label="Phone Number" name="phone" type="tel" required />
+					<FormField label="Property ZIP Code" name="zip" required />
+					<FormField
+						label="What are you interested in?"
+						name="interest"
+						options={['Landscape Lighting', 'Outdoor Audio', 'Both']}
+					/>
+					<FormField
+						label="When are you planning to start?"
+						name="timeline"
+						options={['Immediately', 'Within 1 month', '1-6 months', 'Just exploring']}
+					/>
+					<FormField
+						label="What budget range are you considering?"
+						name="budget"
+						options={['$10K-$25K', '$25K-$50K', '$50K-$100K', '$100K+']}
+					/>
+				</div>
+
+				<label class="consent">
+					<input type="checkbox" name="sms_consent" />
+					I agree to receive SMS updates about my project from PROJECT: automate. Message and data rates may apply.
+				</label>
+
+				<Button type="submit" variant="primary" size="lg">Submit</Button>
+			</form>
+
+			<div class="form-success" data-form-success hidden>
+				<h3>Thank you — we'll be in touch.</h3>
+				<p>Your request has been received. A member of our team will follow up shortly.</p>
+			</div>
+		</div>
+	</section>
+	<PlaceholderFormScript />
+</PageLayout>
+
+<style>
+	.form-wrap {
+		max-width: 780px;
+		padding-block: var(--space-8) var(--space-24);
+	}
+
+	.form-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-4);
+		margin-bottom: var(--space-6);
+	}
+
+	.consent {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-2);
+		font-size: var(--text-xs);
+		color: var(--color-text-muted);
+		margin-bottom: var(--space-6);
+	}
+
+	.form-success {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-8);
+		text-align: center;
+	}
+
+	@media (max-width: 600px) {
+		.form-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

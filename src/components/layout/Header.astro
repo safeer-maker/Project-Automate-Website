@@ -1,0 +1,255 @@
+---
+import Button from '../ui/Button.astro';
+import { primaryNav, coreServices } from '../../data/nav.ts';
+---
+
+<header class="site-header" data-header>
+	<div class="container header-inner">
+		<a href="/" class="logo-hover" aria-label="Go to PROJECT: automate home">
+			<img class="logo-static" src="/images/logo/logo-static.png" alt="PROJECT: automate logo" width="150" height="84" />
+			<img class="logo-gif" src="/images/logo/logo-animated.gif" alt="" aria-hidden="true" width="150" height="84" loading="lazy" />
+		</a>
+
+		<div class="header-actions">
+			<Button href="/schedule/" variant="primary" class="cta-desktop">Schedule Consultation</Button>
+			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
+				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
+					<path d="M1.41602 5.66666H32.5827V8.62318H1.41602V5.66666ZM1.41602 25.3768H32.5827V28.3333H1.41602V25.3768ZM1.41602 15.5217H32.5827V18.4783H1.41602V15.5217Z" fill="currentColor"></path>
+				</svg>
+			</button>
+		</div>
+	</div>
+</header>
+
+<div class="offcanvas" id="site-offcanvas" role="dialog" aria-modal="true" aria-label="Site menu" data-offcanvas>
+	<div class="offcanvas-overlay" data-menu-close></div>
+	<nav class="offcanvas-panel">
+		<button class="offcanvas-close" data-menu-close aria-label="Close menu">&times;</button>
+		<ul class="offcanvas-nav">
+			<li class="has-submenu">
+				<button class="submenu-trigger" data-submenu-trigger aria-expanded="false">
+					Core services <span class="chevron">+</span>
+				</button>
+				<ul class="submenu" data-submenu>
+					{coreServices.map((item) => (
+						<li><a href={item.href}>{item.label}</a></li>
+					))}
+				</ul>
+			</li>
+			{primaryNav.map((item) => (
+				<li><a href={item.href}>{item.label}</a></li>
+			))}
+		</ul>
+		<Button href="/schedule/" variant="primary" size="lg">Schedule Consultation</Button>
+	</nav>
+</div>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 40;
+		background: rgba(10, 10, 10, 0.85);
+		backdrop-filter: blur(12px);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.header-inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-block: var(--space-3);
+	}
+
+	.logo-hover {
+		position: relative;
+		display: inline-flex;
+		width: 130px;
+		height: 74px;
+	}
+
+	.logo-hover img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		transition: opacity var(--transition-base);
+	}
+
+	.logo-static {
+		opacity: 1;
+		z-index: 2;
+	}
+	.logo-gif {
+		opacity: 0;
+		z-index: 1;
+	}
+	.logo-hover:hover .logo-static,
+	.logo-hover:focus-visible .logo-static {
+		opacity: 0;
+	}
+	.logo-hover:hover .logo-gif,
+	.logo-hover:focus-visible .logo-gif {
+		opacity: 1;
+	}
+
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-6);
+	}
+
+	.cta-desktop {
+		display: none;
+	}
+
+	@media (min-width: 900px) {
+		.cta-desktop {
+			display: inline-flex;
+		}
+	}
+
+	.menu-trigger {
+		background: none;
+		border: none;
+		color: var(--color-white);
+		display: inline-flex;
+		padding: var(--space-2);
+	}
+
+	.offcanvas {
+		position: fixed;
+		inset: 0;
+		z-index: 50;
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	.offcanvas[data-open='true'] {
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	.offcanvas-overlay {
+		position: absolute;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.6);
+		opacity: 0;
+		transition: opacity var(--transition-base);
+	}
+
+	.offcanvas[data-open='true'] .offcanvas-overlay {
+		opacity: 1;
+	}
+
+	.offcanvas-panel {
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 100%;
+		width: min(420px, 100%);
+		background: var(--color-charcoal);
+		padding: var(--space-8) var(--space-6);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+		transform: translateX(100%);
+		transition: transform 0.35s ease;
+	}
+
+	.offcanvas[data-open='true'] .offcanvas-panel {
+		transform: translateX(0);
+	}
+
+	.offcanvas-close {
+		align-self: flex-end;
+		background: none;
+		border: none;
+		color: var(--color-white);
+		font-size: var(--text-3xl);
+		line-height: 1;
+		padding: var(--space-2);
+	}
+
+	.offcanvas-nav {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		flex: 1;
+	}
+
+	.offcanvas-nav > li > a,
+	.submenu-trigger {
+		display: block;
+		width: 100%;
+		text-align: left;
+		background: none;
+		border: none;
+		color: var(--color-white);
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		padding: var(--space-3) 0;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.submenu-trigger {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.chevron {
+		color: var(--color-accent);
+	}
+
+	.submenu {
+		max-height: 0;
+		overflow: hidden;
+		opacity: 0;
+		transition: max-height 0.4s ease, opacity 0.3s ease;
+	}
+
+	.submenu[data-open='true'] {
+		max-height: 600px;
+		opacity: 1;
+		margin: var(--space-2) 0;
+	}
+
+	.submenu a {
+		display: block;
+		padding: var(--space-2) 0 var(--space-2) var(--space-4);
+		color: var(--color-text-muted);
+		font-size: var(--text-base);
+	}
+	.submenu a:hover {
+		color: var(--color-accent);
+	}
+</style>
+
+<script>
+	const offcanvas = document.querySelector('[data-offcanvas]');
+	const openBtn = document.querySelector('[data-menu-open]');
+	const closeEls = document.querySelectorAll('[data-menu-close]');
+
+	function setOpen(open: boolean) {
+		if (!offcanvas) return;
+		offcanvas.setAttribute('data-open', String(open));
+		openBtn?.setAttribute('aria-expanded', String(open));
+		document.body.style.overflow = open ? 'hidden' : '';
+	}
+
+	openBtn?.addEventListener('click', () => setOpen(true));
+	closeEls.forEach((el) => el.addEventListener('click', () => setOpen(false)));
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') setOpen(false);
+	});
+
+	const submenuTrigger = document.querySelector('[data-submenu-trigger]');
+	const submenu = document.querySelector('[data-submenu]');
+	submenuTrigger?.addEventListener('click', () => {
+		const isOpen = submenu?.getAttribute('data-open') === 'true';
+		submenu?.setAttribute('data-open', String(!isOpen));
+		submenuTrigger.setAttribute('aria-expanded', String(!isOpen));
+	});
+</script>

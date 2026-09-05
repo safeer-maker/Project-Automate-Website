@@ -1,0 +1,97 @@
+---
+interface Props {
+	title: string;
+	excerpt: string;
+	coverImage: string;
+	coverImageAlt: string;
+	category: string;
+	author: string;
+	publishDate: Date;
+}
+
+import PageLayout from './PageLayout.astro';
+
+const { title, excerpt, coverImage, coverImageAlt, category, author, publishDate } = Astro.props;
+const formattedDate = publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<PageLayout title={title} description={excerpt} image={coverImage}>
+	<article class="post">
+		<header class="post-header container">
+			<a class="back-link" href="/blog/">&larr; Back to Blog</a>
+			<span class="eyebrow">{category}</span>
+			<h1>{title}</h1>
+			<p class="meta">By {author} &middot; <time datetime={publishDate.toISOString()}>{formattedDate}</time></p>
+		</header>
+
+		<div class="post-cover">
+			<img src={coverImage} alt={coverImageAlt} />
+		</div>
+
+		<div class="container post-content">
+			<slot />
+		</div>
+	</article>
+</PageLayout>
+
+<style>
+	.post-header {
+		padding-block: var(--space-16) var(--space-8);
+		max-width: 760px;
+	}
+
+	.back-link {
+		display: block;
+		font-size: var(--text-sm);
+		color: var(--color-accent);
+		margin-bottom: var(--space-6);
+	}
+
+	.post-header h1 {
+		font-size: var(--text-4xl);
+	}
+
+	.meta {
+		font-size: var(--text-sm);
+		margin: 0;
+	}
+
+	.post-cover {
+		max-width: var(--container-max);
+		margin: 0 auto var(--space-12);
+		padding-inline: var(--container-padding);
+	}
+
+	.post-cover img {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.post-content {
+		max-width: 760px;
+		padding-bottom: var(--space-24);
+	}
+
+	.post-content :global(h2) {
+		font-size: var(--text-2xl);
+		margin-top: var(--space-12);
+	}
+
+	.post-content :global(p) {
+		font-size: var(--text-base);
+		color: var(--color-text-muted);
+	}
+
+	.post-content :global(ul) {
+		list-style: disc;
+		padding-left: var(--space-6);
+		margin-bottom: var(--space-4);
+	}
+
+	.post-content :global(li) {
+		color: var(--color-text-muted);
+		margin-bottom: var(--space-2);
+	}
+</style>

@@ -1,0 +1,50 @@
+---
+const badges = [
+	{ src: '/images/badges/17-years-badge.webp', alt: '17+ Years in business badge' },
+	{ src: '/images/badges/cedia-certified.webp', alt: 'CEDIA Smart Home Certified Expert Provider' },
+	{ src: '/images/badges/cert-level-luxury.webp', alt: 'Certification Level: Luxury' },
+	{ src: '/images/badges/hta-design-partner.webp', alt: 'HTA Design Partner' },
+];
+---
+
+<section class="section trust">
+	<div class="container trust-inner">
+		<div class="trust-text">
+			<span class="eyebrow">Why PROJECT: automate?</span>
+			<h2>17+ Years of Luxury Smart Home Expertise</h2>
+		</div>
+		<ul class="badges">
+			{badges.map((badge) => (
+				<li><img src={badge.src} alt={badge.alt} loading="lazy" width="140" height="140" /></li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.trust-inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+	}
+
+	.trust-text h2 {
+		max-width: 480px;
+		margin: 0;
+	}
+
+	.badges {
+		display: flex;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+	}
+
+	.badges img {
+		width: 90px;
+		height: 90px;
+		object-fit: contain;
+		opacity: 0.9;
+	}
+</style>

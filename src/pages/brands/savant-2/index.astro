@@ -1,0 +1,84 @@
+---
+import BrandLayout from '../../../layouts/BrandLayout.astro';
+import FeatureList from '../../../components/brands/FeatureList.astro';
+import DailyExperience from '../../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../../components/home/CtaBanner.astro';
+
+const features = [
+	{
+		title: 'Personalized Profiles',
+		description:
+			'Create individual profiles, favorite rooms, custom scenes, and interfaces tailored to each person in the home.',
+	},
+	{
+		title: 'One Cohesive Platform',
+		description:
+			'Control lighting, climate, entertainment, security, shades, and other connected systems from one cohesive platform.',
+	},
+	{
+		title: 'Natural Control',
+		description:
+			'Use the Savant App, touchscreens, keypads, remotes, or supported voice integrations to manage your home naturally.',
+	},
+	{
+		title: 'Scalable Systems',
+		description:
+			'Savant Hosts support projects ranging from focused room automation to highly customized whole-property systems.',
+	},
+];
+
+const scenes = [
+	{
+		title: 'Morning',
+		description: 'Lights gradually brighten, shades open, and the temperature adjusts as your home prepares for the day ahead.',
+	},
+	{
+		title: 'Entertaining',
+		description: 'Activate a personalized scene to coordinate music, lighting, climate, and outdoor spaces for your guests.',
+	},
+	{
+		title: 'Movie Night',
+		description: 'Dim the lights, lower the shades, start the entertainment system, and prepare the room with one touch.',
+	},
+	{
+		title: 'Goodnight',
+		description: 'Lights, entertainment, and selected home functions shut down through one simple scene.',
+	},
+];
+---
+
+<BrandLayout
+	brandName="Savant"
+	logo="/images/brands/savant/savant-logo.svg"
+	heroImage="/images/brands/savant/hero.jpg"
+	heroTitle="A Smarter Home, Personalized Around You"
+	heroSubtitle="Intelligent living without unnecessary complexity."
+	description="Savant smart home systems from PROJECT: automate — personalized control, intelligent scenes, and whole-home automation for luxury residences."
+>
+	<FeatureList eyebrow="Why Savant" title="Intelligent living without unnecessary complexity." features={features} />
+
+	<DailyExperience eyebrow="Daily Experience" title="A home that adapts to every moment." scenes={scenes} />
+
+	<section class="section featured-install">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Featured Savant Installation"
+				title="Personalized intelligence throughout a luxury residence."
+				align="center"
+			/>
+			<img src="/images/brands/savant/scene-entertaining.jpeg" alt="Savant-powered luxury living space" loading="lazy" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</BrandLayout>
+
+<style>
+	.featured-install img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>
