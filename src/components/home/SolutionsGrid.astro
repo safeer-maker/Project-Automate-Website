@@ -1,124 +1,192 @@
 ---
-import SectionHeading from '../ui/SectionHeading.astro';
-
-const solutions = [
-	{
-		title: 'Security Solution',
-		description: 'Integrated security that keeps your home protected and connected.',
-		image: '/images/home/pillar-security.webp',
-		href: '/security-systems/',
-	},
-	{
-		title: 'Cinema Rooms & Media Spaces',
-		description: 'Immersive sound and picture tailored to your home and lifestyle.',
-		image: '/images/home/pillar-cinema.webp',
-		href: '/home-cinama/',
-	},
-	{
-		title: 'Smart Home Automation',
-		description: 'Effortless control of your entire home from one intuitive system.',
-		image: '/images/home/pillar-control.webp',
-		href: '/control-systems/',
-	},
-	{
-		title: 'Lighting Control',
-		description: 'Intelligent lighting that enhances comfort, architecture, and everyday living.',
-		image: '/images/home/pillar-lighting.webp',
-		href: '/lighting-control-systems/',
-	},
-	{
-		title: 'Audio Solutions',
-		description: 'Immersive entertainment that blends beautifully into every living space.',
-		image: '/images/home/pillar-audio.webp',
-		href: '/audio-video-solutions/',
-	},
-	{
-		title: 'Energy Management',
-		description: 'Intelligent power control designed for greater efficiency, reliability, and independence.',
-		image: '/images/home/pillar-energy.webp',
-		href: '/energy-moment/',
-	},
-	{
-		title: 'Motorized Shades and Draperies',
-		description: 'Elegant shading that brings effortless control of light, privacy, and comfort.',
-		image: '/images/home/pillar-shades.webp',
-		href: '/motorized-shades-and-drapery/',
-	},
+// Tile widths mirror the live site's asymmetric rows at 1440px:
+// row 1: 464 / 732 · row 2: 708 / 488 · row 3: full · row 4: 488 / 708
+const rows = [
+	[
+		{
+			title: 'Security Solution',
+			image: '/images/home/experience/security.webp',
+			href: '/security-systems/',
+			span: 38,
+		},
+		{
+			title: 'Cinema Rooms & Media Spaces',
+			image: '/images/home/experience/cinema.webp',
+			href: '/home-cinama/',
+			span: 60,
+		},
+	],
+	[
+		{
+			title: 'Smart Home Automation',
+			image: '/images/home/experience/automation.webp',
+			href: '/control-systems/',
+			span: 58,
+		},
+		{
+			title: 'Lighting Control',
+			image: '/images/home/experience/lighting.webp',
+			href: '/lighting-control-systems/',
+			span: 40,
+		},
+	],
+	[
+		{
+			title: 'Audio Solutions',
+			image: '/images/home/experience/audio.webp',
+			href: '/audio-video-solutions/',
+			span: 100,
+		},
+	],
+	[
+		{
+			title: 'Energy Management',
+			image: '/images/home/experience/energy.webp',
+			href: '/energy-moment/',
+			span: 40,
+		},
+		{
+			title: 'Motorized Shades and Draperies',
+			image: '/images/home/experience/shades.webp',
+			href: '/motorized-shades-and-drapery/',
+			span: 58,
+		},
+	],
 ];
 ---
 
-<section class="section solutions">
-	<div class="container">
-		<SectionHeading
-			eyebrow="The Experience"
-			title="Every system, Working as one."
-		/>
+<section class="experience">
+	<div class="page">
+		<span class="eyebrow">The Experience</span>
+		<h2>Every system,<br />Working as one.</h2>
 
-		<div class="grid">
-			{solutions.map((item) => (
-				<a class="card" href={item.href}>
-					<div class="card-image">
-						<img src={item.image} alt="" loading="lazy" width="600" height="400" />
-					</div>
-					<h3>{item.title}</h3>
-					<p>{item.description}</p>
-				</a>
+		<div class="tiles">
+			{rows.map((row) => (
+				<div
+					class="row"
+					style={`grid-template-columns:${row.map((t) => `${t.span}fr`).join(' ')}`}
+				>
+					{row.map((tile) => (
+						<a class="tile" href={tile.href}>
+							<img src={tile.image} alt="" loading="lazy" />
+							<span class="tile-scrim"></span>
+							<span class="tile-foot">
+								<span class="tile-title">{tile.title}</span>
+								<span class="tile-arrow" aria-hidden="true">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+										<path d="M7 17L17 7M17 7H8M17 7v9" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</span>
+							</span>
+						</a>
+					))}
+				</div>
 			))}
 		</div>
 	</div>
 </section>
 
 <style>
-	.grid {
+	.experience {
+		background: var(--color-bg);
+		padding-block: clamp(4rem, 9vw, 7.5rem);
+	}
+
+	.experience h2 {
+		margin: 0 0 clamp(2rem, 5vw, 3.5rem);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.4;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+	}
+
+	.tiles {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.row {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: var(--space-6);
+		gap: 1.25rem;
 	}
 
-	.card {
+	.tile {
+		position: relative;
 		display: block;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-md);
+		height: clamp(260px, 33vw, 480px);
+		border-radius: 20px;
 		overflow: hidden;
-		transition: border-color var(--transition-base), transform var(--transition-base);
+		isolation: isolate;
 	}
 
-	.card:hover {
-		border-color: var(--color-accent);
-		transform: translateY(-4px);
-	}
-
-	.card-image {
-		aspect-ratio: 4 / 3;
-		overflow: hidden;
-	}
-
-	.card-image img {
+	.tile img {
+		position: absolute;
+		inset: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
-	.card h3 {
-		font-size: var(--text-lg);
-		margin: var(--space-4) var(--space-4) var(--space-2);
+	.tile:hover img {
+		transform: scale(1.04);
 	}
 
-	.card p {
-		font-size: var(--text-sm);
-		margin: 0 var(--space-4) var(--space-4);
+	.tile-scrim {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.62) 100%);
 	}
 
-	@media (max-width: 1100px) {
-		.grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
+	.tile-foot {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-4);
+		padding: clamp(1rem, 2vw, 1.5rem);
 	}
 
-	@media (max-width: 560px) {
-		.grid {
-			grid-template-columns: 1fr;
+	.tile-title {
+		font-size: var(--text-tile);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		color: var(--color-white);
+		text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+	}
+
+	.tile-arrow {
+		flex-shrink: 0;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 39px;
+		height: 39px;
+		border-radius: 6px;
+		border: 1px solid rgba(255, 255, 255, 0.55);
+		color: var(--color-white);
+		transition: background-color var(--transition-base), border-color var(--transition-base);
+	}
+
+	.tile-arrow svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	.tile:hover .tile-arrow {
+		background: var(--color-accent-hover);
+		border-color: var(--color-accent-hover);
+	}
+
+	@media (max-width: 800px) {
+		/* overrides the per-row inline grid-template-columns */
+		.row {
+			grid-template-columns: 1fr !important;
 		}
 	}
 </style>

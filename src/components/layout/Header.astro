@@ -11,7 +11,9 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		</a>
 
 		<div class="header-actions">
-			<Button href="/schedule/" variant="primary" class="cta-desktop">Schedule Consultation</Button>
+			<div class="cta-desktop">
+				<Button href="/schedule/" variant="primary">Schedule Consultation</Button>
+			</div>
 			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
 				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
 					<path d="M1.41602 5.66666H32.5827V8.62318H1.41602V5.66666ZM1.41602 25.3768H32.5827V28.3333H1.41602V25.3768ZM1.41602 15.5217H32.5827V18.4783H1.41602V15.5217Z" fill="currentColor"></path>
@@ -64,8 +66,8 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 	.logo-hover {
 		position: relative;
 		display: inline-flex;
-		width: 130px;
-		height: 74px;
+		width: clamp(84px, 9vw, 130px);
+		height: clamp(48px, 5.2vw, 74px);
 	}
 
 	.logo-hover img {
@@ -100,6 +102,8 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		gap: var(--space-6);
 	}
 
+	/* Wrapper lives in this component's own template, so hiding it works reliably —
+	   putting the class on <Button> instead loses to Button.astro's own `.btn` rule. */
 	.cta-desktop {
 		display: none;
 	}

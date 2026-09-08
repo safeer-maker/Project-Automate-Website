@@ -1,104 +1,149 @@
 ---
-import SectionHeading from '../ui/SectionHeading.astro';
-import Button from '../ui/Button.astro';
-
 const projects = [
 	{
-		location: 'Malibu — 2025',
+		location: 'Malibu - 2025',
 		name: 'Oceanfront Villa',
-		image: '/images/home/inspiration-malibu.webp',
+		image: '/images/home/inspiration/malibu.webp',
 	},
 	{
-		location: 'Hidden Hills — 2024',
+		location: 'Hidden Hills - 2024',
 		name: 'Marazul Estate',
-		image: '/images/home/inspiration-hidden-hills.webp',
+		image: '/images/home/inspiration/hidden-hills.webp',
 	},
 	{
-		location: 'Manhattan Beach — 2023',
+		location: 'Manhattan Beach - 2023',
 		name: 'Alpine Retreat',
-		image: '/images/home/inspiration-manhattan-beach.webp',
+		image: '/images/home/inspiration/manhattan-beach.webp',
 	},
 ];
 ---
 
-<section class="section inspiration">
-	<div class="container">
-		<SectionHeading
-			eyebrow="Inspiration"
-			title="Explore homes where technology enhances the way you live."
-			align="center"
-		/>
+<section class="inspiration">
+	<div class="page">
+		<div class="intro">
+			<h2>Inspiration</h2>
+			<p>Explore homes where technology enhances the way you live.</p>
+		</div>
 
 		<div class="grid">
 			{projects.map((project) => (
-				<figure class="project">
-					<img src={project.image} alt={`${project.name}, ${project.location}`} loading="lazy" width="640" height="480" />
-					<figcaption>
-						<span class="location">{project.location}</span>
-						<span class="name">{project.name}</span>
-					</figcaption>
-				</figure>
+				<a class="project" href="/get-inspired/">
+					<div class="project-image">
+						<img src={project.image} alt={`${project.name}, ${project.location}`} loading="lazy" width="405" height="364" />
+					</div>
+					<span class="location">{project.location}</span>
+					<span class="name">
+						{project.name}
+						<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+							<path d="M7 17L17 7M17 7H8M17 7v9" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</span>
+				</a>
 			))}
-		</div>
-
-		<div class="cta-wrap">
-			<Button href="/get-inspired/" variant="outline" size="lg">View All Projects</Button>
 		</div>
 	</div>
 </section>
 
 <style>
+	.inspiration {
+		display: flex;
+		align-items: center;
+		min-height: 100vh;
+		background: var(--color-bg);
+		padding-block: clamp(4rem, 9vw, 7.5rem);
+	}
+
+	.inspiration > .page {
+		width: 100%;
+	}
+
+	.intro {
+		display: grid;
+		grid-template-columns: 1fr 1.6fr;
+		gap: clamp(1.5rem, 5vw, 4rem);
+		align-items: center;
+		margin-bottom: clamp(2rem, 5vw, 3.5rem);
+	}
+
+	.intro h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+	}
+
+	.intro p {
+		margin: 0;
+		font-size: var(--text-body-lg);
+		line-height: 1.6;
+		color: var(--color-charcoal-2);
+	}
+
 	.grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: var(--space-6);
+		gap: clamp(1rem, 1.8vw, 1.5rem);
 	}
 
 	.project {
-		margin: 0;
-		position: relative;
-		border-radius: var(--radius-md);
+		display: block;
+	}
+
+	.project-image {
+		border-radius: 20px;
 		overflow: hidden;
+		margin-bottom: var(--space-4);
 	}
 
-	.project img {
+	.project-image img {
 		width: 100%;
-		aspect-ratio: 4 / 3;
+		aspect-ratio: 405 / 364;
 		object-fit: cover;
+		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
-	.project figcaption {
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		padding: var(--space-4);
-		background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), transparent);
-		display: flex;
-		flex-direction: column;
-		color: var(--color-text-on-dark);
+	.project:hover .project-image img {
+		transform: scale(1.04);
 	}
 
 	.location {
-		font-size: var(--text-xs);
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--color-accent);
+		display: block;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-text-muted);
+		margin-bottom: var(--space-1);
 	}
 
 	.name {
-		font-weight: var(--fw-semibold);
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		font-size: var(--text-2xl);
+		font-weight: var(--fw-medium);
+		color: var(--color-text);
 	}
 
-	.cta-wrap {
-		display: flex;
-		justify-content: center;
-		margin-top: var(--space-12);
+	.arrow {
+		width: 16px;
+		height: 16px;
+		color: var(--color-accent);
+		transition: transform var(--transition-base);
+	}
+
+	.project:hover .arrow {
+		transform: translate(3px, -3px);
 	}
 
 	@media (max-width: 900px) {
+		.intro {
+			grid-template-columns: 1fr;
+			align-items: start;
+		}
 		.grid {
 			grid-template-columns: 1fr;
+			gap: var(--space-8);
 		}
 	}
 </style>

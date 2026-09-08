@@ -1,0 +1,88 @@
+---
+// The live site renders this as four display lines that reveal word-by-word on scroll.
+const lines = [
+	'We create intelligent living environments where',
+	'comfort, control and design work',
+	'seamlessly as one enhancing everyday life with clarity,',
+	'simplicity, and precision.',
+];
+---
+
+<section class="statement">
+	<div class="page">
+		<span class="eyebrow">Luxury Smart Home Automation</span>
+		<h2 data-reveal>
+			{lines.map((line) => (
+				<span class="line">
+					{line.split(' ').map((word) => (
+						<span class="word">{word}&nbsp;</span>
+					))}
+				</span>
+			))}
+		</h2>
+	</div>
+</section>
+
+<script>
+	const heading = document.querySelector('.statement [data-reveal]');
+	if (heading) {
+		const words = heading.querySelectorAll('.word');
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		if (reduce || !('IntersectionObserver' in window)) {
+			words.forEach((w) => w.classList.add('is-visible'));
+		} else {
+			const io = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (!entry.isIntersecting) return;
+						words.forEach((word, i) => {
+							window.setTimeout(() => word.classList.add('is-visible'), i * 45);
+						});
+						io.disconnect();
+					});
+				},
+				{ threshold: 0.3 }
+			);
+			io.observe(heading);
+		}
+	}
+</script>
+
+<style>
+	.statement {
+		background: var(--color-bg);
+		padding-block: clamp(5rem, 12vw, 10rem);
+	}
+
+	.statement h2 {
+		margin: 0;
+		font-size: var(--text-display-sm);
+		font-weight: var(--fw-medium);
+		line-height: 1.1;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+		max-width: 24ch;
+	}
+
+	.line {
+		display: block;
+	}
+
+	.word {
+		display: inline-block;
+		opacity: 0.14;
+		transition: opacity 0.5s ease;
+	}
+
+	.word.is-visible {
+		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.word {
+			opacity: 1;
+			transition: none;
+		}
+	}
+</style>

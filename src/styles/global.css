@@ -88,6 +88,14 @@ textarea {
 	padding-inline: var(--container-padding);
 }
 
+/* Wide page container matching the live site's 80px gutters */
+.page {
+	width: 100%;
+	max-width: var(--page-max);
+	margin-inline: auto;
+	padding-inline: var(--page-gutter);
+}
+
 .section {
 	padding-block: var(--space-24);
 }
