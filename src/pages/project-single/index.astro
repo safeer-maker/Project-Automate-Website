@@ -1,0 +1,260 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const features = [
+	'Centralized whole-home automation and control',
+	'Intelligent architectural lighting',
+	'Automated shades and privacy control',
+	'Multi-room audio and video distribution',
+	'Dedicated media and entertainment spaces',
+	'Enterprise-grade networking and Wi-Fi',
+	'Integrated surveillance and access control',
+	'Energy monitoring and intelligent power management',
+];
+
+const gallery = [
+	{
+		title: 'Technology Designed Around the View',
+		text: 'The architecture of Pacific Horizon Residence was created to maintain a constant connection with the surrounding coastline. Expansive glass, open living spaces, and carefully selected natural materials shaped the character of the home. The technology needed to support that vision without competing with it — every control, speaker, sensor, and wire was planned to remain discreet and visually unobtrusive.',
+		image: '/images/project-single/gallery-view.webp',
+		alt: 'Modern luxury residence with pool and coastal view at sunset',
+	},
+	{
+		title: 'Effortless Whole-Home Control',
+		text: 'Lighting, shades, climate, entertainment, security, and selected exterior systems are brought together through one intuitive control experience. Instead of managing multiple applications or interfaces, the homeowners can adjust individual rooms or activate complete scenes with a single command — Welcome, Entertain, Evening, and Away — that allow the residence to respond naturally throughout the day.',
+		image: '/images/project-single/gallery-control.jpeg',
+		alt: 'Smart home automation interface controlling household devices from a smartphone',
+	},
+	{
+		title: 'Lighting That Complements the Architecture',
+		text: 'A centralized lighting system provides precise control throughout the interior and exterior spaces. Carefully programmed scenes adjust the atmosphere for everyday living, entertaining, dining, and relaxation. Exterior and landscape lighting also highlight the architecture after sunset while maintaining a warm, understated appearance.',
+		image: '/images/project-single/gallery-lighting.webp',
+		alt: 'Luxury estate courtyard glowing with warm architectural landscape lighting at night',
+	},
+	{
+		title: 'Comfort, Privacy and Natural Light',
+		text: 'Automated shading helps manage the home’s expansive glass without compromising its ocean views. The shades can respond to the time of day, sunlight, temperature, or personalized scenes — reducing glare, protecting interior finishes, improving comfort, and providing privacy when required.',
+		image: '/images/project-single/gallery-shading.webp',
+		alt: 'Luxury living room with motorized roller shades and floor-to-ceiling glass',
+	},
+	{
+		title: 'Entertainment Without Visual Clutter',
+		text: 'Audio and video systems were integrated into the residence with minimal visual impact. Architectural speakers deliver balanced sound across the primary living areas, while discreet displays and centralized equipment preserve the clean interior design. Entertainment can follow the homeowners seamlessly from indoor spaces to the exterior living areas.',
+		image: '/images/project-single/gallery-entertainment.webp',
+		alt: 'Dedicated home theater with immersive sound and precise lighting',
+	},
+	{
+		title: 'A Network Built for the Entire Home',
+		text: 'A reliable network forms the foundation of every connected experience within the residence. The system was engineered to provide consistent wired and wireless coverage across the home, outdoor entertaining areas, security devices, automation systems, and high-bandwidth entertainment equipment.',
+		image: '/images/project-single/gallery-network.webp',
+		alt: 'Poolside outdoor dining and entertaining area extending the connected home outdoors',
+	},
+	{
+		title: 'Quiet, Connected Protection',
+		text: 'Integrated surveillance, access control, and remote monitoring provide greater awareness without making the residence feel dominated by security equipment. Homeowners can view cameras, receive alerts, verify visitors, and manage entry points whether they are at home or away.',
+		image: '/images/project-single/gallery-security.webp',
+		alt: 'Integrated access control and surveillance system installed discreetly in the residence',
+	},
+	{
+		title: 'The Result',
+		text: 'Pacific Horizon Residence demonstrates how thoughtful technology can support exceptional architecture without becoming the focus. Every system works quietly in the background, leaving the homeowners with an experience defined by comfort, simplicity, security, and control.',
+		image: '/images/project-single/gallery-result.webp',
+		alt: 'Luxury estate exterior representing the completed Pacific Horizon Residence project',
+	},
+];
+---
+
+<PageLayout
+	title="Pacific Horizon Residence"
+	description="Pacific Horizon Residence — a PROJECT: automate case study in coastal smart-home design, integrating lighting, shading, entertainment, networking, and security into one effortless system."
+	image="/images/project-single/hero-pacific-horizon.webp"
+>
+	<section class="section hero">
+		<div class="container">
+			<span class="eyebrow">Success Story</span>
+			<h1>Pacific Horizon Residence</h1>
+			<p class="hero-subtitle">Coastal Living, Intelligently Connected</p>
+			<div class="hero-meta">
+				<span>Location: Pacific Coast, California</span>
+				<span class="dot" aria-hidden="true">&middot;</span>
+				<span>Scope: Lighting, Shading, Audio/Video, Networking, Security</span>
+				<span class="dot" aria-hidden="true">&middot;</span>
+				<span>Status: Completed</span>
+			</div>
+		</div>
+		<div class="hero-image">
+			<img src="/images/project-single/hero-pacific-horizon.webp" alt="Pacific Horizon Residence, a coastal contemporary smart home" width="1586" height="992" />
+		</div>
+	</section>
+
+	<section class="section overview">
+		<div class="container overview-grid">
+			<p class="lead">Overlooking the Pacific, this contemporary residence was designed around openness, natural light, and uninterrupted ocean views. PROJECT:automate developed an integrated technology experience that complements the architecture while giving the homeowners effortless control over their environment.</p>
+			<div class="overview-body">
+				<p>The architecture of Pacific Horizon Residence was created to maintain a constant connection with the surrounding coastline. Expansive glass, open living spaces, and carefully selected natural materials shaped the character of the home.</p>
+				<p>The technology needed to support that vision without competing with it. PROJECT:automate planned every system around the architecture, placing controls, speakers, sensors, equipment, and wiring where they would remain discreet and visually unobtrusive.</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section features">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Main System Features"
+				title="Design Your Living Experience"
+				subtitle="From lighting and shading to entertainment, climate, security, and networking, every system works together discreetly — allowing the technology to disappear while the experience remains."
+			/>
+			<ul class="feature-list">
+				{features.map((feature) => <li>{feature}</li>)}
+			</ul>
+		</div>
+	</section>
+
+	<section class="section gallery">
+		<div class="container">
+			<SectionHeading eyebrow="Project Gallery" title="Every System, Working Together" align="center" />
+
+			{gallery.map((item, i) => (
+				<div class={`gallery-row ${i % 2 === 1 ? 'reverse' : ''}`}>
+					<div class="gallery-image">
+						<img src={item.image} alt={item.alt} loading="lazy" />
+					</div>
+					<div class="gallery-copy">
+						<h4>{item.title}</h4>
+						<p>{item.text}</p>
+					</div>
+				</div>
+			))}
+		</div>
+	</section>
+
+	<CtaBanner />
+</PageLayout>
+
+<style>
+	.hero {
+		padding-bottom: 0;
+		text-align: center;
+	}
+
+	.hero h1 {
+		max-width: 900px;
+		margin-inline: auto;
+	}
+
+	.hero-subtitle {
+		font-size: var(--text-xl);
+		color: var(--color-text-muted);
+		max-width: 640px;
+		margin-inline: auto;
+	}
+
+	.hero-meta {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: var(--space-2);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		margin-top: var(--space-6);
+	}
+
+	.hero-meta .dot {
+		color: var(--color-accent);
+	}
+
+	.hero-image {
+		margin-top: var(--space-12);
+	}
+
+	.hero-image img {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+
+	.overview-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-12);
+	}
+
+	.lead {
+		font-size: var(--text-2xl);
+		color: var(--color-text);
+		font-weight: var(--fw-medium);
+		margin: 0;
+	}
+
+	.feature-list {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-3) var(--space-8);
+		max-width: 900px;
+	}
+
+	.feature-list li {
+		position: relative;
+		padding-left: var(--space-6);
+		color: var(--color-text);
+		font-weight: var(--fw-medium);
+	}
+
+	.feature-list li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.6em;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--color-accent);
+	}
+
+	.gallery-row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-12);
+		align-items: center;
+	}
+
+	.gallery-row + .gallery-row {
+		margin-top: var(--space-16);
+	}
+
+	.gallery-row.reverse .gallery-image {
+		order: 2;
+	}
+
+	.gallery-image img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.gallery-copy h4 {
+		font-size: var(--text-2xl);
+		margin-bottom: var(--space-3);
+	}
+
+	@media (max-width: 900px) {
+		.overview-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.feature-list {
+			grid-template-columns: 1fr;
+		}
+
+		.gallery-row {
+			grid-template-columns: 1fr;
+		}
+
+		.gallery-row.reverse .gallery-image {
+			order: 0;
+		}
+	}
+</style>

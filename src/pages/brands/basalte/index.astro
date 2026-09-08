@@ -1,0 +1,103 @@
+---
+import BrandLayout from '../../../layouts/BrandLayout.astro';
+import FeatureList from '../../../components/brands/FeatureList.astro';
+import CapabilityList from '../../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../../components/home/CtaBanner.astro';
+
+const features = [
+	{
+		title: '01 — Intuitive',
+		description:
+			'Control everyday home functions naturally through elegant keypads, touch displays, remotes and the Basalte Home app.',
+	},
+	{
+		title: '02 — Refined',
+		description:
+			'Minimal forms, premium materials and carefully considered finishes complement sophisticated interiors.',
+	},
+	{
+		title: '03 — Consistent',
+		description:
+			'A unified design language creates a seamless experience across every room and every control point.',
+	},
+	{
+		title: '04 — Integrated',
+		description:
+			'Lighting, shading, climate, music and security work together as one intelligent home environment.',
+	},
+];
+
+const capabilities = [
+	{
+		title: 'Design Controls',
+		description:
+			'Basalte keypads transform everyday interactions into an elegant experience. Control lights, shades, scenes and music through intuitive touch-sensitive surfaces designed to blend beautifully into the architecture — across the Sentido, Fibonacci, Matisse and Chopin collections.',
+		image: '/images/brands/basalte/design-controls.webp',
+	},
+	{
+		title: 'Basalte Home',
+		description:
+			'Basalte Home brings your lighting, shades, entertainment, climate and security into one intuitive system. A single touch can dim the lights, lower the shades, adjust the temperature and begin your favourite music — creating the right atmosphere without managing separate technologies. Available through the Basalte Home App, Core Servers, Ellie and Miro.',
+		image: '/images/brands/basalte/basalte-home-app.webp',
+	},
+];
+
+const scenes = [
+	{
+		title: 'Morning',
+		description: 'Lights rise gently, shades open and your home prepares naturally for the day ahead.',
+	},
+	{
+		title: 'Entertaining',
+		description: 'One touch creates the ideal atmosphere through coordinated lighting, music and climate.',
+	},
+	{
+		title: 'Relaxing',
+		description: 'The room softens, the shades close and your favourite playlist begins effortlessly.',
+	},
+	{
+		title: 'Goodnight',
+		description: 'Lights, entertainment and selected home functions shut down through one simple scene.',
+	},
+];
+---
+
+<BrandLayout
+	brandName="Basalte"
+	logo="/images/brands/logos/basalte.webp"
+	heroImage="/images/brands/basalte/hero.webp"
+	heroTitle="Design for the Intelligent Home"
+	heroSubtitle="Refined design and intuitive smart-home control, together."
+	description="Basalte smart home systems from PROJECT: automate — elegant keypads, touchscreens and refined Belgian design for lighting, shades, climate, music and security."
+>
+	<FeatureList eyebrow="Why Basalte" title="Intelligent control without visual distraction." features={features} />
+
+	<CapabilityList eyebrow="Design Controls" title="Control your home at the slightest touch." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="Technology that becomes part of the way you live." scenes={scenes} />
+
+	<section class="section featured-install">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Featured Basalte Installation"
+				title="Refined control for a contemporary residence."
+				subtitle="Basalte design controls were integrated throughout this luxury residence to manage lighting, shading, climate, entertainment and security — with premium finishes selected to complement the interior materials."
+				align="center"
+			/>
+			<img src="/images/brands/basalte/featured-install.webp" alt="Basalte keypad in a contemporary luxury residence" loading="lazy" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</BrandLayout>
+
+<style>
+	.featured-install img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>

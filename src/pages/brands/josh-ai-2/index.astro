@@ -1,0 +1,93 @@
+---
+import BrandLayout from '../../../layouts/BrandLayout.astro';
+import FeatureList from '../../../components/brands/FeatureList.astro';
+import CapabilityList from '../../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../../components/home/CtaBanner.astro';
+
+const features = [
+	{
+		title: '01 — Conversational',
+		description:
+			'Speak naturally to control rooms, devices, scenes, and multiple home functions in a single request.',
+	},
+	{
+		title: '02 — Contextual',
+		description:
+			'Josh.ai understands room context and connected systems, helping each command feel more intuitive and precise.',
+	},
+	{
+		title: '03 — Private',
+		description:
+			'Local and edge-based processing are prioritized to create a more secure and privacy-conscious smart-home experience.',
+	},
+	{
+		title: '04 — Unified',
+		description:
+			'Lighting, shading, climate, entertainment, security, and other connected technologies come together within one intelligent platform.',
+	},
+];
+
+const capabilities = [
+	{
+		title: 'Simply ask your home.',
+		description:
+			'Dim the lights, lower the shades, adjust the temperature, play music, or prepare the cinema using natural conversation. Josh.ai is designed to understand flexible requests, allowing sophisticated home control to feel simple. Available through Voice, Touch, the Mobile App, and Text.',
+		image: '/images/brands/josh-ai-2/featured-install.webp',
+	},
+	{
+		title: 'Powerful technology that quietly belongs.',
+		description:
+			"Josh Nano provides hands-free control through an architectural microphone designed to remain visually discreet. Working with Josh Core as the system's central processor, it delivers responsive control for sophisticated residences without adding unnecessary visual distraction. The platform spans Josh Core, Josh Nano, Josh Micro, and the Josh App.",
+		image: '/images/brands/josh-ai-2/discreet-intelligence.png',
+	},
+];
+
+const scenes = [
+	{
+		title: 'Morning',
+		description: 'Ask Josh to open the shades, brighten the lights, adjust the temperature, and begin your morning playlist.',
+	},
+	{
+		title: 'Entertaining',
+		description: 'Create the right atmosphere with one conversational request that coordinates lighting, music, climate, and shading.',
+	},
+	{
+		title: 'Cinema',
+		description: 'Start a movie while the lights dim, shades close, and entertainment systems prepare automatically.',
+	},
+	{
+		title: 'Goodnight',
+		description: 'Turn off selected lights, secure the property, and lower the temperature.',
+	},
+];
+---
+
+<BrandLayout
+	brandName="Josh.ai"
+	logo="/images/brands/logos/josh-ai.svg"
+	heroImage="/images/brands/josh-ai-2/hero.jpeg"
+	heroTitle="A Home That Understands Naturally"
+	heroSubtitle="Josh.ai brings voice, touch, text, and intelligent automation together in one private control experience—making lighting, entertainment, climate, shading, and security feel effortless throughout your home."
+	description="Josh.ai smart home systems from PROJECT: automate — natural voice control, private edge-based processing, and intelligent automation for lighting, entertainment, climate, shading, and security."
+>
+	<FeatureList eyebrow="Why Josh.ai" title="Intelligent control that feels completely natural." features={features} />
+
+	<CapabilityList eyebrow="Natural Voice Control" title="Discreet intelligence, throughout the home." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="Your home, ready for every moment." scenes={scenes} />
+
+	<section class="section featured-install">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Private Consultation"
+				title="Discover a more natural way to control your home."
+				subtitle="Speak with PROJECT: automate about creating a private, intelligent Josh.ai experience designed around your residence and the way you live."
+				align="center"
+			/>
+		</div>
+	</section>
+
+	<CtaBanner />
+</BrandLayout>

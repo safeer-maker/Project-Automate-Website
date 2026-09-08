@@ -1,0 +1,207 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import FeatureList from '../../components/brands/FeatureList.astro';
+import Button from '../../components/ui/Button.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const partners = [
+	{
+		title: 'Architects',
+		description:
+			'From concept through construction, we help translate technology requirements into the architectural plan — not bolt it on after the fact.',
+		image: '/images/design-partners/design-partners-architects.jpg',
+	},
+	{
+		title: 'Design Build Firms',
+		description:
+			'One coordinated technology scope from design development through final walkthrough, so trades stay aligned and timelines stay intact.',
+		image: '/images/design-partners/design-partners-design-build-firms.jpg',
+	},
+	{
+		title: 'Interior Designers',
+		description: 'Every keypad, panel, and speaker is placed to support the design — never to compete with it.',
+		image: '/images/design-partners/design-partners-interior-designers.jpg',
+	},
+	{
+		title: 'General Contractors',
+		description:
+			'Coordinated rough-in and trim schedules that keep low-voltage work moving in step with the rest of the site.',
+		image: '/images/design-partners/design-partners-general-contractors.jpg',
+	},
+];
+
+const certifications = [
+	'Cedia Certified',
+	'Automation Programmer Certification',
+	'Lutron Motorized Shades Certified',
+	'Coastal Source Landscape Audio & Lighting Certified',
+	'Sophos Certified',
+	'Alarm.com Certified',
+	'Home Technology Association Certified',
+	'Crestron Certified',
+	'Lutron Homeworks Certified',
+	'Josh.ai Certified',
+	'Eero Certified',
+	'Qolsys Certified',
+	'Control4 Authorized Gold Dealer',
+	'Savant Certified',
+	'Ruckus Certified',
+	'KNC Certified',
+	'Rega Certified',
+];
+
+const education = [
+	{
+		title: 'CEU Courses',
+		description:
+			'Gain access to award-winning CEU courses that allow qualified professionals to become licensed and nationally accredited in residential technology.',
+	},
+	{
+		title: 'Custom Courses',
+		description:
+			'Take part in our own custom-tailored courses, giving you knowledge of the common problems smart home installers and dealers deal with every day.',
+	},
+];
+
+const badges = [
+	{ src: '/images/badges/17-years-badge.webp', alt: '17+ Years in business badge' },
+	{ src: '/images/badges/cedia-certified.webp', alt: 'CEDIA Smart Home Certified Expert Provider' },
+	{ src: '/images/badges/cert-level-luxury.webp', alt: 'Certification Level: Luxury' },
+	{ src: '/images/badges/hta-design-partner.webp', alt: 'HTA Design Partner' },
+];
+---
+
+<PageLayout
+	title="Design Partners"
+	description="PROJECT: automate's Design Partner Program — CEDIA-certified technology integration for architects, interior designers, general contractors, and design-build firms, backed by 17+ industry certifications."
+>
+	<section class="dp-hero">
+		<div class="container hero-content">
+			<span class="eyebrow">Partner With Purpose</span>
+			<h1>We help curate your client's technology systems for the perfect aesthetic goal.</h1>
+		</div>
+	</section>
+
+	<CapabilityList eyebrow="Who We Partner With" title="Seamless from concept through completion." items={partners} />
+
+	<section class="section program">
+		<div class="container program-inner">
+			<p>
+				PROJECT: automate is built to support design-build teams — architects, interior
+				designers, general contractors, and other construction partners — by making technology
+				planning, coordination, and execution seamless from concept through completion.
+			</p>
+			<p>
+				As CEDIA-certified Design Build Partners, we proudly offer CEU credits for qualified
+				professionals who attend our PROJECT: automate–sponsored Lunch &amp; Learn sessions,
+				helping you meet continuing education requirements while staying current on best
+				practices in luxury residential technology integration.
+			</p>
+			<Button href="/schedule/" variant="primary" size="lg">Schedule a Lunch &amp; Learn Event</Button>
+		</div>
+	</section>
+
+	<section class="section credentials">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Credentials That Set the Standard"
+				title="Certified. Authorized. Trusted."
+				subtitle="PROJECT: automate maintains professional certifications, authorized dealer status, and advanced training across the industry's leading smart home, automation, networking, security, lighting, shading, and audio platforms. These credentials reflect our commitment to expert design, proper installation, and a higher standard of service."
+			/>
+			<ul class="badges">
+				{badges.map((badge) => (
+					<li><img src={badge.src} alt={badge.alt} loading="lazy" width="110" height="110" /></li>
+				))}
+			</ul>
+			<ul class="cert-list">
+				{certifications.map((cert) => (
+					<li>{cert}</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<FeatureList eyebrow="For Design Professionals" title="Continuing education, built in." features={education} />
+
+	<section class="section closing">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Let's Start Your Journey"
+				title="Step into the future with PROJECT: automate."
+				subtitle="Access smart solutions, expert knowledge, and a network that drives success."
+				align="center"
+			/>
+		</div>
+	</section>
+
+	<CtaBanner />
+</PageLayout>
+
+<style>
+	.dp-hero {
+		padding-block: var(--space-32) var(--space-16);
+		background: linear-gradient(135deg, var(--color-surface), var(--color-navy));
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.hero-content {
+		max-width: 760px;
+	}
+
+	.hero-content h1 {
+		font-size: var(--text-5xl);
+		margin: 0;
+	}
+
+	.program-inner {
+		max-width: 720px;
+	}
+
+	.program-inner p {
+		font-size: var(--text-lg);
+	}
+
+	.program-inner :global(.btn) {
+		margin-top: var(--space-4);
+	}
+
+	.credentials .badges {
+		display: flex;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+		margin-top: var(--space-8);
+		margin-bottom: var(--space-12);
+		padding-bottom: var(--space-12);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.credentials .badges img {
+		width: 80px;
+		height: 80px;
+		object-fit: contain;
+		opacity: 0.9;
+	}
+
+	.cert-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+	}
+
+	.cert-list li {
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-text);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		padding: var(--space-2) var(--space-4);
+	}
+
+	@media (max-width: 700px) {
+		.hero-content h1 {
+			font-size: var(--text-4xl);
+		}
+	}
+</style>

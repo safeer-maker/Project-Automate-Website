@@ -1,0 +1,53 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Immersive Audio',
+		description: 'Multi-dimensional audio systems that place you inside the scene. Custom-calibrated Dolby Atmos, DTS:X, and high-fidelity speakers disappear into architecture while delivering crystal-clear, room-filling sound.',
+		image: '/images/solutions/home-cinama/feature-1.png',
+	},
+	{
+		title: 'Cinematic Visuals',
+		description: 'Ultra-high-definition projection and large-format displays with perfect black levels and vibrant color. We integrate motorized screens, hidden projectors, and ambient lighting control so the room itself becomes part of the experience.',
+		image: '/images/solutions/home-cinama/feature-2.jpeg',
+	},
+	{
+		title: 'Intelligent Control & Lighting',
+		description: 'Preset scenes transform the room instantly — lights dim, shades close, the screen descends, and your system awakens. Control everything through elegant touch panels, voice, or a single app.',
+		image: '/images/solutions/home-cinama/feature-3.webp',
+	},
+];
+
+const scenes = [
+	{ title: 'Movie Night', description: 'One preset dims the lights, lowers the screen and brings the room to life in calibrated Dolby Atmos sound.' },
+	{ title: 'Big Game', description: 'Every seat gets crystal-clear, room-filling sound and vibrant, large-format picture.' },
+	{ title: 'Family Matinee', description: 'Ambient lighting and motorized shades set the mood automatically, no remotes required.' },
+	{ title: 'Late-Night Session', description: 'One touch brings the system down — screen up, lights restored, shades open — as easily as it powered on.' },
+];
+---
+
+<ServiceLayout
+	title="Home Cinema"
+	description="Immersive home theater design and installation from PROJECT: automate — cinematic visuals, immersive audio and seamless smart home integration for luxury Los Angeles homes."
+	heroImage="/images/solutions/home-cinama/hero.webp"
+	eyebrow="Entertainment, Redefined"
+	heroTitle="A Great Film Deserves A Home Theater That Matches The Experience"
+	heroSubtitle="We design and install immersive cinema systems with stunning visuals, rich audio and seamless smart home integration for luxury Los Angeles homes."
+>
+	<CapabilityList eyebrow="Complete Connected Custom" title="One system. Every experience connected." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="One touch, great atmosphere." scenes={scenes} />
+
+	<section class="section power-system">
+		<div class="container">
+			<SectionHeading eyebrow="A Home Theater, Perfected" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</ServiceLayout>

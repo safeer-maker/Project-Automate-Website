@@ -1,0 +1,53 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Real-Time Alerts',
+		description: 'Immediate notifications via SMS, email, or push notifications to your devices.',
+		image: '/images/solutions/surveillance-systems/feature-1.webp',
+	},
+	{
+		title: 'Facial Recognition',
+		description: 'Sophisticated facial recognition and automatic number plate recognition capabilities for enhanced security.',
+		image: '/images/solutions/surveillance-systems/feature-2.webp',
+	},
+	{
+		title: 'Remote Monitoring',
+		description: 'Securely access your surveillance feeds from anywhere, anytime.',
+		image: '/images/solutions/surveillance-systems/feature-3.webp',
+	},
+];
+
+const scenes = [
+	{ title: 'Arrival', description: 'Facial recognition confirms a familiar face at the gate, and the system stands down without a single alert.' },
+	{ title: 'Away', description: 'Remote monitoring lets you check every camera feed securely from anywhere, any time of day.' },
+	{ title: 'Unexpected Activity', description: 'An unrecognized vehicle triggers automatic number plate recognition and an instant push notification.' },
+	{ title: 'Overnight', description: 'Cinematic-quality footage records continuously, ready to review the moment it is needed.' },
+];
+---
+
+<ServiceLayout
+	title="Surveillance Systems"
+	description="Cutting-edge automated surveillance from PROJECT: automate — real-time alerts, facial recognition and remote monitoring for modern security needs."
+	heroImage="/images/solutions/surveillance-systems/hero.webp"
+	eyebrow="Surveillance Systems"
+	heroTitle="Security That Stays Quiet, Until It Matters"
+	heroSubtitle="At PROJECT: automate, we offer cutting-edge automated surveillance solutions tailored for modern security needs. Our systems provide unparalleled monitoring and advanced analytics to ensure the safety and security of your property."
+>
+	<CapabilityList eyebrow="Advanced Features" title="Cutting-edge automated surveillance, scalable to any property." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="One system. Every experience connected." scenes={scenes} />
+
+	<section class="section power-system">
+		<div class="container">
+			<SectionHeading eyebrow="A Smarter Power System" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</ServiceLayout>

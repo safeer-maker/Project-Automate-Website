@@ -1,0 +1,194 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const stories = [
+	{
+		title: 'A Kitchen Made For Royalty',
+		text: 'Lighting has the power to transform an ordinary kitchen into something extraordinary — and when the kitchen is already stunning, the right lighting can make it a true work of art. For this project, we installed multiple smart recessed ceiling lights, seamlessly integrated into the home’s overall smart system. Each fixture can be controlled individually with the touch of a button or simple voice commands.',
+		image: '/images/get-inspired/kitchen-lighting.png',
+		alt: 'Smart recessed lighting integrated throughout a luxury kitchen',
+	},
+	{
+		title: 'Stunning Privacy',
+		text: 'Privacy was a top priority for this client, so we integrated electric shading throughout their residence. These smart shades can be programmed to open and close automatically based on the time of day, or adjusted instantly with a simple button press or voice command. The result is a perfect balance of privacy and elegance.',
+		image: '/images/get-inspired/privacy-shading.png',
+		alt: 'Illuminated residence at night with automated privacy shading',
+	},
+	{
+		title: 'Elegant Safety',
+		text: 'For this project, we designed a lighting system that not only enhances nighttime safety around the client’s multiple pools but also elevates the overall outdoor ambiance. The lights gradually shift throughout the day, creating the perfect atmosphere by nightfall. And when a little more privacy is desired, the entire system can be dimmed or turned off instantly with the touch of a button.',
+		image: '/images/get-inspired/pool-lighting.png',
+		alt: 'Poolside lighting scene designed for nighttime safety and ambiance',
+	},
+];
+
+const gallery = [
+	{
+		location: 'Malibu — 2025',
+		name: 'Oceanfront Villa',
+		image: '/images/get-inspired/inspiration-malibu.webp',
+	},
+	{
+		location: 'Hidden Hills — 2024',
+		name: 'Marazul Estate',
+		image: '/images/get-inspired/inspiration-hidden-hills.webp',
+	},
+	{
+		location: 'Manhattan Beach — 2023',
+		name: 'Alpine Retreat',
+		image: '/images/get-inspired/inspiration-manhattan-beach.webp',
+	},
+];
+---
+
+<PageLayout
+	title="Get Inspired"
+	description="Get inspired by PROJECT: automate residences — real smart-home lighting, shading, and control installed throughout Los Angeles' most refined homes."
+	image="/images/get-inspired/kitchen-lighting.png"
+>
+	<section class="section hero">
+		<div class="container">
+			<SectionHeading
+				eyebrow="West Hollywood — Haslam Terrace"
+				title="Get Inspired"
+				subtitle="For our Haslam Terrace project, we designed a state-of-the-art smart home with a strong emphasis on advanced lighting, security illumination, and automated shading. The result is a residence that delivers a top-tier impression — whether admired from the outside or experienced from within."
+				align="center"
+			/>
+		</div>
+	</section>
+
+	<section class="section stories">
+		<div class="container">
+			{stories.map((story, i) => (
+				<div class={`story-row ${i % 2 === 1 ? 'reverse' : ''}`}>
+					<div class="story-image">
+						<img src={story.image} alt={story.alt} loading="lazy" />
+					</div>
+					<div class="story-copy">
+						<h3>{story.title}</h3>
+						<p>{story.text}</p>
+					</div>
+				</div>
+			))}
+		</div>
+	</section>
+
+	<section class="section gallery">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Gallery"
+				title="More Projects, More Inspiration"
+				subtitle="A closer look at homes where technology feels effortless."
+				align="center"
+			/>
+
+			<div class="grid">
+				{gallery.map((project) => (
+					<figure class="project">
+						<img src={project.image} alt={`${project.name}, ${project.location}`} loading="lazy" width="640" height="480" />
+						<figcaption>
+							<span class="location">{project.location}</span>
+							<span class="name">{project.name}</span>
+						</figcaption>
+					</figure>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<CtaBanner />
+</PageLayout>
+
+<style>
+	.hero {
+		padding-bottom: 0;
+	}
+
+	.story-row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-12);
+		align-items: center;
+	}
+
+	.story-row + .story-row {
+		margin-top: var(--space-16);
+	}
+
+	.story-row.reverse .story-image {
+		order: 2;
+	}
+
+	.story-image img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.story-copy h3 {
+		font-size: var(--text-3xl);
+		margin-bottom: var(--space-4);
+	}
+
+	.story-copy p {
+		font-size: var(--text-lg);
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-6);
+	}
+
+	.project {
+		margin: 0;
+		position: relative;
+		border-radius: var(--radius-md);
+		overflow: hidden;
+	}
+
+	.project img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+	}
+
+	.project figcaption {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: var(--space-4);
+		background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), transparent);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.location {
+		font-size: var(--text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--color-accent);
+	}
+
+	.name {
+		font-weight: var(--fw-semibold);
+	}
+
+	@media (max-width: 900px) {
+		.story-row {
+			grid-template-columns: 1fr;
+		}
+
+		.story-row.reverse .story-image {
+			order: 0;
+		}
+
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

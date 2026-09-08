@@ -1,0 +1,46 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Whole-Home Climate Integration',
+		description: 'Climate control works alongside lighting, shading, entertainment and security within one elegant interface — not a separate app or thermostat panel.',
+		image: '/images/solutions/hvac-and-climate-integration/feature-1.webp',
+	},
+	{
+		title: 'Automated Comfort Scheduling',
+		description: 'Your home responds automatically to schedules, occupancy and environmental conditions, creating the perfect balance of comfort, efficiency and convenience without requiring constant adjustment.',
+		image: '/images/solutions/hvac-and-climate-integration/feature-2.jpg',
+	},
+	{
+		title: 'One-Touch Temperature Control',
+		description: 'A single scene can adjust the temperature alongside lighting, shades and music — creating the right atmosphere in every room, instantly.',
+		image: '/images/solutions/hvac-and-climate-integration/feature-3.jpeg',
+	},
+];
+
+const scenes = [
+	{ title: 'Morning', description: 'Lights gradually brighten, shades rise and your preferred room temperature is ready before your day begins.' },
+	{ title: 'Entertaining', description: 'One touch creates the ideal atmosphere through coordinated lighting, music and climate.' },
+	{ title: 'Away', description: 'Turn off selected lights and entertainment, adjust the climate, secure the home, and reduce unnecessary energy use through one scene.' },
+	{ title: 'Goodnight', description: 'Turn off selected lights, secure the property, and lower the temperature — all through one simple scene.' },
+];
+---
+
+<ServiceLayout
+	title="HVAC and Climate Integration"
+	description="Whole-home climate control from PROJECT: automate — intelligent temperature management integrated with lighting, shading and security."
+	heroImage="/images/solutions/hvac-and-climate-integration/hero.webp"
+	eyebrow="Whole-Home Climate Control"
+	heroTitle="Comfort, Refined"
+	heroSubtitle="Maintain the perfect temperature in every room with climate control that works quietly alongside your lighting, shading and entertainment systems. PROJECT: automate integrates thermostats, sensors and whole-home automation into one seamless experience for luxury Los Angeles homes."
+>
+	<CapabilityList eyebrow="Key Features" title="Intelligent climate control that enhances comfort, efficiency, and everyday living." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="Technology that becomes part of the way you live." scenes={scenes} />
+
+	<CtaBanner />
+</ServiceLayout>

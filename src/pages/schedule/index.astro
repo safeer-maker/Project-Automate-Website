@@ -1,0 +1,171 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import FormField from '../../components/forms/FormField.astro';
+import Button from '../../components/ui/Button.astro';
+import PlaceholderFormScript from '../../components/forms/PlaceholderFormScript.astro';
+
+const projectInterests = [
+	'Control Systems',
+	'Security Systems',
+	'Lighting',
+	'Outdoor Living',
+	'Home Cinema',
+	'Audio & Video Solutions',
+	'Motorized Shades and Draperies',
+	'Energy Management',
+	'Not sure yet',
+];
+
+const timeWindows = ['Morning (9am – 12pm)', 'Afternoon (12pm – 4pm)', 'Evening (4pm – 7pm)'];
+
+const referralSources = [
+	'Referral from a friend or family member',
+	'Google Search',
+	'Social Media',
+	'Showroom or Trade Show',
+	'Architect, Builder or Designer',
+	'Other',
+];
+
+const badges = [
+	{ src: '/images/badges/17-years-badge.webp', alt: '17+ Years in business badge' },
+	{ src: '/images/badges/cedia-certified.webp', alt: 'CEDIA Smart Home Certified Expert Provider' },
+	{ src: '/images/badges/cert-level-luxury.webp', alt: 'Certification Level: Luxury' },
+	{ src: '/images/badges/hta-design-partner.webp', alt: 'HTA Design Partner' },
+];
+---
+
+<PageLayout
+	title="Schedule Your Consultation"
+	description="Tell us about your project and choose a time that works for you. A PROJECT: automate specialist will review your needs and help you plan the right system for your home."
+>
+	<section class="section">
+		<div class="container form-wrap">
+			<SectionHeading
+				eyebrow="Schedule"
+				title="Schedule Your Consultation"
+				subtitle="Tell us about your project and choose a time that works for you. A PROJECT: automate specialist will review your needs and help you plan the right system for your home."
+			/>
+
+			<ul class="badges">
+				{badges.map((badge) => (
+					<li><img src={badge.src} alt={badge.alt} loading="lazy" width="64" height="64" /></li>
+				))}
+			</ul>
+
+			<form data-placeholder-form>
+				<fieldset>
+					<legend>Contact Details</legend>
+					<div class="form-grid">
+						<FormField label="Name" name="name" required />
+						<FormField label="Email" name="email" type="email" required />
+						<FormField label="Phone" name="phone" type="tel" required />
+						<FormField label="City" name="city" />
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Consultation Details</legend>
+					<div class="form-grid">
+						<FormField label="Preferred Date" name="preferred_date" type="date" required />
+						<FormField label="Preferred Time" name="preferred_time" options={timeWindows} placeholder="Select a time window" required />
+						<FormField label="Primary Project Interest" name="project_interest" options={projectInterests} placeholder="Select a project type" />
+						<FormField label="How Did You Hear About Us?" name="referral_source" options={referralSources} placeholder="Select an option" />
+					</div>
+					<FormField label="Tell Us About Your Project" name="message" type="textarea" placeholder="Share a few details about your home and what you'd like to accomplish." />
+				</fieldset>
+
+				<label class="consent">
+					<input type="checkbox" name="sms_consent" />
+					I agree to receive SMS updates about my consultation from PROJECT: automate. Message and data rates may apply.
+				</label>
+				<p class="consent-note">By submitting, you agree to our <a href="/terms-and-conditions/">Terms</a> and <a href="/privacy-policy/">Privacy Policy</a>.</p>
+
+				<Button type="submit" variant="primary" size="lg">Schedule Consultation</Button>
+			</form>
+
+			<div class="form-success" data-form-success hidden>
+				<h3>Thank you — we'll be in touch.</h3>
+				<p>Your consultation request has been received. A PROJECT: automate specialist will follow up shortly to confirm your appointment time.</p>
+			</div>
+		</div>
+	</section>
+	<PlaceholderFormScript />
+</PageLayout>
+
+<style>
+	.form-wrap {
+		max-width: 780px;
+		padding-block: var(--space-8) var(--space-24);
+	}
+
+	.badges {
+		display: flex;
+		gap: var(--space-6);
+		flex-wrap: wrap;
+		margin-bottom: var(--space-12);
+	}
+
+	.badges img {
+		width: 56px;
+		height: 56px;
+		object-fit: contain;
+		opacity: 0.9;
+	}
+
+	fieldset {
+		border: none;
+		border-top: 1px solid var(--color-border);
+		padding: var(--space-6) 0;
+		margin: 0;
+	}
+
+	legend {
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		color: var(--color-accent);
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		padding: 0;
+		margin-bottom: var(--space-4);
+	}
+
+	.form-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-4);
+		margin-bottom: var(--space-4);
+	}
+
+	.consent {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-2);
+		font-size: var(--text-xs);
+		color: var(--color-text-muted);
+		margin-block: var(--space-6);
+	}
+
+	.consent-note {
+		font-size: var(--text-xs);
+		margin-bottom: var(--space-6);
+	}
+	.consent-note a {
+		color: var(--color-accent);
+	}
+
+	.form-success {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-8);
+		text-align: center;
+	}
+
+	@media (max-width: 600px) {
+		.form-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

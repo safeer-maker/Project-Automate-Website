@@ -1,0 +1,48 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/ui/Button.astro';
+---
+
+<PageLayout
+	title="Thank You"
+	description="Your request has been received. A member of the PROJECT: automate team will follow up with the next steps."
+>
+	<section class="section thank-you">
+		<div class="container thank-you-wrap">
+			<span class="eyebrow">Request Received</span>
+			<h1>Thank you for reaching out to PROJECT: automate</h1>
+			<p>Your request has been received, and our team will follow up with the next steps.</p>
+			<p>We will review your request and contact you shortly.</p>
+			<div class="actions">
+				<Button href="/" variant="primary" size="lg">Back To Home</Button>
+				<Button href="/schedule/" variant="outline" size="lg">Contact Us</Button>
+			</div>
+		</div>
+	</section>
+</PageLayout>
+
+<style>
+	.thank-you {
+		min-height: 60vh;
+		display: flex;
+		align-items: center;
+	}
+
+	.thank-you-wrap {
+		max-width: 640px;
+		text-align: center;
+		margin-inline: auto;
+	}
+
+	.thank-you-wrap p {
+		font-size: var(--text-lg);
+	}
+
+	.actions {
+		display: flex;
+		justify-content: center;
+		gap: var(--space-4);
+		flex-wrap: wrap;
+		margin-top: var(--space-8);
+	}
+</style>

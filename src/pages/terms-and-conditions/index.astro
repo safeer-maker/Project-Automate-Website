@@ -1,0 +1,131 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+---
+
+<PageLayout
+	title="Terms and Conditions"
+	description="Read the Terms and Conditions governing your use of the PROJECT: automate website and your interactions with our services."
+>
+	<section class="section legal">
+		<div class="container legal-wrap">
+			<SectionHeading eyebrow="Legal" title="Terms and Conditions" subtitle="Last Updated: August 2026" />
+
+			<p>These Terms and Conditions govern your use of the Project Automate Inc. website and your interactions with our services. By accessing this website or submitting information through it, you agree to these Terms and Conditions.</p>
+
+			<h2>Definitions</h2>
+			<p>For these Terms and Conditions:</p>
+			<ul>
+				<li><strong>Company</strong> refers to Project Automate Inc.</li>
+				<li><strong>Website</strong> refers to <a href="https://projectautomate.com" target="_blank" rel="noopener">https://projectautomate.com</a>.</li>
+				<li><strong>Services</strong> refers to the consultations, design, installation, maintenance, support, and related services provided by Project Automate Inc.</li>
+				<li><strong>You</strong> refers to the person accessing the Website or using our Services.</li>
+			</ul>
+
+			<h2>Use of the Website</h2>
+			<p>You agree to use this Website only for lawful purposes. You may not use the Website in a manner that could damage, disable, interfere with, or compromise its operation or security.</p>
+			<p>Information provided through this Website is intended for general informational purposes and may be changed without notice.</p>
+
+			<h2>Service Inquiries and Consultations</h2>
+			<p>Submitting a contact form, requesting a consultation, or communicating with Project Automate Inc. does not create a binding service agreement.</p>
+			<p>Project scope, pricing, timelines, payment terms, and other service details will be confirmed through a separate proposal, estimate, contract, or written agreement.</p>
+
+			<h2>Accuracy of Information</h2>
+			<p>You agree to provide accurate and complete information when submitting an inquiry, requesting a consultation, or communicating with Project Automate Inc.</p>
+			<p>We are not responsible for delays or issues caused by inaccurate, incomplete, or outdated information provided by you.</p>
+
+			<h2>SMS Terms &amp; Conditions</h2>
+			<p>By providing your mobile number and opting in to receive SMS messages from Project Automate Inc., you consent to receive conversational messages related to our services.</p>
+			<ul>
+				<li><strong>Message frequency:</strong> Message frequency may vary. On average, 5–10 messages per week.</li>
+				<li><strong>Opt-out:</strong> You can opt out at any time by replying STOP to any message.</li>
+				<li><strong>Help:</strong> For help, reply HELP to any message.</li>
+				<li><strong>Privacy Policy:</strong> <a href="/privacy-policy/">https://projectautomate.com/privacy-policy/</a></li>
+			</ul>
+			<p>Message and data rates may apply depending on your mobile carrier plan.</p>
+
+			<h2>Intellectual Property</h2>
+			<p>Unless otherwise stated, the Website and its content—including text, graphics, logos, images, designs, and other materials—are owned by or licensed to Project Automate Inc.</p>
+			<p>You may not copy, reproduce, distribute, modify, publish, or commercially use Website content without prior written permission.</p>
+
+			<h2>Third-Party Links and Services</h2>
+			<p>The Website may contain links to third-party websites, platforms, or services. Project Automate Inc. does not control and is not responsible for the availability, content, security, or privacy practices of third-party websites.</p>
+			<p>Your use of third-party services is subject to their own terms and policies.</p>
+
+			<h2>Disclaimer</h2>
+			<p>We make reasonable efforts to keep the Website accurate and available. However, the Website and its content are provided on an "as is" and "as available" basis.</p>
+			<p>We do not guarantee that the Website will always be available, uninterrupted, secure, or free from errors.</p>
+
+			<h2>Limitation of Liability</h2>
+			<p>To the fullest extent permitted by law, Project Automate Inc. will not be liable for indirect, incidental, special, consequential, or punitive damages arising from your use of—or inability to use—the Website.</p>
+			<p>Nothing in these Terms excludes liability that cannot legally be excluded or limited.</p>
+
+			<h2>Changes to These Terms</h2>
+			<p>We may update these Terms and Conditions from time to time. Changes will be posted on this page with an updated revision date.</p>
+			<p>Your continued use of the Website after changes are published constitutes acceptance of the updated Terms.</p>
+
+			<h2>Governing Law</h2>
+			<p>These Terms and Conditions are governed by the laws applicable in the jurisdiction where Project Automate Inc. operates, without regard to conflict-of-law principles.</p>
+
+			<h2>Contact Us</h2>
+			<p><strong>For questions about these Terms and Conditions, contact:</strong></p>
+			<p>
+				<strong>Project Automate Inc.</strong><br />
+				Website: <a href="https://projectautomate.com" target="_blank" rel="noopener">https://projectautomate.com</a><br />
+				Email: <a href="mailto:sales@projectautomate.com">sales@projectautomate.com</a>
+			</p>
+		</div>
+	</section>
+</PageLayout>
+
+<style>
+	.legal-wrap {
+		max-width: 780px;
+		padding-block: var(--space-8) var(--space-24);
+	}
+
+	.legal-wrap h2 {
+		font-size: var(--text-2xl);
+		margin-top: var(--space-12);
+		padding-top: var(--space-8);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.legal-wrap h2:first-of-type {
+		margin-top: var(--space-8);
+		padding-top: 0;
+		border-top: none;
+	}
+
+	.legal-wrap p {
+		max-width: 68ch;
+	}
+
+	.legal-wrap p a,
+	.legal-wrap li a {
+		color: var(--color-accent);
+	}
+	.legal-wrap p a:hover,
+	.legal-wrap li a:hover {
+		color: var(--color-accent-hover);
+	}
+
+	.legal-wrap ul {
+		margin: 0 0 var(--space-4);
+		max-width: 68ch;
+	}
+
+	.legal-wrap li {
+		position: relative;
+		padding-left: var(--space-6);
+		margin-bottom: var(--space-2);
+		color: var(--color-text-muted);
+	}
+
+	.legal-wrap li::before {
+		content: '—';
+		position: absolute;
+		left: 0;
+		color: var(--color-accent);
+	}
+</style>

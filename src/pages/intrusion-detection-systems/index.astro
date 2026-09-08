@@ -1,0 +1,53 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Instant Alerts',
+		description: 'Real-time notifications delivered promptly to your preferred device.',
+		image: '/images/solutions/intrusion-detection-systems/feature-1.webp',
+	},
+	{
+		title: 'Advanced Sensors',
+		description: 'Cutting-edge motion detectors, glass-break sensors, and perimeter controls.',
+		image: '/images/solutions/intrusion-detection-systems/feature-2.webp',
+	},
+	{
+		title: 'Remote Management',
+		description: 'Monitor and manage your security systems remotely, anytime, anywhere.',
+		image: '/images/solutions/intrusion-detection-systems/feature-3.webp',
+	},
+];
+
+const scenes = [
+	{ title: 'Arming', description: 'One tap arms every sensor across the property, confirmed instantly on your device.' },
+	{ title: 'Perimeter Breach', description: 'A glass-break sensor detects the unexpected, sending an instant alert to your preferred device.' },
+	{ title: 'Away', description: 'Remote management keeps you in control of the system from anywhere, anytime.' },
+	{ title: 'Return Home', description: 'Motion sensors recognize activity at the door, and disarming is one tap away.' },
+];
+---
+
+<ServiceLayout
+	title="Intrusion Detection Systems"
+	description="Advanced intrusion detection from PROJECT: automate — motion detectors, glass-break sensors and remote management for swift, accurate protection."
+	heroImage="/images/solutions/intrusion-detection-systems/hero.webp"
+	eyebrow="Intrusion Detection Systems"
+	heroTitle="Instant Protection"
+	heroSubtitle="PROJECT: automate's Intrusion Detection Systems provide an additional layer of protection by detecting unauthorized access or breaches swiftly and accurately."
+>
+	<CapabilityList eyebrow="Key Features" title="Advanced sensors and instant alerts, adaptable to any property." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="One system. Every experience connected." scenes={scenes} />
+
+	<section class="section power-system">
+		<div class="container">
+			<SectionHeading eyebrow="A Smarter Power System" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</ServiceLayout>

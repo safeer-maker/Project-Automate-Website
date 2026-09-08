@@ -1,0 +1,53 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Smart Power Monitoring',
+		description: "Real-time visibility into your home's energy usage, with individual circuit control, mobile app management and instant notifications.",
+		image: '/images/solutions/energy-moment/feature-1.png',
+	},
+	{
+		title: 'Intelligent Energy Control',
+		description: 'Compact and efficient, the Savant Power Energy System brings together power modules, a hybrid inverter, intelligent storage, and Level 2 EV charging.',
+		image: '/images/solutions/energy-moment/feature-2.webp',
+	},
+	{
+		title: 'Intelligent Energy, Designed Around Your Lifestyle',
+		description: 'Modern luxury homes require more than reliable electricity — they need intelligent energy management that automatically balances power across critical systems.',
+		image: '/images/solutions/energy-moment/feature-3.webp',
+	},
+];
+
+const scenes = [
+	{ title: 'Morning', description: 'Panels begin producing as the household wakes, with power quietly routed to where it is needed most.' },
+	{ title: 'Peak Demand', description: 'Smart load balancing shifts non-essential circuits automatically, keeping critical systems running without a spike in cost.' },
+	{ title: 'EV Charging', description: 'The Savant Power Level 2 EV charger tops up overnight, timed to draw from stored or off-peak energy.' },
+	{ title: 'Outage', description: 'Battery backup engages instantly, keeping essential circuits powered and the household notified in real time.' },
+];
+---
+
+<ServiceLayout
+	title="Energy Management"
+	description="Intelligent energy management from PROJECT: automate — real-time monitoring, smart load balancing and Savant Power System integration for modern luxury homes."
+	heroImage="/images/solutions/energy-moment/hero.webp"
+	eyebrow="Energy Management"
+	heroTitle="Smarter Energy. Greater Independence."
+	heroSubtitle="Take control of your home's energy with intelligent systems that monitor, optimize, and automate power usage — from solar integration and battery backup to EV charging and circuit management."
+>
+	<CapabilityList eyebrow="Smart Power Monitoring" title="See Every Watt. Control Every Circuit." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="One system. Every experience connected." scenes={scenes} />
+
+	<section class="section power-system">
+		<div class="container">
+			<SectionHeading eyebrow="A Smarter Power System" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</ServiceLayout>

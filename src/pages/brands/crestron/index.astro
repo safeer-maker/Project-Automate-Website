@@ -1,0 +1,84 @@
+---
+import BrandLayout from '../../../layouts/BrandLayout.astro';
+import FeatureList from '../../../components/brands/FeatureList.astro';
+import DailyExperience from '../../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../../components/home/CtaBanner.astro';
+
+const features = [
+	{
+		title: 'Unified Control',
+		description:
+			'Manage lighting, shades, entertainment, climate, and security from one elegant interface.',
+	},
+	{
+		title: 'Intelligent Automation',
+		description:
+			'Personalized scenes automatically adapt your home to different moments throughout the day.',
+	},
+	{
+		title: 'Premium Performance',
+		description:
+			'Enterprise-grade reliability ensures your smart home performs consistently every day.',
+	},
+	{
+		title: 'Future Ready',
+		description:
+			'A scalable platform designed to evolve with your home and new technologies.',
+	},
+];
+
+const scenes = [
+	{
+		title: 'Morning',
+		description: 'Lights gradually brighten, shades rise, and your preferred room temperature is ready before your day begins.',
+	},
+	{
+		title: 'Working',
+		description: 'Create the ideal environment with lighting, climate, and privacy optimized for productivity.',
+	},
+	{
+		title: 'Entertaining',
+		description: 'One tap activates lighting, music, video, and climate to create the perfect atmosphere for guests.',
+	},
+	{
+		title: 'Goodnight',
+		description: 'Secure the property, switch off unnecessary systems, and activate your evening scene with a single command.',
+	},
+];
+---
+
+<BrandLayout
+	brandName="Crestron"
+	logo="/images/brands/logos/crestron.webp"
+	heroImage="/images/brands/crestron/hero.webp"
+	heroTitle="Every System. One Intelligent Experience."
+	heroSubtitle="Complete home automation without compromise."
+	description="Crestron smart home systems from PROJECT: automate — unified control, intelligent automation, and enterprise-grade reliability for luxury residences."
+>
+	<FeatureList eyebrow="Why Crestron" title="Complete home automation without compromise." features={features} />
+
+	<DailyExperience eyebrow="Daily Experience" title="A home that anticipates your routine." scenes={scenes} />
+
+	<section class="section featured-install">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Featured Crestron Project"
+				title="Intelligent luxury from every room."
+				align="center"
+			/>
+			<img src="/images/brands/crestron/os3-feature.webp" alt="Crestron OS3 platform powering a luxury residence" loading="lazy" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</BrandLayout>
+
+<style>
+	.featured-install img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>

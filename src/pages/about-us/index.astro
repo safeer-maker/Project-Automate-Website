@@ -1,0 +1,240 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const badges = [
+	{ src: '/images/badges/17-years-badge.webp', alt: '17+ Years in business badge' },
+	{ src: '/images/badges/cedia-certified.webp', alt: 'CEDIA Smart Home Certified Expert Provider' },
+	{ src: '/images/badges/cert-level-luxury.webp', alt: 'Certification Level: Luxury' },
+	{ src: '/images/badges/hta-design-partner.webp', alt: 'HTA Design Partner' },
+];
+
+const steps = [
+	{
+		num: '01',
+		title: 'Understand',
+		description: 'We begin by learning about your space, lifestyle, routines, and expectations.',
+	},
+	{
+		num: '02',
+		title: 'Design',
+		description: 'We create a tailored technology plan that complements your architecture.',
+	},
+	{
+		num: '03',
+		title: 'Integrate',
+		description: 'Every system is installed, connected, and programmed with precision and minimal visual impact.',
+	},
+	{
+		num: '04',
+		title: 'Refine',
+		description: 'We test, personalize, and fine-tune every detail until your complete experience feels effortless.',
+	},
+];
+---
+
+<ServiceLayout
+	title="About Us"
+	description="PROJECT: automate is a Manhattan Beach-based luxury smart home integrator led by founder Joshua Trevithick — intelligent living, designed with purpose."
+	heroImage="/images/about-us/hero-smart-home-control.webp"
+	eyebrow="About PROJECT: automate"
+	heroTitle="Intelligent Living, Designed With Purpose."
+	heroSubtitle="We create intelligent environments where every detail works in harmony — quietly, beautifully, completely."
+>
+	<section class="section philosophy">
+		<div class="container philosophy-grid">
+			<img src="/images/about-us/philosophy-keypad-and-view.webp" alt="In-wall smart home keypad beside a living room with a sunset view" loading="lazy" />
+			<div class="philosophy-text">
+				<SectionHeading eyebrow="Our Philosophy" title="Technology, made invisible." />
+				<p>
+					The best smart homes are not the ones that demand attention. They are the ones that
+					feel calm, intuitive, and naturally integrated into everyday living.
+				</p>
+				<p>
+					At PROJECT: automate, we believe technology should simplify routines, elevate comfort,
+					and blend beautifully into the architecture of the home. Every decision we make is
+					guided by clarity, precision, and long-term usability — one system, every experience
+					connected.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section experience">
+		<div class="container experience-inner">
+			<p class="experience-line">For over 17 years, we've shaped intelligent spaces where technology and everyday living work as one.</p>
+			<ul class="badges">
+				{badges.map((badge) => (
+					<li><img src={badge.src} alt={badge.alt} loading="lazy" width="120" height="120" /></li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<section class="section founder">
+		<div class="container founder-grid">
+			<img src="/images/about-us/founder-joshua-trevithick.webp" alt="Joshua Trevithick, Founder and CEO of PROJECT: automate" loading="lazy" />
+			<div class="founder-text">
+				<span class="eyebrow">Founder &amp; CEO</span>
+				<h2>Joshua Trevithick</h2>
+				<p>
+					With nearly three decades of personal experience in the AV and home automation
+					industry, Joshua has built PROJECT: automate on a simple belief: technology should
+					simplify daily routines, elevate comfort, and blend seamlessly into the architecture of
+					every home. Every system is designed with clarity, precision, and long-term usability
+					in mind.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section process">
+		<div class="container">
+			<SectionHeading eyebrow="Our Process" title="From idea to installation." align="center" />
+			<ol class="steps">
+				{steps.map((step) => (
+					<li class="step">
+						<span class="step-number">{step.num}</span>
+						<h3>{step.title}</h3>
+						<p>{step.description}</p>
+					</li>
+				))}
+			</ol>
+		</div>
+	</section>
+
+	<CtaBanner />
+</ServiceLayout>
+
+<style>
+	.philosophy-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-12);
+		align-items: center;
+	}
+
+	.philosophy-grid img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.philosophy-text :global(.section-heading) {
+		margin-bottom: var(--space-6);
+	}
+
+	.philosophy-text p {
+		margin-bottom: var(--space-4);
+	}
+
+	.experience {
+		border-top: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.experience-inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+	}
+
+	.experience-line {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-semibold);
+		color: var(--color-text);
+		max-width: 480px;
+		margin: 0;
+	}
+
+	.badges {
+		display: flex;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+	}
+
+	.badges img {
+		width: 80px;
+		height: 80px;
+		object-fit: contain;
+		opacity: 0.9;
+	}
+
+	.founder-grid {
+		display: grid;
+		grid-template-columns: 320px 1fr;
+		gap: var(--space-12);
+		align-items: center;
+	}
+
+	.founder-grid img {
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.founder-text h2 {
+		margin-bottom: var(--space-4);
+	}
+
+	.founder-text p {
+		font-size: var(--text-lg);
+		margin: 0;
+	}
+
+	.steps {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--space-8);
+		margin-top: var(--space-12);
+	}
+
+	.step {
+		border-top: 1px solid var(--color-border);
+		padding-top: var(--space-6);
+	}
+
+	.step-number {
+		display: block;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-bold);
+		color: var(--color-accent);
+		margin-bottom: var(--space-3);
+	}
+
+	.step h3 {
+		margin-bottom: var(--space-2);
+	}
+
+	.step p {
+		font-size: var(--text-sm);
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.philosophy-grid,
+		.founder-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.founder-grid img {
+			max-width: 320px;
+		}
+
+		.steps {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.steps {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

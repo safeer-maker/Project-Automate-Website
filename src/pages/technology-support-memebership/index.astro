@@ -1,0 +1,307 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import FeatureList from '../../components/brands/FeatureList.astro';
+import Button from '../../components/ui/Button.astro';
+import CtaBanner from '../../components/home/CtaBanner.astro';
+
+const benefits = [
+	{ title: '01 — Priority Support', description: 'Move ahead in the queue when your system.' },
+	{ title: '02 — Faster response', description: 'Get dependable help with clearly defined.' },
+	{ title: '03 — Remote assist', description: 'Resolve many issues quickly without wait.' },
+	{ title: '04 — Ongoing care', description: 'Keep your technology performing reliably after install.' },
+];
+
+const steps = [
+	{ number: '1', title: 'Contact us', description: 'Reach our support team by phone or email.' },
+	{ number: '2', title: 'Remote assistance', description: 'We diagnose and resolve issues whenever possible.' },
+	{ number: '3', title: 'On-Site support', description: 'A technician is scheduled when hands-on help is needed.' },
+];
+
+const plans = [
+	{
+		name: 'Foundation Care',
+		price: '$125',
+		cadence: 'Per month',
+		description:
+			'Guarantees 24/7 phone and email support with a 30-minute response time from Basic Support. This plan also includes access to the Advanced Support team should you need it on a first-come, first-served basis.',
+		features: [
+			'$125 per month / billed monthly',
+			'Annual memberships available, includes 10% discount',
+			'24/7 Basic Support',
+			'Guaranteed 60-minute Basic Support Response',
+			'9-5, M-F Advanced Support (Remote and On-site)',
+			'Advanced Support $195/hr',
+			'Concierge Services $195/hr',
+		],
+	},
+	{
+		name: 'Premier Care',
+		price: '$300',
+		cadence: 'Per month',
+		description:
+			'24/7 Basic Support with guaranteed same-day on-site response, moving to the head of the line with our Advanced Support team, who will get to work within 4 hours (or, if the problem occurs after-hours, by noon next business day.) Also includes complimentary concierge service during business hours.',
+		features: [
+			'$300 per month / billed monthly',
+			'Annual memberships available, includes 10% discount',
+			'7 Day in-home and Priority Service',
+			'24/7 Basic Support',
+			'Guaranteed 30-minute Basic Support Response',
+			'1 hour response time from Advanced Support for urgent issues',
+			'Advanced Support $195/hr',
+			'Complimentary concierge services during business hours',
+			'Prioritized on-site support 7 days a week',
+		],
+		featured: true,
+	},
+];
+
+const faqs = [
+	{
+		q: 'What is included in basic support?',
+		a: "Basic Support includes priority customer assistance during business hours, routine maintenance guidance, troubleshooting, and access to our member-only support resources. It's designed to keep your systems running smoothly with dependable help whenever you need it.",
+	},
+	{
+		q: 'What qualifies as an urgent issue?',
+		a: 'An urgent issue is any problem that causes a complete service outage, major security concern, or significantly impacts your ability to operate. Urgent requests receive priority response according to your membership plan.',
+	},
+	{
+		q: 'Are on-site service charges included?',
+		a: 'On-site service visits are not included in standard memberships unless specifically stated in your plan. Members receive discounted on-site service rates and priority scheduling whenever a visit is required.',
+	},
+	{
+		q: 'Can I change my membership later?',
+		a: 'Yes. You can upgrade or downgrade your membership at any time. Plan changes typically take effect at the start of your next billing cycle, though upgrades may be activated immediately.',
+	},
+	{
+		q: 'How does annual billing work?',
+		a: 'Annual billing provides a full year of membership with a single upfront payment. Members who choose annual billing often receive discounted pricing compared to monthly plans, making it the most cost-effective option.',
+	},
+];
+---
+
+<PageLayout
+	title="Technology Support Membership"
+	description="Choose a PROJECT: automate membership plan that keeps your home technology running smoothly with responsive remote assistance, priority service, and expert support whenever you need it."
+>
+	<section class="section hero">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Technology Support Membership"
+				title="Reliable Support for Every Connected Home"
+				subtitle="Choose a membership plan that keeps your home technology running smoothly with responsive remote assistance, priority service, and expert support whenever you need it."
+				align="center"
+			/>
+			<div class="hero-actions">
+				<Button href="#membership" variant="primary" size="lg">Explore Membership Plans</Button>
+			</div>
+		</div>
+	</section>
+
+	<FeatureList eyebrow="Why Become a Member" title="Support that goes beyond a service call" features={benefits} />
+
+	<section class="section plans" id="membership">
+		<div class="container">
+			<SectionHeading eyebrow="Membership Plans" title="Sign up today for support always" subtitle="At PROJECT: automate, we believe in providing a truly incomparable ownership experience to our clients. As part of that effort, we offer complimentary and paid support plans that connect you with our friendly and capable support team whenever you need us. We've named our tiers of service “Memberships” because we seek an ongoing relationship with you, your family and your home that goes well beyond the typical break/fix service experience you're used to. From standard business hours only to full 24/7/365 tech support with same-day advanced response, we have a membership for every home. Our goal is for you to see PROJECT: automate as the very best service provider in your home. The first step in that process is for you to select the Membership that's right for you, and we'll own it from there." />
+
+			<div class="plan-grid">
+				{plans.map((plan) => (
+					<div class:list={['plan-card', { featured: plan.featured }]}>
+						<h3>{plan.name}</h3>
+						<p class="price">{plan.price} <span>{plan.cadence}</span></p>
+						<p class="plan-description">{plan.description}</p>
+						<ul>
+							{plan.features.map((f) => <li>{f}</li>)}
+						</ul>
+						<Button href="/schedule/" variant={plan.featured ? 'primary' : 'outline'} size="md">Get Started</Button>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section class="section how-it-works">
+		<div class="container">
+			<SectionHeading eyebrow="How Support Works" title="Help is always within reach" align="center" />
+			<ol class="steps">
+				{steps.map((step) => (
+					<li>
+						<span class="step-number">{step.number}</span>
+						<h3>{step.title}</h3>
+						<p>{step.description}</p>
+					</li>
+				))}
+			</ol>
+		</div>
+	</section>
+
+	<section class="section faq">
+		<div class="container faq-wrap">
+			<SectionHeading eyebrow="Frequently Asked Questions" title="Membership questions, answered" />
+			<div class="faq-list">
+				{faqs.map((item) => (
+					<details>
+						<summary>{item.q}</summary>
+						<p>{item.a}</p>
+					</details>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<CtaBanner />
+</PageLayout>
+
+<style>
+	.hero-actions {
+		display: flex;
+		justify-content: center;
+		margin-top: var(--space-4);
+	}
+
+	.plans {
+		background: var(--color-surface);
+	}
+
+	.plan-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-8);
+		margin-top: var(--space-12);
+	}
+
+	.plan-card {
+		background: var(--color-bg);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-8);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.plan-card.featured {
+		border-color: var(--color-accent);
+	}
+
+	.plan-card h3 {
+		margin-bottom: var(--space-2);
+	}
+
+	.plan-card .price {
+		font-size: var(--text-3xl);
+		font-weight: var(--fw-extrabold);
+		color: var(--color-text);
+		margin-bottom: var(--space-4);
+	}
+
+	.plan-card .price span {
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-text-muted);
+	}
+
+	.plan-card .plan-description {
+		margin-bottom: var(--space-6);
+	}
+
+	.plan-card ul {
+		margin-bottom: var(--space-8);
+		flex-grow: 1;
+	}
+
+	.plan-card li {
+		position: relative;
+		padding-left: var(--space-6);
+		margin-bottom: var(--space-3);
+		color: var(--color-text-muted);
+		font-size: var(--text-sm);
+	}
+
+	.plan-card li::before {
+		content: '—';
+		position: absolute;
+		left: 0;
+		color: var(--color-accent);
+	}
+
+	.steps {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-8);
+	}
+
+	.steps li {
+		border-top: 1px solid var(--color-border);
+		padding-top: var(--space-4);
+	}
+
+	.step-number {
+		display: inline-block;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		color: var(--color-accent);
+		margin-bottom: var(--space-2);
+	}
+
+	.steps h3 {
+		font-size: var(--text-xl);
+		margin-bottom: var(--space-2);
+	}
+
+	.steps p {
+		margin: 0;
+	}
+
+	.faq-wrap {
+		max-width: 780px;
+	}
+
+	.faq-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	details {
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-4) var(--space-6);
+	}
+
+	summary {
+		cursor: pointer;
+		font-weight: var(--fw-semibold);
+		font-size: var(--text-lg);
+		color: var(--color-text);
+		list-style: none;
+	}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
+	summary::after {
+		content: '+';
+		float: right;
+		color: var(--color-accent);
+		font-size: var(--text-xl);
+	}
+
+	details[open] summary::after {
+		content: '−';
+	}
+
+	details p {
+		margin-top: var(--space-4);
+		margin-bottom: 0;
+	}
+
+	@media (max-width: 900px) {
+		.plan-grid {
+			grid-template-columns: 1fr;
+		}
+		.steps {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

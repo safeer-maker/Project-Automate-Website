@@ -1,0 +1,84 @@
+---
+import BrandLayout from '../../../layouts/BrandLayout.astro';
+import FeatureList from '../../../components/brands/FeatureList.astro';
+import DailyExperience from '../../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../../components/home/CtaBanner.astro';
+
+const features = [
+	{
+		title: 'Unified',
+		description:
+			'Manage lighting, entertainment, climate, shades, security, and more through one cohesive smart-home platform.',
+	},
+	{
+		title: 'Personalized',
+		description:
+			'Your interfaces, scenes, schedules, and automations can be configured around the rooms, routines, and experiences that matter most to you.',
+	},
+	{
+		title: 'Scalable',
+		description:
+			'Start with a single room or create a complete whole-home system that can expand as your needs and technology evolve.',
+	},
+	{
+		title: 'Connected',
+		description:
+			'Control4 is compatible with an ecosystem of more than 25,000 third-party devices, helping your preferred technologies work together through one system.',
+	},
+];
+
+const scenes = [
+	{
+		title: 'Morning',
+		description: 'Lights brighten, shades open, the temperature adjusts, and music begins as your home prepares for the day.',
+	},
+	{
+		title: 'Entertaining',
+		description: 'One personalized scene coordinates lighting, music, climate, and entertainment to welcome guests effortlessly.',
+	},
+	{
+		title: 'Cinema',
+		description: 'Select a movie while the display, audio system, lighting, and shades prepare the room automatically.',
+	},
+	{
+		title: 'Goodnight',
+		description: 'Turn off lights, adjust the thermostat, and arm the security system through one simple command.',
+	},
+];
+---
+
+<BrandLayout
+	brandName="Control4"
+	logo="/images/brands/logos/control4.webp"
+	heroImage="/images/brands/control4/hero.jpg"
+	heroTitle="Everything in Your Home, Working Together"
+	heroSubtitle="Control4 connects the technologies throughout your residence through one private, secure, and personalized smart-home experience."
+	description="Control4 smart home systems from PROJECT: automate — unified control, personalized scenes, and whole-home automation for luxury residences."
+>
+	<FeatureList eyebrow="Why Control4" title="Complete control without unnecessary complexity." features={features} />
+
+	<DailyExperience eyebrow="Daily Experience" title="Technology that simplifies every part of the day." scenes={scenes} />
+
+	<section class="section featured-install">
+		<div class="container">
+			<SectionHeading
+				eyebrow="Featured Control4 Installation"
+				title="Seamless intelligence throughout a modern residence."
+				align="center"
+			/>
+			<img src="/images/brands/control4/featured-installation.webp" alt="Control4-powered luxury home theater" loading="lazy" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</BrandLayout>
+
+<style>
+	.featured-install img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>

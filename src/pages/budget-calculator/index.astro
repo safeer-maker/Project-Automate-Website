@@ -1,0 +1,506 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Button from '../../components/ui/Button.astro';
+
+// Tier definitions and per-system base costs below are an estimated planning model built by
+// PROJECT: automate for this client-side calculator. The original site embedded a third-party
+// HTA (Home Technology Association) iframe tool at htacertified.org that does not expose its
+// underlying figures, so no real numeric ranges could be sourced. Tier framing follows the real
+// "Infrastructure / Experience / Protection" pillars used on the source page's "What HTA
+// Considers" section; the dollar figures themselves are reasonable estimates, not sourced data.
+const tiers = [
+	{
+		value: 'foundation',
+		label: 'Foundation',
+		description: 'Essential whole-home control and lighting, built on a professionally engineered infrastructure.',
+		multiplier: 0.7,
+		sqftRate: 4,
+		perRoom: 900,
+	},
+	{
+		value: 'elevated',
+		label: 'Elevated',
+		description: 'Expanded automation, entertainment and comfort systems layered onto a robust foundation.',
+		multiplier: 1,
+		sqftRate: 9,
+		perRoom: 1800,
+	},
+	{
+		value: 'ultra-luxury',
+		label: 'Ultra-Luxury',
+		description: 'Fully bespoke, HTA-certified estate-level integration with white-glove, long-term support.',
+		multiplier: 1.6,
+		sqftRate: 18,
+		perRoom: 3500,
+	},
+];
+
+// Systems list sourced from the real PROJECT: automate service navigation (src/data/nav.ts).
+const systems = [
+	{ value: 'control-systems', label: 'Control Systems', base: 12000 },
+	{ value: 'security-systems', label: 'Security Systems', base: 9000 },
+	{ value: 'lighting', label: 'Lighting', base: 7500 },
+	{ value: 'outdoor-living', label: 'Outdoor Living', base: 8500 },
+	{ value: 'home-cinema', label: 'Home Cinema', base: 15000 },
+	{ value: 'audio-video', label: 'Audio & Video Solutions', base: 10000 },
+	{ value: 'motorized-shades', label: 'Motorized Shades and Draperies', base: 6500 },
+	{ value: 'energy-management', label: 'Energy Management', base: 5500 },
+];
+
+const defaultSystems = ['control-systems', 'lighting', 'security-systems'];
+---
+
+<PageLayout
+	title="HTA Budget Calculator"
+	description="Plan with confidence before the project begins. Estimate a practical planning range for your smart-home project by property size, rooms and systems."
+>
+	<section class="section intro">
+		<div class="container">
+			<SectionHeading
+				eyebrow="How the Estimator Helps"
+				title="Plan with confidence before the project begins."
+				subtitle="This calculator turns your project requirements into a practical planning range — helping you understand the likely level of investment before speaking with a qualified technology integrator."
+			/>
+			<ol class="steps">
+				<li><span class="step-num">1</span>Describe the property and project type</li>
+				<li><span class="step-num">2</span>Select the systems and experience level</li>
+				<li><span class="step-num">3</span>Review an informed planning range</li>
+			</ol>
+		</div>
+	</section>
+
+	<section class="section calculator" id="calculator">
+		<div class="container calculator-grid">
+			<div class="calc-inputs">
+				<div class="field">
+					<div class="field-head">
+						<label for="sqft-range">Home Size</label>
+						<output id="sqft-value" for="sqft-range">6,000 sq ft</output>
+					</div>
+					<input type="range" id="sqft-range" min="2000" max="20000" step="500" value="6000" />
+				</div>
+
+				<div class="field">
+					<div class="field-head">
+						<label for="rooms-range">Rooms &amp; Zones to Automate</label>
+						<output id="rooms-value" for="rooms-range">8 rooms</output>
+					</div>
+					<input type="range" id="rooms-range" min="1" max="25" step="1" value="8" />
+				</div>
+
+				<div class="field">
+					<label for="tier-select">Automation Tier</label>
+					<select id="tier-select">
+						{tiers.map((tier) => (
+							<option value={tier.value} selected={tier.value === 'elevated'}>{tier.label}</option>
+						))}
+					</select>
+					<p class="tier-description" id="tier-description"></p>
+				</div>
+
+				<div class="field">
+					<label>Systems to Include</label>
+					<div class="systems-grid">
+						{systems.map((system) => (
+							<label class="system-checkbox">
+								<input type="checkbox" name="systems" value={system.value} checked={defaultSystems.includes(system.value)} />
+								{system.label}
+							</label>
+						))}
+					</div>
+				</div>
+			</div>
+
+			<div class="calc-result" aria-live="polite">
+				<span class="eyebrow">Estimated Planning Range</span>
+				<p class="result-range"><span id="estimate-low">$0</span> &ndash; <span id="estimate-high">$0</span></p>
+				<ul class="breakdown">
+					<li><span>Infrastructure &amp; Wiring</span><span id="breakdown-infrastructure">$0</span></li>
+					<li><span>Room &amp; Zone Integration</span><span id="breakdown-rooms">$0</span></li>
+					<li><span>Selected Systems</span><span id="breakdown-systems">$0</span></li>
+				</ul>
+				<p class="disclaimer">This is a planning estimate only, not a formal quote. <a href="/schedule/">Schedule a private consultation</a> for a detailed, buildable proposal.</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section why-matters">
+		<div class="container">
+			<SectionHeading eyebrow="Why It Matters" title="Technology decisions shape how the whole home performs" />
+			<div class="why-grid">
+				<div class="why-item">
+					<span class="why-num">01</span>
+					<h3>Define the scope</h3>
+					<p>Property size, room count and project goals set the boundaries every downstream decision is measured against.</p>
+				</div>
+				<div class="why-item">
+					<span class="why-num">02</span>
+					<h3>Set realistic expectations</h3>
+					<p>A clear planning range early on keeps design, budget and timeline aligned before commitments are made.</p>
+				</div>
+				<div class="why-item">
+					<span class="why-num">03</span>
+					<h3>Budget with confidence</h3>
+					<p>Understanding the likely investment up front lets you prioritize the systems that matter most to your lifestyle.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section hta-considers">
+		<div class="container">
+			<SectionHeading eyebrow="What HTA Considers" title="One home. Multiple systems. Designed to work as one." />
+			<div class="pillars">
+				<div class="pillar">
+					<h3>Infrastructure</h3>
+					<p>Networking, wiring, racks, power, and the hidden foundation.</p>
+				</div>
+				<div class="pillar">
+					<h3>Experience</h3>
+					<p>Control, lighting, entertainment, comfort, and daily usability.</p>
+				</div>
+				<div class="pillar">
+					<h3>Protection</h3>
+					<p>Security, surveillance, resilience, serviceability, and long-term support.</p>
+				</div>
+			</div>
+			<div class="hta-attribution">
+				<img src="/images/badges/hta-design-partner.webp" alt="HTA Design Partner" width="56" height="56" loading="lazy" />
+				<p>The Home Technology Association (HTA) helps homeowners plan smarter technology investments by setting trusted standards for home automation, entertainment, security, and system design.</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="section closing-cta">
+		<div class="container">
+			<h2>Ready to Turn This Range Into a Plan?</h2>
+			<p>Let PROJECT: automate turn your estimate into a refined, buildable proposal.</p>
+			<Button href="/schedule/" variant="primary" size="lg">Schedule Consultation</Button>
+		</div>
+	</section>
+</PageLayout>
+
+<script define:vars={{ tiers, systems }}>
+	const sqftRange = document.getElementById('sqft-range');
+	const roomsRange = document.getElementById('rooms-range');
+	const tierSelect = document.getElementById('tier-select');
+	const tierDescription = document.getElementById('tier-description');
+	const systemCheckboxes = document.querySelectorAll('input[name="systems"]');
+
+	const sqftValue = document.getElementById('sqft-value');
+	const roomsValue = document.getElementById('rooms-value');
+	const estimateLow = document.getElementById('estimate-low');
+	const estimateHigh = document.getElementById('estimate-high');
+	const breakdownInfrastructure = document.getElementById('breakdown-infrastructure');
+	const breakdownRooms = document.getElementById('breakdown-rooms');
+	const breakdownSystems = document.getElementById('breakdown-systems');
+
+	function formatCurrency(value) {
+		return '$' + Math.round(value).toLocaleString('en-US');
+	}
+
+	function roundTo(value, step) {
+		return Math.round(value / step) * step;
+	}
+
+	function calculate() {
+		const sqft = Number(sqftRange.value);
+		const rooms = Number(roomsRange.value);
+		const tier = tiers.find((t) => t.value === tierSelect.value) || tiers[0];
+
+		sqftValue.textContent = `${sqft.toLocaleString('en-US')} sq ft`;
+		roomsValue.textContent = `${rooms} room${rooms === 1 ? '' : 's'}`;
+		tierDescription.textContent = tier.description;
+
+		const infrastructure = sqft * tier.sqftRate;
+		const roomIntegration = rooms * tier.perRoom;
+
+		const selected = Array.from(systemCheckboxes).filter((cb) => cb.checked);
+		const systemsTotal = selected.reduce((sum, cb) => {
+			const system = systems.find((s) => s.value === cb.value);
+			return sum + (system ? system.base * tier.multiplier : 0);
+		}, 0);
+
+		const total = infrastructure + roomIntegration + systemsTotal;
+		const low = roundTo(total * 0.85, 500);
+		const high = roundTo(total * 1.15, 500);
+
+		estimateLow.textContent = formatCurrency(low);
+		estimateHigh.textContent = formatCurrency(high);
+		breakdownInfrastructure.textContent = formatCurrency(infrastructure);
+		breakdownRooms.textContent = formatCurrency(roomIntegration);
+		breakdownSystems.textContent = formatCurrency(systemsTotal);
+	}
+
+	sqftRange.addEventListener('input', calculate);
+	roomsRange.addEventListener('input', calculate);
+	tierSelect.addEventListener('change', calculate);
+	systemCheckboxes.forEach((cb) => cb.addEventListener('change', calculate));
+
+	calculate();
+</script>
+
+<style>
+	.steps {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-8);
+		margin-top: var(--space-8);
+		font-size: var(--text-lg);
+		font-weight: var(--fw-semibold);
+	}
+
+	.steps li {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+	}
+
+	.step-num {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		border: 1px solid var(--color-border);
+		color: var(--color-accent);
+		font-size: var(--text-sm);
+		flex-shrink: 0;
+	}
+
+	.calculator {
+		background: var(--color-surface);
+		border-top: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.calculator-grid {
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		gap: var(--space-16);
+		align-items: start;
+	}
+
+	.calc-inputs {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+	}
+
+	.field label {
+		display: block;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		margin-bottom: var(--space-3);
+	}
+
+	.field-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: var(--space-3);
+	}
+
+	.field-head label {
+		margin-bottom: 0;
+	}
+
+	.field-head output {
+		font-weight: var(--fw-bold);
+		color: var(--color-accent);
+	}
+
+	input[type='range'] {
+		width: 100%;
+		accent-color: var(--color-accent);
+	}
+
+	select {
+		width: 100%;
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		color: var(--color-white);
+		padding: var(--space-3);
+	}
+
+	select:focus {
+		outline: none;
+		border-color: var(--color-accent);
+	}
+
+	.tier-description {
+		margin: var(--space-3) 0 0;
+		font-size: var(--text-sm);
+	}
+
+	.systems-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-3);
+	}
+
+	.system-checkbox {
+		display: flex !important;
+		align-items: center;
+		gap: var(--space-2);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-regular) !important;
+		color: var(--color-text-muted);
+		margin-bottom: 0 !important;
+	}
+
+	.system-checkbox input {
+		accent-color: var(--color-accent);
+		width: 16px;
+		height: 16px;
+		flex-shrink: 0;
+	}
+
+	.calc-result {
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-8);
+		position: sticky;
+		top: var(--space-8);
+	}
+
+	.result-range {
+		font-size: var(--text-4xl);
+		font-weight: var(--fw-extrabold);
+		color: var(--color-white);
+		margin: var(--space-2) 0 var(--space-6);
+		line-height: 1.1;
+	}
+
+	.result-range span {
+		color: var(--color-accent);
+	}
+
+	.breakdown {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		padding-top: var(--space-4);
+		border-top: 1px solid var(--color-border);
+		margin-bottom: var(--space-6);
+	}
+
+	.breakdown li {
+		display: flex;
+		justify-content: space-between;
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.breakdown li span:last-child {
+		color: var(--color-white);
+		font-weight: var(--fw-semibold);
+	}
+
+	.disclaimer {
+		font-size: var(--text-xs);
+		margin: 0;
+	}
+
+	.disclaimer a {
+		color: var(--color-accent);
+	}
+
+	.why-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-8);
+	}
+
+	.why-num {
+		display: block;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-bold);
+		color: var(--color-accent);
+		margin-bottom: var(--space-3);
+	}
+
+	.why-item h3 {
+		margin-bottom: var(--space-2);
+	}
+
+	.why-item p {
+		margin: 0;
+	}
+
+	.pillars {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-8);
+		margin-bottom: var(--space-12);
+	}
+
+	.pillar {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-6);
+	}
+
+	.pillar h3 {
+		margin-bottom: var(--space-2);
+	}
+
+	.pillar p {
+		margin: 0;
+	}
+
+	.hta-attribution {
+		display: flex;
+		align-items: center;
+		gap: var(--space-6);
+		max-width: 720px;
+	}
+
+	.hta-attribution img {
+		width: 56px;
+		height: 56px;
+		object-fit: contain;
+		flex-shrink: 0;
+	}
+
+	.hta-attribution p {
+		margin: 0;
+	}
+
+	.closing-cta {
+		text-align: center;
+		background: linear-gradient(135deg, var(--color-surface), var(--color-navy));
+		border-top: 1px solid var(--color-border);
+	}
+
+	.closing-cta p {
+		font-size: var(--text-lg);
+		margin-bottom: var(--space-8);
+	}
+
+	@media (max-width: 900px) {
+		.calculator-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.calc-result {
+			position: static;
+		}
+
+		.why-grid,
+		.pillars {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 500px) {
+		.systems-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
