@@ -2,7 +2,7 @@
 title: "3 Types of Landscape Lighting to Enhance Your Outdoors"
 publishDate: 2025-06-26
 excerpt: "Landscape lighting does more than boost curb appeal. Match lights, step lights, and bullet lights each bring a different mix of style, safety, and functionality to your outdoor space."
-coverImage: "/images/blog/3-types-of-landscape-lighting-to-enhance-your-outdoors.jpg"
+coverImage: "/images/blog/3-types-of-landscape-lighting-to-enhance-your-outdoors.webp"
 coverImageAlt: "Illuminated backyard landscape at dusk with layered outdoor lighting"
 category: "Outdoor Living"
 ---

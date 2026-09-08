@@ -5,18 +5,31 @@
 	--color-navy: #0f3460;
 	--color-black: #0a0a0a;
 	--color-charcoal: #161616;
+	--color-charcoal-2: #2e2e2e;
+	--color-cream: #fffcef;
+	--color-cream-alt: #faf5ee;
+	--color-cream-deep: #fff1d4;
 	--color-white: #ffffff;
 	--color-gray: #9e9e9e;
 
-	/* Semantic aliases */
-	--color-bg: var(--color-black);
-	--color-surface: var(--color-charcoal);
-	--color-surface-2: #1e1e1e;
+	/* Semantic aliases — the live site is a warm cream/ivory theme with dark
+	   charcoal text, bronze/gold accents, and a small number of intentionally
+	   dark sections (header bar, hero overlays, footer, closing CTAs). */
+	--color-bg: var(--color-cream);
+	--color-surface: var(--color-cream-alt);
+	--color-surface-2: var(--color-cream-deep);
 	--color-accent: var(--color-bronze);
 	--color-accent-hover: var(--color-gold-light);
-	--color-text: var(--color-white);
-	--color-text-muted: var(--color-gray);
-	--color-border: rgba(255, 255, 255, 0.12);
+	--color-text: var(--color-charcoal);
+	--color-text-muted: #6b5f4f;
+	--color-border: rgba(22, 16, 8, 0.12);
+
+	/* Use inside intentionally dark sections (header bar, hero overlays,
+	   footer, closing CTA banners) where the section background stays
+	   charcoal/black instead of the cream page background. */
+	--color-text-on-dark: var(--color-white);
+	--color-text-on-dark-muted: rgba(255, 255, 255, 0.7);
+	--color-border-on-dark: rgba(255, 255, 255, 0.14);
 
 	/* Typography */
 	--font-sans: 'Manrope', system-ui, -apple-system, sans-serif;

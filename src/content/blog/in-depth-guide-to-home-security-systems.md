@@ -2,7 +2,7 @@
 title: "In-Depth Guide to Home Security Systems"
 publishDate: 2026-07-15
 excerpt: "Protect your home with bespoke professional home security systems offering smart integration and 24/7 monitoring for complete peace of mind."
-coverImage: "/images/blog/in-depth-guide-to-home-security-systems.jpg"
+coverImage: "/images/blog/in-depth-guide-to-home-security-systems.webp"
 coverImageAlt: "Professionally integrated home security control panel and sensors"
 category: "Security"
 ---

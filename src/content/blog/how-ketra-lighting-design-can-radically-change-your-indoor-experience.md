@@ -2,7 +2,7 @@
 title: "How Ketra Lighting Design Can Radically Change Your Indoor Experience"
 publishDate: 2025-06-28
 excerpt: "Ketra's tunable, full-spectrum lighting goes beyond simple on/off control, letting you shape color and warmth throughout the day to change how a room actually feels."
-coverImage: "/images/blog/how-ketra-lighting-design-can-radically-change-your-indoor-experience.jpg"
+coverImage: "/images/blog/how-ketra-lighting-design-can-radically-change-your-indoor-experience.webp"
 coverImageAlt: "Warmly lit modern interior with Ketra tunable lighting"
 category: "Lighting"
 ---

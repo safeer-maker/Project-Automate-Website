@@ -1,5 +1,9 @@
 export const siteInfo = {
 	name: 'PROJECT: automate',
+	// Registered legal entity name — used for copyright lines and legal documents
+	// (Privacy Policy, Terms & Conditions). "PROJECT: automate" is the public brand
+	// name used everywhere else on the site.
+	legalName: 'Project Automate Inc.',
 	tagline: 'The art of invisible intelligence. Custom smart home systems for the world’s most refined residences.',
 	url: 'https://projectautomate.com',
 	email: 'sales@projectautomate.com',
@@ -15,18 +19,19 @@ export const siteInfo = {
 	credit: { label: 'Powered by AI Media', href: 'https://aimedia.design/' },
 };
 
+export const footerQuickLinks = [
+	{ label: 'Home', href: '/' },
+	{ label: 'About Us', href: '/about-us/' },
+	{ label: 'Design Partner', href: '/partner/' },
+	{ label: 'Blogs', href: '/blog/' },
+	{ label: 'Contact Us', href: '/schedule/' },
+];
+
 export const footerMenu = [
 	{ label: 'Membership', href: '/technology-support-memebership/' },
 	{ label: 'Partners', href: '/design-partners/' },
 	{ label: 'Inspiration', href: '/get-inspired/' },
-	{ label: 'Contact', href: '/schedule/' },
-];
-
-export const footerServices = [
-	{ label: 'Intuitive Control', href: '/access-control-and-intercom/' },
-	{ label: 'Home Cinema', href: '/home-cinama/' },
-	{ label: 'Smart Security', href: '/security-systems/' },
-	{ label: 'Audio Solution', href: '/audio-video-solutions/' },
+	{ label: 'HTA Budget Calculator', href: '/budget-calculator/' },
 ];
 
 export const legalLinks = [

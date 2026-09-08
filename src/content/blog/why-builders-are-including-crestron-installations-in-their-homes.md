@@ -2,7 +2,7 @@
 title: "Why Builders Are Including Crestron Installations in Their Homes"
 publishDate: 2026-06-07
 excerpt: "Learn why builders are adding Crestron smart home installations to luxury residences to increase property value, client convenience, and design appeal."
-coverImage: "/images/blog/why-builders-are-including-crestron-installations-in-their-homes.jpg"
+coverImage: "/images/blog/why-builders-are-including-crestron-installations-in-their-homes.webp"
 coverImageAlt: "Crestron Home app controlling a luxury smart home from a smartphone"
 category: "Builders"
 ---

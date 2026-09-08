@@ -2,7 +2,7 @@
 title: "Top Reasons You Need a Control4 System at Home"
 publishDate: 2025-06-14
 excerpt: "A Control4 system lets you personalize your lighting, climate, and entertainment from one place — while also keeping your home and family protected."
-coverImage: "/images/blog/top-reasons-you-need-a-contr014-system-at-home.jpg"
+coverImage: "/images/blog/top-reasons-you-need-a-contr014-system-at-home.webp"
 coverImageAlt: "Woman using a smart home intercom panel to control her house"
 category: "Control Systems"
 ---

@@ -2,7 +2,7 @@
 title: "The Ultimate Guide to Remote Control Lighting and Bulbs"
 publishDate: 2026-07-11
 excerpt: "Discover how a remote control bulb transforms your lighting with smart features, easy setup, and energy savings for modern homes."
-coverImage: "/images/blog/the-ultimate-guide-to-remote-control-lighting-and-bulbs.jpg"
+coverImage: "/images/blog/the-ultimate-guide-to-remote-control-lighting-and-bulbs.webp"
 coverImageAlt: "Remote control smart light bulb next to a handheld remote"
 category: "Lighting"
 ---

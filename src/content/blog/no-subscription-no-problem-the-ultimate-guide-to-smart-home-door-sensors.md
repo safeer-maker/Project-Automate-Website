@@ -2,7 +2,7 @@
 title: "No Subscription, No Problem: The Ultimate Guide to Smart Home Door Sensors"
 publishDate: 2026-07-17
 excerpt: "Discover how smart door sensors deliver no-subscription security, energy savings, and smart home automation with top models and easy setup."
-coverImage: "/images/blog/no-subscription-no-problem-the-ultimate-guide-to-smart-home-door-sensors.jpg"
+coverImage: "/images/blog/no-subscription-no-problem-the-ultimate-guide-to-smart-home-door-sensors.webp"
 coverImageAlt: "Smart door and window sensor mounted on a white door frame"
 category: "Security"
 ---

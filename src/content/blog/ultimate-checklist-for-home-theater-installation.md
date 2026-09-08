@@ -2,7 +2,7 @@
 title: "Ultimate Checklist for Home Theater Installation"
 publishDate: 2026-07-16
 excerpt: "Plan your ultimate home theater installation with expert tips on acoustics, equipment, and pro AV integration for luxury results."
-coverImage: "/images/blog/ultimate-checklist-for-home-theater-installation.jpg"
+coverImage: "/images/blog/ultimate-checklist-for-home-theater-installation.webp"
 coverImageAlt: "Custom home theater room set up for a screening"
 category: "Home Theater"
 ---

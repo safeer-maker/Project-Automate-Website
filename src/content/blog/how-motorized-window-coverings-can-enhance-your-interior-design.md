@@ -2,7 +2,7 @@
 title: "How Motorized Window Coverings Can Enhance Your Interior Design"
 publishDate: 2026-06-04
 excerpt: "Motorized shades bring quiet performance, refined aesthetics, and effortless smart-home control to any interior, with the added benefits of better daylight management and energy efficiency."
-coverImage: "/images/blog/how-motorized-window-coverings-can-enhance-your-interior-design.jpg"
+coverImage: "/images/blog/how-motorized-window-coverings-can-enhance-your-interior-design.webp"
 coverImageAlt: "Motorized window shades in a bright, modern living room"
 category: "Shades & Drapery"
 ---

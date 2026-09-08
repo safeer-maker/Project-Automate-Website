@@ -2,7 +2,7 @@
 title: "High-End TVs for Luxurious Outdoor Entertainment"
 publishDate: 2025-06-26
 excerpt: "Bring the fun outside with a proper outdoor TV installation. High-end outdoor displays are engineered for brightness and weather that indoor TVs simply can't handle."
-coverImage: "/images/blog/high-end-tvs-for-luxurious-outdoor-entertainment.jpg"
+coverImage: "/images/blog/high-end-tvs-for-luxurious-outdoor-entertainment.webp"
 coverImageAlt: "High-end television mounted in a luxury outdoor living space"
 category: "Outdoor Living"
 ---

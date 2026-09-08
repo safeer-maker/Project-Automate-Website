@@ -2,7 +2,7 @@
 title: "Should I Choose Lutron Wired or Wireless Lighting Control?"
 publishDate: 2026-06-07
 excerpt: "Help clients choose the right Lutron lighting control solution by comparing wired and wireless options for luxury homes and design projects."
-coverImage: "/images/blog/should-i-choose-lutron-wired-or-wireless-lighting-control.jpg"
+coverImage: "/images/blog/should-i-choose-lutron-wired-or-wireless-lighting-control.webp"
 coverImageAlt: "Wall-mounted Lutron lighting keypad in a luxury home"
 category: "Lighting"
 ---

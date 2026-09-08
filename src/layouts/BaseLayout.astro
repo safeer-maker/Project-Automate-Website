@@ -1,5 +1,6 @@
 ---
 import Seo from '../components/seo/Seo.astro';
+import { siteInfo } from '../data/site.ts';
 import '../styles/global.css';
 
 interface Props {
@@ -9,6 +10,29 @@ interface Props {
 }
 
 const { title, description, image } = Astro.props;
+
+// LocalBusiness structured data — legalName is the registered entity
+// (Project Automate Inc.), name/alternateName carry the public brand
+// (PROJECT: automate) used everywhere else on the site.
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@type': 'LocalBusiness',
+	name: siteInfo.name,
+	legalName: siteInfo.legalName,
+	alternateName: siteInfo.name,
+	url: siteInfo.url,
+	email: siteInfo.email,
+	telephone: siteInfo.phones[0],
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: siteInfo.address.line1,
+		addressLocality: 'Manhattan Beach',
+		addressRegion: 'CA',
+		postalCode: '90266',
+		addressCountry: 'US',
+	},
+	sameAs: siteInfo.social.map((s) => s.href),
+};
 ---
 
 <html lang="en">
@@ -34,6 +58,7 @@ const { title, description, image } = Astro.props;
 		/>
 
 		<Seo title={title} description={description} image={image} />
+		<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 	</head>
 	<body>
 		<slot />

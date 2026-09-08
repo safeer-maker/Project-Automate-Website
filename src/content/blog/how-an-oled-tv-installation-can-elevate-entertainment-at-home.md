@@ -2,7 +2,7 @@
 title: "How an OLED TV Installation Can Elevate Entertainment at Home"
 publishDate: 2026-06-07
 excerpt: "The right display technology matters as much as the content itself. Here's how an OLED TV installation can elevate contrast, gaming, and design in your home theater."
-coverImage: "/images/blog/how-an-oled-tv-installation-can-elevate-entertainment-at-home.jpg"
+coverImage: "/images/blog/how-an-oled-tv-installation-can-elevate-entertainment-at-home.webp"
 coverImageAlt: "OLED TV mounted above a built-in fireplace in a modern living room"
 category: "Home Theater"
 ---

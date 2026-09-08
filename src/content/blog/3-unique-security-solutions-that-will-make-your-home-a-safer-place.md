@@ -2,7 +2,7 @@
 title: "3 Unique Security Solutions That Will Make Your Home a Safer Place"
 publishDate: 2025-06-26
 excerpt: "Smart home security goes well beyond surveillance cameras. Alarm systems, security landscape lighting, and smart locks work together to protect your home from intruders and everyday hazards alike."
-coverImage: "/images/blog/3-unique-security-solutions-that-will-make-your-home-a-safer-place.jpg"
+coverImage: "/images/blog/3-unique-security-solutions-that-will-make-your-home-a-safer-place.webp"
 coverImageAlt: "Modern home exterior at night with security lighting and a smart entry system"
 category: "Security"
 ---

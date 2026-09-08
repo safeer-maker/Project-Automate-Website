@@ -2,7 +2,7 @@
 title: "Top Elements of a High-Class Surround Sound Installation"
 publishDate: 2025-05-05
 excerpt: "High-end speakers, a world-class receiver, and a powerful subwoofer are the three building blocks of a surround sound system that does justice to your favorite films and music."
-coverImage: "/images/blog/top-elements-of-a-high-class-surround-sound-installation.png"
+coverImage: "/images/blog/top-elements-of-a-high-class-surround-sound-installation.webp"
 coverImageAlt: "Modern home theater room designed for a surround sound installation"
 category: "Audio & Video"
 ---

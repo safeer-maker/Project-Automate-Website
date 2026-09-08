@@ -2,7 +2,7 @@
 title: "Unboxing the Budget-Friendly eMylo Smart Switch"
 publishDate: 2026-07-21
 excerpt: "Discover how the eMylo smart switch enables budget-friendly home automation with WiFi, RF remote, and Smart Life app control."
-coverImage: "/images/blog/unboxing-the-budget-friendly-emylo-smart-switch.jpeg"
+coverImage: "/images/blog/unboxing-the-budget-friendly-emylo-smart-switch.webp"
 coverImageAlt: "eMylo smart switch unboxing and installation"
 category: "Product Reviews"
 ---

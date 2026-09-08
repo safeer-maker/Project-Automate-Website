@@ -2,7 +2,7 @@
 title: "How to Turn Your House Into a Genius with Brilliant Home Control"
 publishDate: 2026-07-03
 excerpt: "Transform your home with Brilliant Home Control—unify smart devices, automate scenes, and enjoy seamless luxury living."
-coverImage: "/images/blog/how-to-turn-your-house-into-a-genius-with-brilliant-home-control.jpeg"
+coverImage: "/images/blog/how-to-turn-your-house-into-a-genius-with-brilliant-home-control.webp"
 coverImageAlt: "Brilliant home control touchscreen panel mounted in a hallway"
 category: "Control Systems"
 author: "Joshua Trevithick"

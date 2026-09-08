@@ -2,7 +2,7 @@
 title: "Keep Your Peace of Mind with a Top-Level Alarm System"
 publishDate: 2025-06-28
 excerpt: "A customized alarm system built on Alarm.com can bring video surveillance, smart-home automation, and environmental monitoring together to protect your family and property."
-coverImage: "/images/blog/keep-your-peace-of-mind-with-a-top-level-alarm-system.jpg"
+coverImage: "/images/blog/keep-your-peace-of-mind-with-a-top-level-alarm-system.webp"
 coverImageAlt: "Smart home security keypad and monitoring interface"
 category: "Security"
 ---

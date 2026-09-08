@@ -4,10 +4,10 @@ import Button from '../ui/Button.astro';
 
 <section class="cta-banner">
 	<div class="container">
-		<h2>Ready to Automate Your Home?</h2>
+		<h2>Design your Living Experience</h2>
 		<p>Intelligent technology, designed around your lifestyle.</p>
 		<div class="actions">
-			<Button href="/schedule/" variant="primary" size="lg">Schedule Consultation</Button>
+			<Button href="/get-started/" variant="primary" size="lg">Let's Talk</Button>
 			<Button href="/budget-calculator/" variant="outline" size="lg">HTA Budget Calculator</Button>
 		</div>
 	</div>
@@ -17,13 +17,15 @@ import Button from '../ui/Button.astro';
 	.cta-banner {
 		padding-block: var(--space-24);
 		text-align: center;
-		background: linear-gradient(135deg, var(--color-surface), var(--color-navy));
-		border-top: 1px solid var(--color-border);
+		background: linear-gradient(135deg, var(--color-charcoal), var(--color-navy));
+		border-top: 1px solid var(--color-border-on-dark);
+		color: var(--color-text-on-dark);
 	}
 
 	.cta-banner p {
 		font-size: var(--text-lg);
 		margin-bottom: var(--space-8);
+		color: var(--color-text-on-dark-muted);
 	}
 
 	.actions {

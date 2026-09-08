@@ -2,7 +2,7 @@
 title: "Integrate These Technologies For World-Class Outdoor Entertainment"
 publishDate: 2025-06-28
 excerpt: "A weatherproof TV, high-definition outdoor speakers, and a strong networking backbone are the core technologies behind a genuinely great outdoor entertainment space."
-coverImage: "/images/blog/integrate-these-technologies-for-world-class-outdoor-entertainment.jpg"
+coverImage: "/images/blog/integrate-these-technologies-for-world-class-outdoor-entertainment.webp"
 coverImageAlt: "Outdoor living space with TV, speakers, and lounge seating"
 category: "Outdoor Living"
 ---

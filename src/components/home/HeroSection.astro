@@ -1,5 +1,9 @@
 ---
 import Button from '../ui/Button.astro';
+import { siteInfo } from '../../data/site.ts';
+
+const primaryPhone = siteInfo.phones[1] ?? siteInfo.phones[0];
+const primaryPhoneHref = `tel:${primaryPhone.replace(/[^0-9+]/g, '')}`;
 ---
 
 <section class="hero">
@@ -22,8 +26,8 @@ import Button from '../ui/Button.astro';
 			comfortable, connected, and effortless.
 		</p>
 		<div class="hero-actions">
-			<Button href="/schedule/" variant="primary" size="lg">Schedule Consultation</Button>
-			<Button href="/get-inspired/" variant="outline" size="lg">See Our Work</Button>
+			<Button href="/schedule/" variant="primary" size="lg">Book a Consultation</Button>
+			<Button href={primaryPhoneHref} variant="outline" size="lg">Call Now: {primaryPhone}</Button>
 		</div>
 	</div>
 </section>
@@ -67,6 +71,11 @@ import Button from '../ui/Button.astro';
 		z-index: 1;
 		padding-block: var(--space-32) var(--space-24);
 		max-width: 760px;
+		color: var(--color-text-on-dark);
+	}
+
+	.hero-content p {
+		color: var(--color-text-on-dark-muted);
 	}
 
 	.hero-content h1 {

@@ -2,7 +2,7 @@
 title: "Why Interior Designers Should Partner with A Lutron Dealer"
 publishDate: 2026-06-07
 excerpt: "Discover why interior designers should partner with a Lutron dealer to create more dynamic, luxurious, and wellness-focused spaces through smart lighting design."
-coverImage: "/images/blog/why-interior-designers-should-partner-with-a-lutron-dealer.jpg"
+coverImage: "/images/blog/why-interior-designers-should-partner-with-a-lutron-dealer.webp"
 coverImageAlt: "Interior design space with layered Lutron lighting control"
 category: "Design Partners"
 ---

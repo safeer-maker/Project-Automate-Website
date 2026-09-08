@@ -1,4 +1,6 @@
 ---
+import Button from '../ui/Button.astro';
+
 const badges = [
 	{ src: '/images/badges/17-years-badge.webp', alt: '17+ Years in business badge' },
 	{ src: '/images/badges/cedia-certified.webp', alt: 'CEDIA Smart Home Certified Expert Provider' },
@@ -11,7 +13,24 @@ const badges = [
 	<div class="container trust-inner">
 		<div class="trust-text">
 			<span class="eyebrow">Why PROJECT: automate?</span>
-			<h2>17+ Years of Luxury Smart Home Expertise</h2>
+			<h2>17+ Years of Smart Home Expertise</h2>
+			<p>
+				For more than two decades, PROJECT: automate has designed intelligent environments
+				where technology feels effortless, reliable, and beautifully integrated.
+			</p>
+			<p>
+				We begin with the way you live — not a list of products. Every system is carefully
+				planned around your architecture, interior design, routines, and expectations.
+			</p>
+			<p>
+				From lighting, shading, and entertainment to security, networking, and energy
+				management, every element works together through one intuitive experience.
+			</p>
+			<p>
+				Our relationship continues beyond installation. Through thoughtful refinement and
+				ongoing support, we help ensure your home continues to perform exactly as it should.
+			</p>
+			<Button href="/about-us/" variant="outline" size="md">Why Us</Button>
 		</div>
 		<ul class="badges">
 			{badges.map((badge) => (
@@ -24,15 +43,18 @@ const badges = [
 <style>
 	.trust-inner {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		justify-content: space-between;
-		gap: var(--space-8);
+		gap: var(--space-12);
 		flex-wrap: wrap;
 	}
 
+	.trust-text {
+		max-width: 620px;
+	}
+
 	.trust-text h2 {
-		max-width: 480px;
-		margin: 0;
+		margin-bottom: var(--space-6);
 	}
 
 	.badges {

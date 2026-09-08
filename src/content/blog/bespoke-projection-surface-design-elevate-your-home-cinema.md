@@ -2,7 +2,7 @@
 title: "Bespoke Projection Surface Design: Elevate Your Home Cinema"
 publishDate: 2026-07-10
 excerpt: "Discover how a high contrast projection screen transforms your home cinema with superior contrast, deep blacks, and immersive visuals."
-coverImage: "/images/blog/bespoke-projection-surface-design-elevate-your-home-cinema.jpeg"
+coverImage: "/images/blog/bespoke-projection-surface-design-elevate-your-home-cinema.webp"
 coverImageAlt: "High contrast projection screen in a luxury home cinema"
 category: "Home Theater"
 author: "Joshua Trevithick"

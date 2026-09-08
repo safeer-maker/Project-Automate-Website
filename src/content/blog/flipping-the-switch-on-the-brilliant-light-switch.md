@@ -2,7 +2,7 @@
 title: "Flipping the Switch on the Brilliant Light Switch"
 publishDate: 2026-07-14
 excerpt: "Explore the Brilliant Light Switch models, features, wiring, and smart home integrations to see if this premium control panel fits your space."
-coverImage: "/images/blog/flipping-the-switch-on-the-brilliant-light-switch.jpeg"
+coverImage: "/images/blog/flipping-the-switch-on-the-brilliant-light-switch.webp"
 coverImageAlt: "Brilliant smart home touchscreen control panel mounted on a wall"
 category: "Lighting"
 ---

@@ -2,7 +2,7 @@
 title: "3 Unique Ways to Use Your Outdoor Audio System This Spring"
 publishDate: 2025-06-28
 excerpt: "From sunrise yoga to backyard camping nights, an outdoor audio system can turn ordinary spring evenings into something worth stepping outside for."
-coverImage: "/images/blog/3-unique-ways-to-use-your-outdoor-audio-system-this-spring.jpg"
+coverImage: "/images/blog/3-unique-ways-to-use-your-outdoor-audio-system-this-spring.webp"
 coverImageAlt: "Outdoor patio setting with an integrated audio system"
 category: "Outdoor Living"
 ---

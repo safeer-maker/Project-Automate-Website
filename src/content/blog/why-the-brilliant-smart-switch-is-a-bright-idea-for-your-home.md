@@ -2,7 +2,7 @@
 title: "Why the Brilliant Smart Switch is a Bright Idea for Your Home"
 publishDate: 2026-07-10
 excerpt: "Discover why the Brilliant Smart Switch transforms your home with touchscreen control, voice commands, and seamless smart home integration."
-coverImage: "/images/blog/why-the-brilliant-smart-switch-is-a-bright-idea-for-your-home.jpeg"
+coverImage: "/images/blog/why-the-brilliant-smart-switch-is-a-bright-idea-for-your-home.webp"
 coverImageAlt: "Brilliant smart switch touchscreen panel in a modern home interior"
 category: "Lighting"
 author: "Joshua Trevithick"

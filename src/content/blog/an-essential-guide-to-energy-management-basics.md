@@ -2,7 +2,7 @@
 title: "An Essential Guide to Energy Management Basics"
 publishDate: 2026-07-10
 excerpt: "Master energy management basics to cut costs, boost sustainability, and achieve ESG goals with smart systems and proven strategies."
-coverImage: "/images/blog/an-essential-guide-to-energy-management-basics.png"
+coverImage: "/images/blog/an-essential-guide-to-energy-management-basics.webp"
 coverImageAlt: "Energy management smart home dashboard"
 category: "Energy Management"
 author: "Joshua Trevithick"

@@ -2,7 +2,7 @@
 title: "Offer Clients Intuitive Control with Savant Systems"
 publishDate: 2026-06-07
 excerpt: "Show clients how Savant Systems deliver intuitive, luxury smart-home control through a mobile app, Pro Remote, voice commands, and elegant wall-mounted interfaces."
-coverImage: "/images/blog/offer-clients-intuitive-control-with-savant-systems.jpg"
+coverImage: "/images/blog/offer-clients-intuitive-control-with-savant-systems.webp"
 coverImageAlt: "Wall-mounted Savant touch screen controlling a luxury smart home"
 category: "Design Partners"
 ---

@@ -2,7 +2,7 @@
 title: "Beginner's Guide to Smart Lighting"
 publishDate: 2026-07-15
 excerpt: "New to smart lighting? Here's how it works, what it can do for your home, and how to start simple before scaling up to a full whole-home system."
-coverImage: "/images/blog/beginners-guide-to-smart-lighting.jpg"
+coverImage: "/images/blog/beginners-guide-to-smart-lighting.webp"
 coverImageAlt: "Warmly lit modern living room with automated lighting"
 category: "Lighting"
 ---

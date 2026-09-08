@@ -2,7 +2,7 @@
 title: "3 Reasons to Power Motorized Shades with Crestron Home"
 publishDate: 2026-06-07
 excerpt: "One of the most convenient and stylish ways to implement smart technology into your home is by upgrading to motorized shades that open and close on preset schedules or with just a button tap."
-coverImage: "/images/blog/3-reasons-to-power-motorized-shades-with-crestron-home.jpg"
+coverImage: "/images/blog/3-reasons-to-power-motorized-shades-with-crestron-home.webp"
 coverImageAlt: "Motorized window shades in a modern living room controlled by Crestron Home"
 category: "Shades & Drapery"
 ---
