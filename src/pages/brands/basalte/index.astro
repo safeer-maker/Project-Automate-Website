@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../../lib/paths.ts';
 import BrandLayout from '../../../layouts/BrandLayout.astro';
 import FeatureList from '../../../components/brands/FeatureList.astro';
 import CapabilityList from '../../../components/brands/CapabilityList.astro';
@@ -34,13 +35,13 @@ const capabilities = [
 		title: 'Design Controls',
 		description:
 			'Basalte keypads transform everyday interactions into an elegant experience. Control lights, shades, scenes and music through intuitive touch-sensitive surfaces designed to blend beautifully into the architecture — across the Sentido, Fibonacci, Matisse and Chopin collections.',
-		image: '/images/brands/basalte/design-controls.webp',
+		image: withBase('/images/brands/basalte/design-controls.webp'),
 	},
 	{
 		title: 'Basalte Home',
 		description:
 			'Basalte Home brings your lighting, shades, entertainment, climate and security into one intuitive system. A single touch can dim the lights, lower the shades, adjust the temperature and begin your favourite music — creating the right atmosphere without managing separate technologies. Available through the Basalte Home App, Core Servers, Ellie and Miro.',
-		image: '/images/brands/basalte/basalte-home-app.webp',
+		image: withBase('/images/brands/basalte/basalte-home-app.webp'),
 	},
 ];
 
@@ -66,8 +67,8 @@ const scenes = [
 
 <BrandLayout
 	brandName="Basalte"
-	logo="/images/brands/logos/basalte.webp"
-	heroImage="/images/brands/basalte/hero.webp"
+	logo={withBase('/images/brands/logos/basalte.webp')}
+	heroImage={withBase('/images/brands/basalte/hero.webp')}
 	heroTitle="Design for the Intelligent Home"
 	heroSubtitle="Refined design and intuitive smart-home control, together."
 	description="Basalte smart home systems from PROJECT: automate — elegant keypads, touchscreens and refined Belgian design for lighting, shades, climate, music and security."
@@ -86,7 +87,7 @@ const scenes = [
 				subtitle="Basalte design controls were integrated throughout this luxury residence to manage lighting, shading, climate, entertainment and security — with premium finishes selected to complement the interior materials."
 				align="center"
 			/>
-			<img src="/images/brands/basalte/featured-install.webp" alt="Basalte keypad in a contemporary luxury residence" loading="lazy" />
+			<img src={withBase('/images/brands/basalte/featured-install.webp')} alt="Basalte keypad in a contemporary luxury residence" loading="lazy" />
 		</div>
 	</section>
 

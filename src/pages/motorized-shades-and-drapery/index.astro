@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Automated Window Treatments',
 		description: 'Enjoy effortless control of natural light throughout your home. Raise, lower or adjust individual shades — or every window at once — from your phone, keypad, touch panel or voice assistant.',
-		image: '/images/solutions/motorized-shades-and-drapery/feature-1.webp',
+		image: withBase('/images/solutions/motorized-shades-and-drapery/feature-1.webp'),
 	},
 	{
 		title: 'Motorized Drapery',
 		description: 'Motorized drapery adds softness, elegance and functionality to living rooms, bedrooms, dining spaces and media rooms. Hidden tracks and whisper-quiet motors create smooth, graceful movement while preserving the clean aesthetic of your interiors.',
-		image: '/images/solutions/motorized-shades-and-drapery/feature-2.webp',
+		image: withBase('/images/solutions/motorized-shades-and-drapery/feature-2.webp'),
 	},
 	{
 		title: 'Smarter Living',
 		description: 'Automatically adjust shades throughout the day to reduce glare, protect furnishings, improve privacy and help maintain comfortable indoor temperatures — no daily adjustments required.',
-		image: '/images/solutions/motorized-shades-and-drapery/feature-3.webp',
+		image: withBase('/images/solutions/motorized-shades-and-drapery/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Motorized Shades and Drapery"
 	description="Motorized shades and drapery from PROJECT: automate — smart window treatments that balance light, privacy and energy efficiency in one elegant, whisper-quiet solution."
-	heroImage="/images/solutions/motorized-shades-and-drapery/hero.webp"
+	heroImage={withBase('/images/solutions/motorized-shades-and-drapery/hero.webp')}
 	eyebrow="Smart Window Treatments"
 	heroTitle="Smart Window Treatments, Designed For Modern Living"
 	heroSubtitle="Motorized shades bring together convenience, comfort, privacy and energy efficiency in one elegant solution. Adjust instantly with a remote, mobile app, voice assistant or automated schedules."

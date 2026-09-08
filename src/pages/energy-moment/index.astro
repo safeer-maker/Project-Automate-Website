@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Smart Power Monitoring',
 		description: "Real-time visibility into your home's energy usage, with individual circuit control, mobile app management and instant notifications.",
-		image: '/images/solutions/energy-moment/feature-1.webp',
+		image: withBase('/images/solutions/energy-moment/feature-1.webp'),
 	},
 	{
 		title: 'Intelligent Energy Control',
 		description: 'Compact and efficient, the Savant Power Energy System brings together power modules, a hybrid inverter, intelligent storage, and Level 2 EV charging.',
-		image: '/images/solutions/energy-moment/feature-2.webp',
+		image: withBase('/images/solutions/energy-moment/feature-2.webp'),
 	},
 	{
 		title: 'Intelligent Energy, Designed Around Your Lifestyle',
 		description: 'Modern luxury homes require more than reliable electricity — they need intelligent energy management that automatically balances power across critical systems.',
-		image: '/images/solutions/energy-moment/feature-3.webp',
+		image: withBase('/images/solutions/energy-moment/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Energy Management"
 	description="Intelligent energy management from PROJECT: automate — real-time monitoring, smart load balancing and Savant Power System integration for modern luxury homes."
-	heroImage="/images/solutions/energy-moment/hero.webp"
+	heroImage={withBase('/images/solutions/energy-moment/hero.webp')}
 	eyebrow="Energy Management"
 	heroTitle="Smarter Energy. Greater Independence."
 	heroSubtitle="Take control of your home's energy with intelligent systems that monitor, optimize, and automate power usage — from solar integration and battery backup to EV charging and circuit management."

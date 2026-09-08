@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Real-Time Alerts',
 		description: 'Immediate notifications via SMS, email, or push notifications to your devices.',
-		image: '/images/solutions/surveillance-systems/feature-1.webp',
+		image: withBase('/images/solutions/surveillance-systems/feature-1.webp'),
 	},
 	{
 		title: 'Facial Recognition',
 		description: 'Sophisticated facial recognition and automatic number plate recognition capabilities for enhanced security.',
-		image: '/images/solutions/surveillance-systems/feature-2.webp',
+		image: withBase('/images/solutions/surveillance-systems/feature-2.webp'),
 	},
 	{
 		title: 'Remote Monitoring',
 		description: 'Securely access your surveillance feeds from anywhere, anytime.',
-		image: '/images/solutions/surveillance-systems/feature-3.webp',
+		image: withBase('/images/solutions/surveillance-systems/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Surveillance Systems"
 	description="Cutting-edge automated surveillance from PROJECT: automate — real-time alerts, facial recognition and remote monitoring for modern security needs."
-	heroImage="/images/solutions/surveillance-systems/hero.webp"
+	heroImage={withBase('/images/solutions/surveillance-systems/hero.webp')}
 	eyebrow="Surveillance Systems"
 	heroTitle="Security That Stays Quiet, Until It Matters"
 	heroSubtitle="At PROJECT: automate, we offer cutting-edge automated surveillance solutions tailored for modern security needs. Our systems provide unparalleled monitoring and advanced analytics to ensure the safety and security of your property."

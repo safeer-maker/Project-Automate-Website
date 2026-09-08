@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths.ts';
 import PageLayout from './PageLayout.astro';
 import Button from '../components/ui/Button.astro';
 
@@ -22,7 +23,7 @@ const { title, description, heroImage, eyebrow, heroTitle, heroSubtitle } = Astr
 			<span class="eyebrow">{eyebrow}</span>
 			<h1>{heroTitle}</h1>
 			{heroSubtitle && <p>{heroSubtitle}</p>}
-			<Button href="/schedule/" variant="primary" size="lg">Schedule Consultation</Button>
+			<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule Consultation</Button>
 		</div>
 	</section>
 

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -8,17 +9,17 @@ const capabilities = [
 	{
 		title: 'Smart Entry Systems',
 		description: 'See, speak, and grant access from anywhere. Modern entry solutions that combine convenience with advanced security.',
-		image: '/images/solutions/access-control-and-intercom/feature-1.webp',
+		image: withBase('/images/solutions/access-control-and-intercom/feature-1.webp'),
 	},
 	{
 		title: 'Quiet, Connected Protection',
 		description: 'Integrated surveillance, access control, and remote monitoring provide greater awareness without making the residence feel dominated by security equipment.',
-		image: '/images/solutions/access-control-and-intercom/feature-2.webp',
+		image: withBase('/images/solutions/access-control-and-intercom/feature-2.webp'),
 	},
 	{
 		title: 'Manage Entry From Anywhere',
 		description: 'View cameras, receive alerts, verify visitors, and manage entry points whether you are at home or away.',
-		image: '/images/solutions/access-control-and-intercom/feature-3.webp',
+		image: withBase('/images/solutions/access-control-and-intercom/feature-3.webp'),
 	},
 ];
 
@@ -33,7 +34,7 @@ const scenes = [
 <ServiceLayout
 	title="Access Control and Intercom"
 	description="Elegant access control and intercom systems from PROJECT: automate — gates, doors, cameras and mobile access in one seamless experience."
-	heroImage="/images/solutions/access-control-and-intercom/hero.webp"
+	heroImage={withBase('/images/solutions/access-control-and-intercom/hero.webp')}
 	eyebrow="Modern Security"
 	heroTitle="Access, Refined"
 	heroSubtitle="Protect your residence with elegant access control and intercom systems designed for privacy, convenience, and complete confidence. PROJECT: automate integrates gates, doors, cameras, entry stations, and mobile access into one seamless experience for luxury Los Angeles homes."

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
@@ -11,25 +12,25 @@ const partners = [
 		title: 'Architects',
 		description:
 			"We work alongside architecture teams from early planning through construction, integrating technology infrastructure into the design — not around it.",
-		image: '/images/partner/partner-architects.webp',
+		image: withBase('/images/partner/partner-architects.webp'),
 	},
 	{
 		title: 'Design Build Firms',
 		description:
 			'Coordinated technology planning and scheduling that keeps low-voltage and automation trades aligned with the rest of a design-build project.',
-		image: '/images/partner/partner-design-build-firms.webp',
+		image: withBase('/images/partner/partner-design-build-firms.webp'),
 	},
 	{
 		title: 'Interior Designers',
 		description:
 			'Smart home systems specified and installed without compromising sightlines, finishes, or the aesthetic intent of the space.',
-		image: '/images/partner/partner-interior-designers.webp',
+		image: withBase('/images/partner/partner-interior-designers.webp'),
 	},
 	{
 		title: 'General Contractors',
 		description:
 			'Clear documentation and on-site coordination that keeps technology installation moving in step with the rest of the build.',
-		image: '/images/partner/partner-general-contractors.webp',
+		image: withBase('/images/partner/partner-general-contractors.webp'),
 	},
 ];
 
@@ -47,10 +48,10 @@ const education = [
 ];
 
 const badges = [
-	{ src: '/images/badges/17-years-badge.webp', alt: '17+ Years in business badge' },
-	{ src: '/images/badges/cedia-certified.webp', alt: 'CEDIA Smart Home Certified Expert Provider' },
-	{ src: '/images/badges/cert-level-luxury.webp', alt: 'Certification Level: Luxury' },
-	{ src: '/images/badges/hta-design-partner.webp', alt: 'HTA Design Partner' },
+	{ src: withBase('/images/badges/17-years-badge.webp'), alt: '17+ Years in business badge' },
+	{ src: withBase('/images/badges/cedia-certified.webp'), alt: 'CEDIA Smart Home Certified Expert Provider' },
+	{ src: withBase('/images/badges/cert-level-luxury.webp'), alt: 'Certification Level: Luxury' },
+	{ src: withBase('/images/badges/hta-design-partner.webp'), alt: 'HTA Design Partner' },
 ];
 ---
 
@@ -73,7 +74,7 @@ const badges = [
 				We also offer educational Lunch &amp; Learn sessions to help design professionals better
 				understand residential technology planning and integration.
 			</p>
-			<Button href="/schedule/" variant="primary" size="lg">Schedule a Lunch &amp; Learn</Button>
+			<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule a Lunch &amp; Learn</Button>
 		</div>
 	</section>
 

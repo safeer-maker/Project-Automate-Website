@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Instant Alerts',
 		description: 'Real-time notifications delivered promptly to your preferred device.',
-		image: '/images/solutions/intrusion-detection-systems/feature-1.webp',
+		image: withBase('/images/solutions/intrusion-detection-systems/feature-1.webp'),
 	},
 	{
 		title: 'Advanced Sensors',
 		description: 'Cutting-edge motion detectors, glass-break sensors, and perimeter controls.',
-		image: '/images/solutions/intrusion-detection-systems/feature-2.webp',
+		image: withBase('/images/solutions/intrusion-detection-systems/feature-2.webp'),
 	},
 	{
 		title: 'Remote Management',
 		description: 'Monitor and manage your security systems remotely, anytime, anywhere.',
-		image: '/images/solutions/intrusion-detection-systems/feature-3.webp',
+		image: withBase('/images/solutions/intrusion-detection-systems/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Intrusion Detection Systems"
 	description="Advanced intrusion detection from PROJECT: automate — motion detectors, glass-break sensors and remote management for swift, accurate protection."
-	heroImage="/images/solutions/intrusion-detection-systems/hero.webp"
+	heroImage={withBase('/images/solutions/intrusion-detection-systems/hero.webp')}
 	eyebrow="Intrusion Detection Systems"
 	heroTitle="Instant Protection"
 	heroSubtitle="PROJECT: automate's Intrusion Detection Systems provide an additional layer of protection by detecting unauthorized access or breaches swiftly and accurately."

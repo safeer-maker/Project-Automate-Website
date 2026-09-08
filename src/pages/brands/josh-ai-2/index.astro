@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../../lib/paths.ts';
 import BrandLayout from '../../../layouts/BrandLayout.astro';
 import FeatureList from '../../../components/brands/FeatureList.astro';
 import CapabilityList from '../../../components/brands/CapabilityList.astro';
@@ -34,13 +35,13 @@ const capabilities = [
 		title: 'Simply ask your home.',
 		description:
 			'Dim the lights, lower the shades, adjust the temperature, play music, or prepare the cinema using natural conversation. Josh.ai is designed to understand flexible requests, allowing sophisticated home control to feel simple. Available through Voice, Touch, the Mobile App, and Text.',
-		image: '/images/brands/josh-ai-2/featured-install.webp',
+		image: withBase('/images/brands/josh-ai-2/featured-install.webp'),
 	},
 	{
 		title: 'Powerful technology that quietly belongs.',
 		description:
 			"Josh Nano provides hands-free control through an architectural microphone designed to remain visually discreet. Working with Josh Core as the system's central processor, it delivers responsive control for sophisticated residences without adding unnecessary visual distraction. The platform spans Josh Core, Josh Nano, Josh Micro, and the Josh App.",
-		image: '/images/brands/josh-ai-2/discreet-intelligence.webp',
+		image: withBase('/images/brands/josh-ai-2/discreet-intelligence.webp'),
 	},
 ];
 
@@ -66,8 +67,8 @@ const scenes = [
 
 <BrandLayout
 	brandName="Josh.ai"
-	logo="/images/brands/logos/josh-ai.svg"
-	heroImage="/images/brands/josh-ai-2/hero.webp"
+	logo={withBase('/images/brands/logos/josh-ai.svg')}
+	heroImage={withBase('/images/brands/josh-ai-2/hero.webp')}
 	heroTitle="A Home That Understands Naturally"
 	heroSubtitle="Josh.ai brings voice, touch, text, and intelligent automation together in one private control experience—making lighting, entertainment, climate, shading, and security feel effortless throughout your home."
 	description="Josh.ai smart home systems from PROJECT: automate — natural voice control, private edge-based processing, and intelligent automation for lighting, entertainment, climate, shading, and security."

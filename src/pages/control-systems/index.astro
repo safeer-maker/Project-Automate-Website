@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'One Touch, Every Room',
 		description: 'Control your entire home from a single elegant interface — lights, shades, climate, audio, video, and security respond instantly through touch panels, mobile apps, voice commands, or custom keypads designed around the way you live.',
-		image: '/images/solutions/control-systems/feature-1.webp',
+		image: withBase('/images/solutions/control-systems/feature-1.webp'),
 	},
 	{
 		title: 'Scenes That Fit Your Day',
 		description: 'Create effortless moments with personalized scenes for morning, evening, entertaining, relaxing, or away mode. With one tap, your home adjusts the lights, sets the temperature, lowers the shades, and starts the music.',
-		image: '/images/solutions/control-systems/feature-2.webp',
+		image: withBase('/images/solutions/control-systems/feature-2.webp'),
 	},
 	{
 		title: 'Technology That Disappears',
 		description: 'The best smart home systems are powerful without feeling complicated. We integrate advanced technology quietly into the architecture of your home, keeping every system clean, reliable, and easy to use.',
-		image: '/images/solutions/control-systems/feature-3.webp',
+		image: withBase('/images/solutions/control-systems/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Control Systems"
 	description="Custom smart home control systems from PROJECT: automate — one elegant interface connecting lighting, climate, shades, entertainment and security."
-	heroImage="/images/solutions/control-systems/hero.webp"
+	heroImage={withBase('/images/solutions/control-systems/hero.webp')}
 	eyebrow="Smart Living, Simplified"
 	heroTitle="One Touch, Every Room"
 	heroSubtitle="Custom smart home automation systems that connect lighting, climate, shades, entertainment, security and control into one seamless experience."

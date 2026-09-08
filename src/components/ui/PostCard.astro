@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../../lib/paths.ts';
+
 interface Props {
 	slug: string;
 	title: string;
@@ -13,9 +15,9 @@ const { slug, title, excerpt, coverImage, coverImageAlt, category, publishDate }
 const formattedDate = publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<a class="post-card" href={`/${slug}/`}>
+<a class="post-card" href={withBase(`/${slug}/`)}>
 	<div class="post-image">
-		<img src={coverImage} alt={coverImageAlt} loading="lazy" width="480" height="320" />
+		<img src={withBase(coverImage)} alt={coverImageAlt} loading="lazy" width="480" height="320" />
 		<span class="category">{category}</span>
 	</div>
 	<div class="post-body">

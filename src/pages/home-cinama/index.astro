@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Immersive Audio',
 		description: 'Multi-dimensional audio systems that place you inside the scene. Custom-calibrated Dolby Atmos, DTS:X, and high-fidelity speakers disappear into architecture while delivering crystal-clear, room-filling sound.',
-		image: '/images/solutions/home-cinama/feature-1.webp',
+		image: withBase('/images/solutions/home-cinama/feature-1.webp'),
 	},
 	{
 		title: 'Cinematic Visuals',
 		description: 'Ultra-high-definition projection and large-format displays with perfect black levels and vibrant color. We integrate motorized screens, hidden projectors, and ambient lighting control so the room itself becomes part of the experience.',
-		image: '/images/solutions/home-cinama/feature-2.webp',
+		image: withBase('/images/solutions/home-cinama/feature-2.webp'),
 	},
 	{
 		title: 'Intelligent Control & Lighting',
 		description: 'Preset scenes transform the room instantly — lights dim, shades close, the screen descends, and your system awakens. Control everything through elegant touch panels, voice, or a single app.',
-		image: '/images/solutions/home-cinama/feature-3.webp',
+		image: withBase('/images/solutions/home-cinama/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Home Cinema"
 	description="Immersive home theater design and installation from PROJECT: automate — cinematic visuals, immersive audio and seamless smart home integration for luxury Los Angeles homes."
-	heroImage="/images/solutions/home-cinama/hero.webp"
+	heroImage={withBase('/images/solutions/home-cinama/hero.webp')}
 	eyebrow="Entertainment, Redefined"
 	heroTitle="A Great Film Deserves A Home Theater That Matches The Experience"
 	heroSubtitle="We design and install immersive cinema systems with stunning visuals, rich audio and seamless smart home integration for luxury Los Angeles homes."

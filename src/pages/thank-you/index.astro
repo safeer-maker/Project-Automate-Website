@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/ui/Button.astro';
 ---
@@ -14,8 +15,8 @@ import Button from '../../components/ui/Button.astro';
 			<p>Your request has been received, and our team will follow up with the next steps.</p>
 			<p>We will review your request and contact you shortly.</p>
 			<div class="actions">
-				<Button href="/" variant="primary" size="lg">Back To Home</Button>
-				<Button href="/schedule/" variant="outline" size="lg">Contact Us</Button>
+				<Button href={withBase('/')} variant="primary" size="lg">Back To Home</Button>
+				<Button href={withBase('/schedule/')} variant="outline" size="lg">Contact Us</Button>
 			</div>
 		</div>
 	</section>

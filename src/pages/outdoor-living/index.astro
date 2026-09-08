@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Sound That Blends Into the Environment',
 		description: 'Enjoy clear, balanced music throughout patios, gardens, pools and entertaining areas without visually distracting equipment. We carefully position landscape speakers and subwoofers to create even coverage across the property.',
-		image: '/images/solutions/outdoor-living/feature-1.webp',
+		image: withBase('/images/solutions/outdoor-living/feature-1.webp'),
 	},
 	{
 		title: 'Entertainment Beyond the Living Room',
 		description: 'Bring movies, sports and television into your outdoor spaces with displays designed for exterior environments — weather-resistant televisions, audio, networking and intuitive control in one complete experience.',
-		image: '/images/solutions/outdoor-living/feature-2.webp',
+		image: withBase('/images/solutions/outdoor-living/feature-2.webp'),
 	},
 	{
 		title: 'Set the Mood With a Single Touch',
 		description: 'Create the right atmosphere for dining, relaxing, entertaining, or securing the property after dark. Intelligent lighting scenes coordinate architectural, landscape, pathway, pool and accent lighting throughout the outdoor environment.',
-		image: '/images/solutions/outdoor-living/feature-3.webp',
+		image: withBase('/images/solutions/outdoor-living/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Outdoor Living"
 	description="Integrated outdoor technology from PROJECT: automate — landscape audio, entertainment and lighting control for patios, pools, gardens and terraces across Los Angeles."
-	heroImage="/images/solutions/outdoor-living/hero.webp"
+	heroImage={withBase('/images/solutions/outdoor-living/hero.webp')}
 	eyebrow="Outdoor Living, Beautifully Connected"
 	heroTitle="Outdoor Spaces Designed to Feel as Connected as Your Home"
 	heroSubtitle="Extend comfort, entertainment, lighting and control beyond the walls of your home — for patios, pools, gardens, terraces and entertaining spaces."

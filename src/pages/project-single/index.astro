@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CtaBanner from '../../components/home/CtaBanner.astro';
@@ -18,49 +19,49 @@ const gallery = [
 	{
 		title: 'Technology Designed Around the View',
 		text: 'The architecture of Pacific Horizon Residence was created to maintain a constant connection with the surrounding coastline. Expansive glass, open living spaces, and carefully selected natural materials shaped the character of the home. The technology needed to support that vision without competing with it — every control, speaker, sensor, and wire was planned to remain discreet and visually unobtrusive.',
-		image: '/images/project-single/gallery-view.webp',
+		image: withBase('/images/project-single/gallery-view.webp'),
 		alt: 'Modern luxury residence with pool and coastal view at sunset',
 	},
 	{
 		title: 'Effortless Whole-Home Control',
 		text: 'Lighting, shades, climate, entertainment, security, and selected exterior systems are brought together through one intuitive control experience. Instead of managing multiple applications or interfaces, the homeowners can adjust individual rooms or activate complete scenes with a single command — Welcome, Entertain, Evening, and Away — that allow the residence to respond naturally throughout the day.',
-		image: '/images/project-single/gallery-control.webp',
+		image: withBase('/images/project-single/gallery-control.webp'),
 		alt: 'Smart home automation interface controlling household devices from a smartphone',
 	},
 	{
 		title: 'Lighting That Complements the Architecture',
 		text: 'A centralized lighting system provides precise control throughout the interior and exterior spaces. Carefully programmed scenes adjust the atmosphere for everyday living, entertaining, dining, and relaxation. Exterior and landscape lighting also highlight the architecture after sunset while maintaining a warm, understated appearance.',
-		image: '/images/project-single/gallery-lighting.webp',
+		image: withBase('/images/project-single/gallery-lighting.webp'),
 		alt: 'Luxury estate courtyard glowing with warm architectural landscape lighting at night',
 	},
 	{
 		title: 'Comfort, Privacy and Natural Light',
 		text: 'Automated shading helps manage the home’s expansive glass without compromising its ocean views. The shades can respond to the time of day, sunlight, temperature, or personalized scenes — reducing glare, protecting interior finishes, improving comfort, and providing privacy when required.',
-		image: '/images/project-single/gallery-shading.webp',
+		image: withBase('/images/project-single/gallery-shading.webp'),
 		alt: 'Luxury living room with motorized roller shades and floor-to-ceiling glass',
 	},
 	{
 		title: 'Entertainment Without Visual Clutter',
 		text: 'Audio and video systems were integrated into the residence with minimal visual impact. Architectural speakers deliver balanced sound across the primary living areas, while discreet displays and centralized equipment preserve the clean interior design. Entertainment can follow the homeowners seamlessly from indoor spaces to the exterior living areas.',
-		image: '/images/project-single/gallery-entertainment.webp',
+		image: withBase('/images/project-single/gallery-entertainment.webp'),
 		alt: 'Dedicated home theater with immersive sound and precise lighting',
 	},
 	{
 		title: 'A Network Built for the Entire Home',
 		text: 'A reliable network forms the foundation of every connected experience within the residence. The system was engineered to provide consistent wired and wireless coverage across the home, outdoor entertaining areas, security devices, automation systems, and high-bandwidth entertainment equipment.',
-		image: '/images/project-single/gallery-network.webp',
+		image: withBase('/images/project-single/gallery-network.webp'),
 		alt: 'Poolside outdoor dining and entertaining area extending the connected home outdoors',
 	},
 	{
 		title: 'Quiet, Connected Protection',
 		text: 'Integrated surveillance, access control, and remote monitoring provide greater awareness without making the residence feel dominated by security equipment. Homeowners can view cameras, receive alerts, verify visitors, and manage entry points whether they are at home or away.',
-		image: '/images/project-single/gallery-security.webp',
+		image: withBase('/images/project-single/gallery-security.webp'),
 		alt: 'Integrated access control and surveillance system installed discreetly in the residence',
 	},
 	{
 		title: 'The Result',
 		text: 'Pacific Horizon Residence demonstrates how thoughtful technology can support exceptional architecture without becoming the focus. Every system works quietly in the background, leaving the homeowners with an experience defined by comfort, simplicity, security, and control.',
-		image: '/images/project-single/gallery-result.webp',
+		image: withBase('/images/project-single/gallery-result.webp'),
 		alt: 'Luxury estate exterior representing the completed Pacific Horizon Residence project',
 	},
 ];
@@ -69,7 +70,7 @@ const gallery = [
 <PageLayout
 	title="Pacific Horizon Residence"
 	description="Pacific Horizon Residence — a PROJECT: automate case study in coastal smart-home design, integrating lighting, shading, entertainment, networking, and security into one effortless system."
-	image="/images/project-single/hero-pacific-horizon.webp"
+	image={withBase('/images/project-single/hero-pacific-horizon.webp')}
 >
 	<section class="section hero">
 		<div class="container">
@@ -85,7 +86,7 @@ const gallery = [
 			</div>
 		</div>
 		<div class="hero-image">
-			<img src="/images/project-single/hero-pacific-horizon.webp" alt="Pacific Horizon Residence, a coastal contemporary smart home" width="1586" height="992" />
+			<img src={withBase('/images/project-single/hero-pacific-horizon.webp')} alt="Pacific Horizon Residence, a coastal contemporary smart home" width="1586" height="992" />
 		</div>
 	</section>
 

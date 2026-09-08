@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Alarm System',
 		description: 'Smart alarms that detect, alert and act instantly. Receive real-time notifications and monitor your home from anywhere.',
-		image: '/images/solutions/security-systems/feature-1.webp',
+		image: withBase('/images/solutions/security-systems/feature-1.webp'),
 	},
 	{
 		title: 'Smart Entry Systems',
 		description: 'See, speak and grant access from anywhere. Modern entry solutions that combine convenience with advanced security.',
-		image: '/images/solutions/security-systems/feature-2.webp',
+		image: withBase('/images/solutions/security-systems/feature-2.webp'),
 	},
 	{
 		title: 'Access Control Systems',
 		description: 'Designed for peace of mind, our access control systems give you full command over who comes and goes, from any part of the property.',
-		image: '/images/solutions/security-systems/feature-3.webp',
+		image: withBase('/images/solutions/security-systems/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Security Systems"
 	description="Custom smart home security systems from PROJECT: automate — intelligent alarms, entry systems and access control for refined Los Angeles residences."
-	heroImage="/images/solutions/security-systems/hero.webp"
+	heroImage={withBase('/images/solutions/security-systems/hero.webp')}
 	eyebrow="A Smarter Way to Stay Safe"
 	heroTitle="Complete Protection for Every Part of Your Property"
 	heroSubtitle="We create intelligent environments where every detail works in harmony — quietly, beautifully, completely."

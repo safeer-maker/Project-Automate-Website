@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Intelligent Lighting Control',
 		description: 'One system. Every experience connected — from a single switch to whole-home architectural lighting.',
-		image: '/images/solutions/lighting/feature-1.webp',
+		image: withBase('/images/solutions/lighting/feature-1.webp'),
 	},
 	{
 		title: 'Architectural Lighting Control',
 		description: 'Elegant control, perfectly tuned to the architecture and mood of every room.',
-		image: '/images/solutions/lighting/feature-2.webp',
+		image: withBase('/images/solutions/lighting/feature-2.webp'),
 	},
 	{
 		title: 'Effortless Lighting Control',
 		description: 'Light that moves with your life — automated scenes that adapt as your day changes.',
-		image: '/images/solutions/lighting/why-choose-us.webp',
+		image: withBase('/images/solutions/lighting/why-choose-us.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Lighting Control Systems"
 	description="Intelligent, architectural lighting control from PROJECT: automate — elegant light that moves with your life."
-	heroImage="/images/solutions/lighting/hero.webp"
+	heroImage={withBase('/images/solutions/lighting/hero.webp')}
 	eyebrow="Elegant Light Control"
 	heroTitle="Light That Moves With Your Life"
 	heroSubtitle="Key features of an intelligent lighting control system, tuned to the architecture and rhythm of your home."

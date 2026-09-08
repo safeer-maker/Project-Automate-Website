@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import { siteInfo, footerQuickLinks, footerMenu, legalLinks } from '../../data/site.ts';
 import { coreServices } from '../../data/nav.ts';
 import Button from '../ui/Button.astro';
@@ -9,7 +10,7 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
 	<div class="container footer-grid">
 		<div class="footer-brand">
-			<img src="/images/logo/logo-static.webp" alt="PROJECT: automate logo" width="150" height="84" />
+			<img src={withBase('/images/logo/logo-static.webp')} alt="PROJECT: automate logo" width="150" height="84" />
 			<p class="tagline">{siteInfo.tagline}</p>
 
 			<form class="newsletter" data-placeholder-form>
@@ -62,7 +63,7 @@ const year = new Date().getFullYear();
 				))}
 				<li>{siteInfo.address.line1}<br />{siteInfo.address.line2}</li>
 			</ul>
-			<Button href="/schedule/" variant="outline" size="md" class="footer-cta">Book a Consultation</Button>
+			<Button href={withBase('/schedule/')} variant="outline" size="md" class="footer-cta">Book a Consultation</Button>
 		</div>
 	</div>
 

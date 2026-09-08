@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import FormField from '../../components/forms/FormField.astro';
@@ -51,7 +52,7 @@ import PlaceholderFormScript from '../../components/forms/PlaceholderFormScript.
 					<input type="checkbox" name="sms_consent" />
 					I agree to receive SMS updates about my project from PROJECT: automate. Message and data rates may apply.
 				</label>
-				<p class="consent-note">By submitting, you agree to our <a href="/terms-and-conditions/">Terms</a> and <a href="/privacy-policy/">Privacy Policy</a>.</p>
+				<p class="consent-note">By submitting, you agree to our <a href={withBase('/terms-and-conditions/')}>Terms</a> and <a href={withBase('/privacy-policy/')}>Privacy Policy</a>.</p>
 
 				<Button type="submit" variant="primary" size="lg">Submit Project Request</Button>
 			</form>

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths.ts';
 interface Props {
 	title: string;
 	excerpt: string;
@@ -13,19 +14,21 @@ import PageLayout from './PageLayout.astro';
 
 const { title, excerpt, coverImage, coverImageAlt, category, author, publishDate } = Astro.props;
 const formattedDate = publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+// coverImage comes from post frontmatter as a root-relative path
+const coverSrc = withBase(coverImage);
 ---
 
-<PageLayout title={title} description={excerpt} image={coverImage}>
+<PageLayout title={title} description={excerpt} image={coverSrc}>
 	<article class="post">
 		<header class="post-header container">
-			<a class="back-link" href="/blog/">&larr; Back to Blog</a>
+			<a class="back-link" href={withBase('/blog/')}>&larr; Back to Blog</a>
 			<span class="eyebrow">{category}</span>
 			<h1>{title}</h1>
 			<p class="meta">By {author} &middot; <time datetime={publishDate.toISOString()}>{formattedDate}</time></p>
 		</header>
 
 		<div class="post-cover">
-			<img src={coverImage} alt={coverImageAlt} />
+			<img src={coverSrc} alt={coverImageAlt} />
 		</div>
 
 		<div class="container post-content">

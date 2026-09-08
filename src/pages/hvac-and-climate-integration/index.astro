@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -8,17 +9,17 @@ const capabilities = [
 	{
 		title: 'Whole-Home Climate Integration',
 		description: 'Climate control works alongside lighting, shading, entertainment and security within one elegant interface — not a separate app or thermostat panel.',
-		image: '/images/solutions/hvac-and-climate-integration/feature-1.webp',
+		image: withBase('/images/solutions/hvac-and-climate-integration/feature-1.webp'),
 	},
 	{
 		title: 'Automated Comfort Scheduling',
 		description: 'Your home responds automatically to schedules, occupancy and environmental conditions, creating the perfect balance of comfort, efficiency and convenience without requiring constant adjustment.',
-		image: '/images/solutions/hvac-and-climate-integration/feature-2.webp',
+		image: withBase('/images/solutions/hvac-and-climate-integration/feature-2.webp'),
 	},
 	{
 		title: 'One-Touch Temperature Control',
 		description: 'A single scene can adjust the temperature alongside lighting, shades and music — creating the right atmosphere in every room, instantly.',
-		image: '/images/solutions/hvac-and-climate-integration/feature-3.webp',
+		image: withBase('/images/solutions/hvac-and-climate-integration/feature-3.webp'),
 	},
 ];
 
@@ -33,7 +34,7 @@ const scenes = [
 <ServiceLayout
 	title="HVAC and Climate Integration"
 	description="Whole-home climate control from PROJECT: automate — intelligent temperature management integrated with lighting, shading and security."
-	heroImage="/images/solutions/hvac-and-climate-integration/hero.webp"
+	heroImage={withBase('/images/solutions/hvac-and-climate-integration/hero.webp')}
 	eyebrow="Whole-Home Climate Control"
 	heroTitle="Comfort, Refined"
 	heroSubtitle="Maintain the perfect temperature in every room with climate control that works quietly alongside your lighting, shading and entertainment systems. PROJECT: automate integrates thermostats, sensors and whole-home automation into one seamless experience for luxury Los Angeles homes."

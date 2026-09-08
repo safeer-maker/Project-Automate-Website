@@ -1,13 +1,14 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CtaBanner from '../../components/home/CtaBanner.astro';
 
 const badges = [
-	{ src: '/images/badges/17-years-badge.webp', alt: '17+ Years in business badge' },
-	{ src: '/images/badges/cedia-certified.webp', alt: 'CEDIA Smart Home Certified Expert Provider' },
-	{ src: '/images/badges/cert-level-luxury.webp', alt: 'Certification Level: Luxury' },
-	{ src: '/images/badges/hta-design-partner.webp', alt: 'HTA Design Partner' },
+	{ src: withBase('/images/badges/17-years-badge.webp'), alt: '17+ Years in business badge' },
+	{ src: withBase('/images/badges/cedia-certified.webp'), alt: 'CEDIA Smart Home Certified Expert Provider' },
+	{ src: withBase('/images/badges/cert-level-luxury.webp'), alt: 'Certification Level: Luxury' },
+	{ src: withBase('/images/badges/hta-design-partner.webp'), alt: 'HTA Design Partner' },
 ];
 
 const steps = [
@@ -37,14 +38,14 @@ const steps = [
 <ServiceLayout
 	title="About Us"
 	description="PROJECT: automate is a Manhattan Beach-based luxury smart home integrator led by founder Joshua Trevithick — intelligent living, designed with purpose."
-	heroImage="/images/about-us/hero-smart-home-control.webp"
+	heroImage={withBase('/images/about-us/hero-smart-home-control.webp')}
 	eyebrow="About PROJECT: automate"
 	heroTitle="Intelligent Living, Designed With Purpose."
 	heroSubtitle="We create intelligent environments where every detail works in harmony — quietly, beautifully, completely."
 >
 	<section class="section philosophy">
 		<div class="container philosophy-grid">
-			<img src="/images/about-us/philosophy-keypad-and-view.webp" alt="In-wall smart home keypad beside a living room with a sunset view" loading="lazy" />
+			<img src={withBase('/images/about-us/philosophy-keypad-and-view.webp')} alt="In-wall smart home keypad beside a living room with a sunset view" loading="lazy" />
 			<div class="philosophy-text">
 				<SectionHeading eyebrow="Our Philosophy" title="Technology, made invisible." />
 				<p>
@@ -74,7 +75,7 @@ const steps = [
 
 	<section class="section founder">
 		<div class="container founder-grid">
-			<img src="/images/about-us/founder-joshua-trevithick.webp" alt="Joshua Trevithick, Founder and CEO of PROJECT: automate" loading="lazy" />
+			<img src={withBase('/images/about-us/founder-joshua-trevithick.webp')} alt="Joshua Trevithick, Founder and CEO of PROJECT: automate" loading="lazy" />
 			<div class="founder-text">
 				<span class="eyebrow">Founder &amp; CEO</span>
 				<h2>Joshua Trevithick</h2>

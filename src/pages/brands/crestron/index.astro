@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../../lib/paths.ts';
 import BrandLayout from '../../../layouts/BrandLayout.astro';
 import FeatureList from '../../../components/brands/FeatureList.astro';
 import DailyExperience from '../../../components/brands/DailyExperience.astro';
@@ -50,8 +51,8 @@ const scenes = [
 
 <BrandLayout
 	brandName="Crestron"
-	logo="/images/brands/logos/crestron.webp"
-	heroImage="/images/brands/crestron/hero.webp"
+	logo={withBase('/images/brands/logos/crestron.webp')}
+	heroImage={withBase('/images/brands/crestron/hero.webp')}
 	heroTitle="Every System. One Intelligent Experience."
 	heroSubtitle="Complete home automation without compromise."
 	description="Crestron smart home systems from PROJECT: automate — unified control, intelligent automation, and enterprise-grade reliability for luxury residences."
@@ -67,7 +68,7 @@ const scenes = [
 				title="Intelligent luxury from every room."
 				align="center"
 			/>
-			<img src="/images/brands/crestron/os3-feature.webp" alt="Crestron OS3 platform powering a luxury residence" loading="lazy" />
+			<img src={withBase('/images/brands/crestron/os3-feature.webp')} alt="Crestron OS3 platform powering a luxury residence" loading="lazy" />
 		</div>
 	</section>
 

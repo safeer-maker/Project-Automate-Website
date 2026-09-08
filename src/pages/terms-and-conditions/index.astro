@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 ---
@@ -40,7 +41,7 @@ import SectionHeading from '../../components/ui/SectionHeading.astro';
 				<li><strong>Message frequency:</strong> Message frequency may vary. On average, 5–10 messages per week.</li>
 				<li><strong>Opt-out:</strong> You can opt out at any time by replying STOP to any message.</li>
 				<li><strong>Help:</strong> For help, reply HELP to any message.</li>
-				<li><strong>Privacy Policy:</strong> <a href="/privacy-policy/">https://projectautomate.com/privacy-policy/</a></li>
+				<li><strong>Privacy Policy:</strong> <a href={withBase('/privacy-policy/')}>https://projectautomate.com/privacy-policy/</a></li>
 			</ul>
 			<p>Message and data rates may apply depending on your mobile carrier plan.</p>
 

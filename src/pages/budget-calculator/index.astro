@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import Button from '../../components/ui/Button.astro';
@@ -120,7 +121,7 @@ const defaultSystems = ['control-systems', 'lighting', 'security-systems'];
 					<li><span>Room &amp; Zone Integration</span><span id="breakdown-rooms">$0</span></li>
 					<li><span>Selected Systems</span><span id="breakdown-systems">$0</span></li>
 				</ul>
-				<p class="disclaimer">This is a planning estimate only, not a formal quote. <a href="/schedule/">Schedule a private consultation</a> for a detailed, buildable proposal.</p>
+				<p class="disclaimer">This is a planning estimate only, not a formal quote. <a href={withBase('/schedule/')}>Schedule a private consultation</a> for a detailed, buildable proposal.</p>
 			</div>
 		</div>
 	</section>
@@ -166,7 +167,7 @@ const defaultSystems = ['control-systems', 'lighting', 'security-systems'];
 				</div>
 			</div>
 			<div class="hta-attribution">
-				<img src="/images/badges/hta-design-partner.webp" alt="HTA Design Partner" width="56" height="56" loading="lazy" />
+				<img src={withBase('/images/badges/hta-design-partner.webp')} alt="HTA Design Partner" width="56" height="56" loading="lazy" />
 				<p>The Home Technology Association (HTA) helps homeowners plan smarter technology investments by setting trusted standards for home automation, entertainment, security, and system design.</p>
 			</div>
 		</div>
@@ -176,7 +177,7 @@ const defaultSystems = ['control-systems', 'lighting', 'security-systems'];
 		<div class="container">
 			<h2>Ready to Turn This Range Into a Plan?</h2>
 			<p>Let PROJECT: automate turn your estimate into a refined, buildable proposal.</p>
-			<Button href="/schedule/" variant="primary" size="lg">Schedule Consultation</Button>
+			<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule Consultation</Button>
 		</div>
 	</section>
 </PageLayout>

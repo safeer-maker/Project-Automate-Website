@@ -1,7 +1,12 @@
 ---
+import { withBase } from '../lib/paths.ts';
 import Seo from '../components/seo/Seo.astro';
 import { siteInfo } from '../data/site.ts';
 import '../styles/global.css';
+// Imported (not public/) so Vite hashes them and applies the deploy base —
+// these resolve to the same emitted files the @font-face rules reference.
+import manrope400 from '../styles/fonts/manrope-latin-400-normal.woff2';
+import manrope700 from '../styles/fonts/manrope-latin-700-normal.woff2';
 
 interface Props {
 	title: string;
@@ -39,23 +44,11 @@ const structuredData = {
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" type="image/webp" href="/images/logo/favicon.webp" />
+		<link rel="icon" type="image/webp" href={withBase('/images/logo/favicon.webp')} />
 		<meta name="generator" content={Astro.generator} />
 
-		<link
-			rel="preload"
-			href="/fonts/manrope/manrope-latin-700-normal.woff2"
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
-		<link
-			rel="preload"
-			href="/fonts/manrope/manrope-latin-400-normal.woff2"
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
+		<link rel="preload" href={manrope700} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={manrope400} as="font" type="font/woff2" crossorigin />
 
 		<Seo title={title} description={description} image={image} />
 		<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 interface Props {
 	/** Full-height video treatment, as used at the bottom of the homepage. */
 	variant?: 'feature' | 'compact';
@@ -10,14 +11,20 @@ const { variant = 'compact' } = Astro.props;
 <section class:list={['cta', `cta-${variant}`]}>
 	{variant === 'feature' && (
 		<div class="cta-media">
-			<iframe
-				src="https://www.youtube.com/embed/6pd_jC1O3xw?autoplay=1&mute=1&loop=1&playlist=6pd_jC1O3xw&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0"
-				title=""
-				frameborder="0"
-				allow="autoplay; encrypted-media"
+			<video
+				class="cta-video"
+				autoplay
+				muted
+				loop
+				playsinline
+				preload="none"
+				poster={withBase('/images/home/hero/poster.webp')}
 				aria-hidden="true"
 				tabindex="-1"
-			></iframe>
+			>
+				<source src={withBase('/videos/hero.webm')} type="video/webm" />
+				<source src={withBase('/videos/hero.mp4')} type="video/mp4" />
+			</video>
 			<span class="cta-scrim"></span>
 		</div>
 	)}
@@ -25,7 +32,7 @@ const { variant = 'compact' } = Astro.props;
 	<div class="page cta-inner">
 		<h2>Design your<br />Living Experience</h2>
 		<p>Intelligent technology, designed around your lifestyle.</p>
-		<a class="cta-btn" href="/get-started/">Let&rsquo;s Talk</a>
+		<a class="cta-btn" href={withBase('/get-started/')}>Let&rsquo;s Talk</a>
 	</div>
 </section>
 
@@ -54,18 +61,13 @@ const { variant = 'compact' } = Astro.props;
 		z-index: 0;
 	}
 
-	/* Oversized so YouTube's own title/branding chrome is cropped outside the frame */
-	.cta-media iframe {
+	.cta-video {
 		position: absolute;
-		top: 50%;
-		left: 50%;
-		width: 130vw;
-		height: 73.125vw;
-		min-height: 130vh;
-		min-width: 231.1vh;
-		transform: translate(-50%, -50%);
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 		pointer-events: none;
-		border: 0;
 	}
 
 	.cta-scrim {

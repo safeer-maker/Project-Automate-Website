@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../../lib/paths.ts';
 import BrandLayout from '../../../layouts/BrandLayout.astro';
 import FeatureList from '../../../components/brands/FeatureList.astro';
 import DailyExperience from '../../../components/brands/DailyExperience.astro';
@@ -46,8 +47,8 @@ const scenes = [
 
 <BrandLayout
 	brandName="Lutron"
-	logo="/images/brands/logos/lutron.webp"
-	heroImage="/images/brands/lutron-2/hero.webp"
+	logo={withBase('/images/brands/logos/lutron.webp')}
+	heroImage={withBase('/images/brands/lutron-2/hero.webp')}
 	heroTitle="Beautiful Light. Intelligent Living."
 	heroSubtitle="Lutron transforms lighting and automated shading into a seamless experience, enhancing comfort, architecture, and everyday living through elegant control."
 	description="Lutron lighting and automated shading from PROJECT: automate — Ketra and HomeWorks lighting control, motorized shades, and elegant keypads for luxury residences."
@@ -65,7 +66,7 @@ const scenes = [
 				align="center"
 			/>
 			<img
-				src="/images/brands/lutron-2/motorized-shades.webp"
+				src={withBase('/images/brands/lutron-2/motorized-shades.webp')}
 				alt="Luxury living room with Lutron motorized roller shades and glass windows"
 				loading="lazy"
 			/>

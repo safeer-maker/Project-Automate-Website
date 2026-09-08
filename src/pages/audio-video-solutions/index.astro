@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -9,17 +10,17 @@ const capabilities = [
 	{
 		title: 'Whole-Home Entertainment',
 		description: 'Enjoy music, television and video throughout your home with simple room-by-room control. Play the same content everywhere or create personalized experiences in different spaces, all from one intuitive system.',
-		image: '/images/solutions/audio-video-solutions/feature-1.webp',
+		image: withBase('/images/solutions/audio-video-solutions/feature-1.webp'),
 	},
 	{
 		title: 'Outdoor Entertainment',
 		description: 'Extend music, television and entertainment into patios, pools, gardens and outdoor living spaces. Weather-resistant audio and video systems are carefully positioned to deliver balanced performance while blending naturally into the landscape.',
-		image: '/images/solutions/audio-video-solutions/feature-2.webp',
+		image: withBase('/images/solutions/audio-video-solutions/feature-2.webp'),
 	},
 	{
 		title: 'Performance Audio & Video',
 		description: 'Every speaker, display, room and source is carefully selected, positioned and calibrated to deliver natural sound and exceptional picture quality — refined and consistent, whether you are listening to music, watching a film or entertaining guests.',
-		image: '/images/solutions/audio-video-solutions/feature-3.webp',
+		image: withBase('/images/solutions/audio-video-solutions/feature-3.webp'),
 	},
 ];
 
@@ -34,7 +35,7 @@ const scenes = [
 <ServiceLayout
 	title="Audio & Video Solutions"
 	description="Whole-home audio and video systems from PROJECT: automate — discreet technology, intuitive control and professional installation for exceptional performance in every space."
-	heroImage="/images/solutions/audio-video-solutions/hero.webp"
+	heroImage={withBase('/images/solutions/audio-video-solutions/hero.webp')}
 	eyebrow="Audio & Video Solutions"
 	heroTitle="Audio and Video, Perfectly Integrated"
 	heroSubtitle="Experience music, movies, television and entertainment throughout your home with thoughtfully designed audio and video systems, discreet technology and professional installation."

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CtaBanner from '../../components/home/CtaBanner.astro';
@@ -8,16 +9,16 @@ const projects = [
 		slug: 'pacific-horizon-residence',
 		name: 'Pacific Horizon Residence',
 		description: 'A coastal home where lighting, shading, entertainment, security, and climate operate through one effortless system.',
-		image: '/images/success-stories/pacific-horizon-residence.webp',
+		image: withBase('/images/success-stories/pacific-horizon-residence.webp'),
 		date: 'July 15, 2026',
 		status: 'Completed',
-		href: '/project-single/',
+		href: withBase('/project-single/'),
 	},
 	{
 		slug: 'canyon-glass-house',
 		name: 'Canyon Glass House',
 		description: 'Intelligent lighting and automated shading enhance the architecture while preserving expansive views and privacy.',
-		image: '/images/success-stories/canyon-glass-house.webp',
+		image: withBase('/images/success-stories/canyon-glass-house.webp'),
 		date: 'July 15, 2026',
 		status: 'Completed',
 	},
@@ -25,7 +26,7 @@ const projects = [
 		slug: 'manhattan-beach-modern',
 		name: 'Manhattan Beach Modern',
 		description: 'Discreet audio, intuitive control, and reliable networking create a connected experience throughout the residence.',
-		image: '/images/success-stories/manhattan-beach-modern.webp',
+		image: withBase('/images/success-stories/manhattan-beach-modern.webp'),
 		date: 'July 15, 2026',
 		status: 'Completed',
 	},
@@ -33,7 +34,7 @@ const projects = [
 		slug: 'bel-air-cinema-suite',
 		name: 'Bel Air Cinema Suite',
 		description: 'A private cinema designed with immersive sound, precise lighting, and uncompromising picture quality.',
-		image: '/images/success-stories/bel-air-cinema-suite.webp',
+		image: withBase('/images/success-stories/bel-air-cinema-suite.webp'),
 		date: 'July 15, 2026',
 		status: 'Completed',
 	},
@@ -41,7 +42,7 @@ const projects = [
 		slug: 'malibu-cliffside-retreat',
 		name: 'Malibu Cliffside Retreat',
 		description: 'Integrated surveillance, access control, and whole-home connectivity provide quiet protection without disrupting the design.',
-		image: '/images/success-stories/malibu-cliffside-retreat.webp',
+		image: withBase('/images/success-stories/malibu-cliffside-retreat.webp'),
 		date: 'July 15, 2026',
 		status: 'Completed',
 	},
@@ -49,7 +50,7 @@ const projects = [
 		slug: 'sunset-courtyard-estate',
 		name: 'Sunset Courtyard Estate',
 		description: 'Architectural lighting and intelligent energy management bring comfort, atmosphere, and efficiency into perfect balance.',
-		image: '/images/success-stories/sunset-courtyard-estate.webp',
+		image: withBase('/images/success-stories/sunset-courtyard-estate.webp'),
 		date: 'July 15, 2026',
 		status: 'Completed',
 	},
@@ -59,7 +60,7 @@ const projects = [
 <PageLayout
 	title="Success Stories"
 	description="Explore PROJECT: automate residences where thoughtful design and intelligent technology work together effortlessly."
-	image="/images/success-stories/pacific-horizon-residence.webp"
+	image={withBase('/images/success-stories/pacific-horizon-residence.webp')}
 >
 	<section class="section hero">
 		<div class="container">

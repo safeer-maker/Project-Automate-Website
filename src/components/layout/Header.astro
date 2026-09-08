@@ -1,18 +1,19 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 import Button from '../ui/Button.astro';
 import { primaryNav, coreServices } from '../../data/nav.ts';
 ---
 
 <header class="site-header" data-header>
 	<div class="container header-inner">
-		<a href="/" class="logo-hover" aria-label="Go to PROJECT: automate home">
-			<img class="logo-static" src="/images/logo/logo-static.webp" alt="PROJECT: automate logo" width="150" height="84" />
-			<img class="logo-gif" src="/images/logo/logo-animated.webp" alt="" aria-hidden="true" width="150" height="84" loading="lazy" />
+		<a href={withBase('/')} class="logo-hover" aria-label="Go to PROJECT: automate home">
+			<img class="logo-static" src={withBase('/images/logo/logo-static.webp')} alt="PROJECT: automate logo" width="150" height="84" />
+			<img class="logo-gif" src={withBase('/images/logo/logo-animated.webp')} alt="" aria-hidden="true" width="150" height="84" loading="lazy" />
 		</a>
 
 		<div class="header-actions">
 			<div class="cta-desktop">
-				<Button href="/schedule/" variant="primary">Schedule Consultation</Button>
+				<Button href={withBase('/schedule/')} variant="primary">Schedule Consultation</Button>
 			</div>
 			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
 				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
@@ -42,7 +43,7 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 				<li><a href={item.href}>{item.label}</a></li>
 			))}
 		</ul>
-		<Button href="/schedule/" variant="primary" size="lg">Schedule Consultation</Button>
+		<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule Consultation</Button>
 	</nav>
 </div>
 

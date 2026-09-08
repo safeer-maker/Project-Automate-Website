@@ -1,54 +1,55 @@
 ---
+import { withBase } from '../../lib/paths.ts';
 // Tile widths mirror the live site's asymmetric rows at 1440px:
 // row 1: 464 / 732 · row 2: 708 / 488 · row 3: full · row 4: 488 / 708
 const rows = [
 	[
 		{
 			title: 'Security Solution',
-			image: '/images/home/experience/security.webp',
-			href: '/security-systems/',
+			image: withBase('/images/home/experience/security.webp'),
+			href: withBase('/security-systems/'),
 			span: 38,
 		},
 		{
 			title: 'Cinema Rooms & Media Spaces',
-			image: '/images/home/experience/cinema.webp',
-			href: '/home-cinama/',
+			image: withBase('/images/home/experience/cinema.webp'),
+			href: withBase('/home-cinama/'),
 			span: 60,
 		},
 	],
 	[
 		{
 			title: 'Smart Home Automation',
-			image: '/images/home/experience/automation.webp',
-			href: '/control-systems/',
+			image: withBase('/images/home/experience/automation.webp'),
+			href: withBase('/control-systems/'),
 			span: 58,
 		},
 		{
 			title: 'Lighting Control',
-			image: '/images/home/experience/lighting.webp',
-			href: '/lighting-control-systems/',
+			image: withBase('/images/home/experience/lighting.webp'),
+			href: withBase('/lighting-control-systems/'),
 			span: 40,
 		},
 	],
 	[
 		{
 			title: 'Audio Solutions',
-			image: '/images/home/experience/audio.webp',
-			href: '/audio-video-solutions/',
+			image: withBase('/images/home/experience/audio.webp'),
+			href: withBase('/audio-video-solutions/'),
 			span: 100,
 		},
 	],
 	[
 		{
 			title: 'Energy Management',
-			image: '/images/home/experience/energy.webp',
-			href: '/energy-moment/',
+			image: withBase('/images/home/experience/energy.webp'),
+			href: withBase('/energy-moment/'),
 			span: 40,
 		},
 		{
 			title: 'Motorized Shades and Draperies',
-			image: '/images/home/experience/shades.webp',
-			href: '/motorized-shades-and-drapery/',
+			image: withBase('/images/home/experience/shades.webp'),
+			href: withBase('/motorized-shades-and-drapery/'),
 			span: 58,
 		},
 	],
