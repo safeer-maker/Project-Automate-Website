@@ -1,9 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-import cloudflare from '@astrojs/cloudflare';
-
-// The live deploys (Cloudflare Workers, and GitHub Pages via the
+// The live deploys (Cloudflare Workers, via wrangler.jsonc, and GitHub Pages via the
 // sweb.projectautomate.com custom domain) both serve from the domain root, so
 // the default build below (no env vars) is correct for both as-is.
 //
@@ -21,5 +19,4 @@ export default defineConfig({
   site,
   base,
   output: 'static',
-  adapter: cloudflare(),
 });
