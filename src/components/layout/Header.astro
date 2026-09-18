@@ -1,7 +1,11 @@
 ---
 import { withBase } from '../../lib/paths.ts';
 import Button from '../ui/Button.astro';
-import { primaryNav, coreServices } from '../../data/nav.ts';
+import { primaryNav, coreServices, megaMenuDefaultImage } from '../../data/nav.ts';
+import { siteInfo } from '../../data/site.ts';
+
+const phone = siteInfo.phones[0];
+const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 ---
 
 <header class="site-header" data-header>
@@ -11,10 +15,41 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 			<img class="logo-gif" src={withBase('/images/logo/logo-animated.webp')} alt="" aria-hidden="true" width="150" height="84" loading="lazy" />
 		</a>
 
-		<div class="header-actions">
-			<div class="cta-desktop">
-				<Button href={withBase('/schedule/')} variant="primary">Schedule Consultation</Button>
+		<nav class="primary-nav" aria-label="Primary">
+			<div class="nav-item" data-mega-menu>
+				<button class="nav-link mega-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+					Core services
+					<svg class="nav-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+						<path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				</button>
+				<div class="mega-panel" role="menu">
+					<ul class="mega-links" role="none">
+						{coreServices.map((service, i) => (
+							<li role="none">
+								<a
+									role="menuitem"
+									href={service.href}
+									data-preview={service.image}
+									class:list={['mega-link', { 'is-active': i === 0 }]}
+								>
+									{service.label}
+								</a>
+							</li>
+						))}
+					</ul>
+					<div class="mega-preview">
+						<img data-mega-preview src={megaMenuDefaultImage} alt="" width="4" height="3" />
+					</div>
+				</div>
 			</div>
+			{primaryNav.map((item) => (
+				<a class="nav-link" href={item.href}>{item.label}</a>
+			))}
+		</nav>
+
+		<div class="header-actions">
+			<Button href={withBase('/schedule/')} variant="primary" class="cta-schedule">Schedule Consultation</Button>
 			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
 				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
 					<path d="M1.41602 5.66666H32.5827V8.62318H1.41602V5.66666ZM1.41602 25.3768H32.5827V28.3333H1.41602V25.3768ZM1.41602 15.5217H32.5827V18.4783H1.41602V15.5217Z" fill="currentColor"></path>
@@ -22,6 +57,7 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 			</button>
 		</div>
 	</div>
+	<div class="scroll-progress" data-scroll-progress aria-hidden="true"></div>
 </header>
 
 <div class="offcanvas" id="site-offcanvas" role="dialog" aria-modal="true" aria-label="Site menu" data-offcanvas>
@@ -29,20 +65,35 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 	<nav class="offcanvas-panel">
 		<button class="offcanvas-close" data-menu-close aria-label="Close menu">&times;</button>
 		<ul class="offcanvas-nav">
-			<li class="has-submenu">
+			<li class="has-submenu" style="--i: 0">
 				<button class="submenu-trigger" data-submenu-trigger aria-expanded="false">
 					Core services <span class="chevron">+</span>
 				</button>
-				<ul class="submenu" data-submenu>
-					{coreServices.map((item) => (
-						<li><a href={item.href}>{item.label}</a></li>
-					))}
-				</ul>
+				<div class="submenu" data-submenu>
+					<ul class="submenu-list">
+						{coreServices.map((item) => (
+							<li><a href={item.href}>{item.label}</a></li>
+						))}
+					</ul>
+				</div>
 			</li>
-			{primaryNav.map((item) => (
-				<li><a href={item.href}>{item.label}</a></li>
+			{primaryNav.map((item, i) => (
+				<li style={`--i: ${i + 1}`}><a href={item.href}>{item.label}</a></li>
 			))}
 		</ul>
+
+		<div class="offcanvas-concierge">
+			<a class="concierge-phone" href={phoneHref}>{phone}</a>
+			<div class="concierge-badges">
+				<img src={withBase('/images/badges/cedia-certified.webp')} alt="CEDIA Certified" loading="lazy" width="96" height="48" />
+				<img src={withBase('/images/badges/cert-level-luxury.webp')} alt="Certified Luxury Level" loading="lazy" width="96" height="48" />
+			</div>
+			<video class="concierge-clip" autoplay muted loop playsinline aria-hidden="true" tabindex="-1">
+				<source src={withBase('/videos/hero.webm')} type="video/webm" />
+				<source src={withBase('/videos/hero.mp4')} type="video/mp4" />
+			</video>
+		</div>
+
 		<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule Consultation</Button>
 	</nav>
 </div>
@@ -55,18 +106,30 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		background: rgba(22, 22, 22, 0.85);
 		backdrop-filter: blur(12px);
 		border-bottom: 1px solid var(--color-border-on-dark);
+		transition:
+			background-color var(--dur-base) var(--ease-in-out-soft),
+			backdrop-filter var(--dur-base) var(--ease-in-out-soft),
+			border-color var(--dur-base) var(--ease-in-out-soft);
+	}
+
+	.site-header[data-transparent='true'] {
+		background: transparent;
+		backdrop-filter: none;
+		border-bottom-color: transparent;
 	}
 
 	.header-inner {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: var(--space-6);
 		padding-block: var(--space-3);
 	}
 
 	.logo-hover {
 		position: relative;
 		display: inline-flex;
+		flex-shrink: 0;
 		width: clamp(84px, 9vw, 130px);
 		height: clamp(48px, 5.2vw, 74px);
 	}
@@ -97,21 +160,132 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		opacity: 1;
 	}
 
+	/* Desktop category nav — hidden until there's room for it, see SHELL-01 */
+	.primary-nav {
+		display: none;
+		align-items: center;
+		gap: var(--space-6);
+		flex: 1;
+		justify-content: center;
+	}
+
+	@media (min-width: 1100px) {
+		.primary-nav {
+			display: flex;
+		}
+	}
+
+	.nav-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-1);
+		background: none;
+		border: none;
+		color: var(--color-text-on-dark);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		white-space: nowrap;
+		padding: var(--space-2) 0;
+		transition: color var(--dur-fast) ease;
+	}
+	.nav-link:hover,
+	.nav-link:focus-visible {
+		color: var(--color-accent);
+	}
+
+	.nav-item {
+		position: relative;
+	}
+
+	.nav-caret {
+		width: 9px;
+		height: 9px;
+		transition: transform var(--dur-fast) ease;
+	}
+	.nav-item[data-open='true'] .nav-caret {
+		transform: rotate(180deg);
+	}
+
+	.mega-panel {
+		position: absolute;
+		/* Zero gap to the trigger — any space here is a dead zone the cursor
+		   falls through, which closes the menu before it reaches the panel. */
+		top: 100%;
+		left: 50%;
+		width: min(680px, 90vw);
+		background: var(--color-charcoal);
+		border: 1px solid var(--color-border-on-dark);
+		border-radius: var(--radius-md);
+		box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+		padding: var(--space-6);
+		display: grid;
+		grid-template-columns: 1fr 1.1fr;
+		gap: var(--space-6);
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transform: translate(-50%, 8px);
+		transition:
+			opacity var(--dur-base) var(--ease-out-expo),
+			transform var(--dur-base) var(--ease-out-expo),
+			visibility var(--dur-base) var(--ease-out-expo);
+	}
+
+	.nav-item[data-open='true'] .mega-panel {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transform: translate(-50%, 0);
+	}
+
+	.mega-links {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.mega-link {
+		display: block;
+		padding: var(--space-2) var(--space-3);
+		border-radius: var(--radius-sm);
+		color: var(--color-text-on-dark-muted);
+		font-size: var(--text-sm);
+		transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+	}
+	.mega-link:hover,
+	.mega-link:focus-visible,
+	.mega-link.is-active {
+		background: rgba(255, 255, 255, 0.06);
+		color: var(--color-white);
+	}
+
+	.mega-preview {
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		aspect-ratio: 4 / 3;
+		background: var(--color-black);
+	}
+	.mega-preview img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
 	.header-actions {
 		display: flex;
 		align-items: center;
-		gap: var(--space-6);
+		gap: var(--space-4);
+		flex-shrink: 0;
 	}
 
-	/* Wrapper lives in this component's own template, so hiding it works reliably —
-	   putting the class on <Button> instead loses to Button.astro's own `.btn` rule. */
-	.cta-desktop {
-		display: none;
+	:global(.cta-schedule) {
+		white-space: nowrap;
 	}
 
-	@media (min-width: 900px) {
-		.cta-desktop {
-			display: inline-flex;
+	@media (max-width: 480px) {
+		:global(.cta-schedule) {
+			padding: 0.6rem 1rem;
+			font-size: var(--text-xs);
 		}
 	}
 
@@ -121,6 +295,24 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		color: var(--color-white);
 		display: inline-flex;
 		padding: var(--space-2);
+	}
+
+	@media (min-width: 1100px) {
+		.menu-trigger {
+			display: none;
+		}
+	}
+
+	/* Progress hairline — opted into per-page via [data-progress-track], see script below */
+	.scroll-progress {
+		position: absolute;
+		left: 0;
+		bottom: -1px;
+		height: 1px;
+		width: 100%;
+		background: var(--color-accent);
+		transform: scaleX(0);
+		transform-origin: left;
 	}
 
 	.offcanvas {
@@ -159,8 +351,9 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-8);
+		overflow-y: auto;
 		transform: translateX(100%);
-		transition: transform 0.35s ease;
+		transition: transform 0.5s var(--ease-out-expo);
 	}
 
 	.offcanvas[data-open='true'] .offcanvas-panel {
@@ -181,7 +374,18 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-2);
-		flex: 1;
+	}
+
+	.offcanvas-nav > li {
+		opacity: 0;
+		transform: translateY(12px);
+		transition: opacity var(--dur-base) var(--ease-out-expo), transform var(--dur-base) var(--ease-out-expo);
+		transition-delay: calc(0.5s + var(--i, 0) * var(--stagger));
+	}
+
+	.offcanvas[data-open='true'] .offcanvas-nav > li {
+		opacity: 1;
+		transform: translateY(0);
 	}
 
 	.offcanvas-nav > li > a,
@@ -208,27 +412,81 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		color: var(--color-accent);
 	}
 
+	/* grid-template-rows 0fr → 1fr is the only pure-CSS way to animate to auto height */
 	.submenu {
-		max-height: 0;
+		display: grid;
+		grid-template-rows: 0fr;
 		overflow: hidden;
 		opacity: 0;
-		transition: max-height 0.4s ease, opacity 0.3s ease;
+		transition: grid-template-rows var(--dur-base) var(--ease-in-out-soft), opacity var(--dur-fast) ease;
 	}
 
 	.submenu[data-open='true'] {
-		max-height: 600px;
+		grid-template-rows: 1fr;
 		opacity: 1;
 		margin: var(--space-2) 0;
 	}
 
-	.submenu a {
+	.submenu-list {
+		overflow: hidden;
+		min-height: 0;
+	}
+
+	.submenu-list a {
 		display: block;
 		padding: var(--space-2) 0 var(--space-2) var(--space-4);
 		color: var(--color-text-on-dark-muted);
 		font-size: var(--text-base);
 	}
-	.submenu a:hover {
+	.submenu-list a:hover {
 		color: var(--color-accent);
+	}
+
+	.offcanvas-concierge {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	.concierge-phone {
+		color: var(--color-white);
+		font-size: var(--text-lg);
+		font-weight: var(--fw-semibold);
+	}
+	.concierge-phone:hover {
+		color: var(--color-accent);
+	}
+
+	.concierge-badges {
+		display: flex;
+		gap: var(--space-4);
+	}
+	.concierge-badges img {
+		height: 40px;
+		width: auto;
+		object-fit: contain;
+	}
+
+	.concierge-clip {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius-md);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.site-header,
+		.mega-panel,
+		.nav-caret,
+		.offcanvas-panel,
+		.offcanvas-nav > li,
+		.submenu {
+			transition: none !important;
+		}
+		.offcanvas-nav > li {
+			opacity: 1;
+			transform: none;
+		}
 	}
 </style>
 
@@ -257,4 +515,89 @@ import { primaryNav, coreServices } from '../../data/nav.ts';
 		submenu?.setAttribute('data-open', String(!isOpen));
 		submenuTrigger.setAttribute('aria-expanded', String(!isOpen));
 	});
+
+	// Desktop mega menu — hover-driven, with click/keyboard support for touch + a11y.
+	const megaMenu = document.querySelector<HTMLElement>('[data-mega-menu]');
+	const megaTrigger = megaMenu?.querySelector('.mega-trigger');
+	const megaLinks = megaMenu?.querySelectorAll<HTMLAnchorElement>('.mega-link');
+	const megaPreviewImg = megaMenu?.querySelector<HTMLImageElement>('[data-mega-preview]');
+	const defaultPreview = megaPreviewImg?.getAttribute('src') ?? '';
+
+	function setMegaOpen(open: boolean) {
+		if (!megaMenu) return;
+		megaMenu.setAttribute('data-open', String(open));
+		megaTrigger?.setAttribute('aria-expanded', String(open));
+		if (!open && megaPreviewImg) megaPreviewImg.setAttribute('src', defaultPreview);
+	}
+
+	// A short close delay absorbs fast/diagonal mouse movement between the
+	// trigger and the panel so the menu doesn't snap shut mid-transit.
+	let megaCloseTimer: ReturnType<typeof setTimeout> | undefined;
+	megaMenu?.addEventListener('mouseenter', () => {
+		clearTimeout(megaCloseTimer);
+		setMegaOpen(true);
+	});
+	megaMenu?.addEventListener('mouseleave', () => {
+		megaCloseTimer = setTimeout(() => setMegaOpen(false), 200);
+	});
+	megaTrigger?.addEventListener('click', () => {
+		setMegaOpen(megaMenu?.getAttribute('data-open') !== 'true');
+	});
+	megaMenu?.addEventListener('focusout', (e) => {
+		if (!megaMenu.contains(e.relatedTarget as Node)) setMegaOpen(false);
+	});
+	megaMenu?.addEventListener('keydown', (e) => {
+		if (e instanceof KeyboardEvent && e.key === 'Escape') setMegaOpen(false);
+	});
+
+	megaLinks?.forEach((link) => {
+		const preview = link.getAttribute('data-preview');
+		const activate = () => {
+			if (preview && megaPreviewImg) megaPreviewImg.setAttribute('src', preview);
+			megaLinks.forEach((l) => l.classList.toggle('is-active', l === link));
+		};
+		link.addEventListener('mouseenter', activate);
+		link.addEventListener('focus', activate);
+	});
+
+	// Header goes transparent over a dark hero, then settles to the blurred
+	// charcoal bar ~80px into the scroll. Opt-in per page via [data-hero-sentinel],
+	// an 80px-tall marker pinned to the top of the hero — once it scrolls fully
+	// out of view, the page has scrolled past that threshold.
+	const header = document.querySelector<HTMLElement>('[data-header]');
+	const heroSentinel = document.querySelector('[data-hero-sentinel]');
+	if (header && heroSentinel) {
+		// The hero tucks in behind the sticky header (see its own negative
+		// margin-top) only when this page has one, so measure and expose the
+		// header's real rendered height for that overlap to line up exactly.
+		if ('ResizeObserver' in window) {
+			const setHeaderHeightVar = () => {
+				document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+			};
+			setHeaderHeightVar();
+			new ResizeObserver(setHeaderHeightVar).observe(header);
+		}
+
+		if ('IntersectionObserver' in window) {
+			header.setAttribute('data-transparent', 'true');
+			const observer = new IntersectionObserver(
+				([entry]) => header.setAttribute('data-transparent', String(entry.isIntersecting)),
+				{ threshold: 0 }
+			);
+			observer.observe(heroSentinel);
+		}
+	}
+
+	// Bronze progress hairline for long-form pages, opt-in via [data-progress-track].
+	const progressEl = document.querySelector<HTMLElement>('[data-scroll-progress]');
+	const progressTrack = document.querySelector('[data-progress-track]');
+	if (progressEl && progressTrack) {
+		const updateProgress = () => {
+			const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+			const pct = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+			progressEl.style.transform = `scaleX(${pct})`;
+		};
+		window.addEventListener('scroll', updateProgress, { passive: true });
+		updateProgress();
+	}
 </script>

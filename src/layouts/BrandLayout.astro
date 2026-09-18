@@ -17,6 +17,7 @@ const { brandName, logo, heroImage, heroTitle, heroSubtitle, description } = Ast
 
 <PageLayout title={brandName} description={description} image={heroImage}>
 	<section class="brand-hero">
+		<div class="scroll-sentinel" data-hero-sentinel aria-hidden="true"></div>
 		<img class="hero-bg" src={heroImage} alt="" loading="eager" />
 		<div class="hero-overlay"></div>
 		<div class="container hero-content">
@@ -33,10 +34,22 @@ const { brandName, logo, heroImage, heroTitle, heroSubtitle, description } = Ast
 <style>
 	.brand-hero {
 		position: relative;
+		/* Tucks the hero up behind the sticky header so a transparent header
+		   reveals the hero image instead of the cream page background. */
+		margin-top: calc(-1 * var(--header-height, 96px));
 		min-height: 70vh;
 		display: flex;
 		align-items: flex-end;
 		overflow: hidden;
+	}
+
+	.scroll-sentinel {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 1px;
+		height: 80px;
+		pointer-events: none;
 	}
 
 	.hero-bg {

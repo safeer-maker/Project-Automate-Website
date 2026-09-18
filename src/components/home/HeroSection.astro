@@ -7,6 +7,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 ---
 
 <section class="hero">
+	<div class="scroll-sentinel" data-hero-sentinel aria-hidden="true"></div>
 	<div class="hero-media">
 		<video
 			class="hero-video"
@@ -39,12 +40,26 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 <style>
 	.hero {
 		position: relative;
+		/* Tucks the hero up behind the sticky header so a transparent header
+		   reveals the video instead of the cream page background. */
+		margin-top: calc(-1 * var(--header-height, 96px));
 		min-height: 100vh;
 		display: flex;
 		align-items: flex-end;
 		overflow: hidden;
 		background: var(--color-black);
 		color: var(--color-text-on-dark);
+	}
+
+	/* Measures the first ~80px of scroll so the sticky header knows when to
+	   stop being transparent over the hero video, see Header.astro's script. */
+	.scroll-sentinel {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 1px;
+		height: 80px;
+		pointer-events: none;
 	}
 
 	.hero-media {

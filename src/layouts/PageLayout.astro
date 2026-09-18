@@ -7,14 +7,16 @@ interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	/** Bronze scroll-progress hairline in the header — blog posts and long solution pages only. */
+	progress?: boolean;
 }
 
-const { title, description, image } = Astro.props;
+const { title, description, image, progress = false } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} image={image}>
 	<Header />
-	<main>
+	<main data-progress-track={progress}>
 		<slot />
 	</main>
 	<Footer />
