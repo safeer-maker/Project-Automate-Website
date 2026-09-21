@@ -1,34 +1,39 @@
 ---
 import { withBase } from '../lib/paths.ts';
+
+// How long each step stays highlighted before the sequence advances. Shared
+// with the CSS progress rail via --dwell, so there is one source of truth.
+const dwellMs = 3000;
+
 const steps = [
 	{
 		title: 'Understand',
 		description:
 			'We begin with your lifestyle, your space, and how you want your home to feel and function.',
-		icon: withBase('/images/home/process/step-1.webp'),
+		image: '/images/home/process/understand.webp',
 	},
 	{
 		title: 'Design',
 		description:
 			'Every system is thoughtfully planned around the architecture, interior design, and requirements of your home.',
-		icon: withBase('/images/home/process/step-2.webp'),
+		image: '/images/home/process/design.webp',
 	},
 	{
 		title: 'Integrate',
 		description:
 			'Every system is installed, connected, and programmed with precision and minimal visual impact.',
-		icon: withBase('/images/home/process/step-3.webp'),
+		image: '/images/home/process/integrate.webp',
 	},
 	{
 		title: 'Refine',
 		description:
 			'We test, personalize, and fine-tune every detail until your complete experience feels effortless.',
-		icon: withBase('/images/home/process/step-4.webp'),
+		image: '/images/home/process/refine.webp',
 	},
 ];
 ---
 
-<section class="process">
+<section class="process" style={`--dwell: ${dwellMs}ms`}>
 	<div class="page">
 		<span class="eyebrow">Our Process</span>
 
@@ -41,17 +46,88 @@ const steps = [
 			</p>
 		</div>
 
-		<ol class="steps">
-			{steps.map((step) => (
-				<li>
-					<img src={step.icon} alt="" width="165" height="146" loading="lazy" />
-					<h3>{step.title}</h3>
-					<p>{step.description}</p>
-				</li>
-			))}
-		</ol>
+		<div class="stepper" data-stepper data-dwell={dwellMs}>
+			<ol class="steps">
+				{steps.map((step, i) => (
+					<li class={i === 0 ? 'is-active' : ''} data-step={i}>
+						<button type="button" aria-expanded={i === 0 ? 'true' : 'false'}>
+							<span class="num">{String(i + 1).padStart(2, '0')}</span>
+							<span class="title">{step.title}</span>
+						</button>
+						<p class="desc"><span>{step.description}</span></p>
+					</li>
+				))}
+			</ol>
+
+			<div class="stage">
+				{steps.map((step, i) => (
+					<img
+						class={i === 0 ? 'is-active' : ''}
+						data-panel={i}
+						src={withBase(step.image)}
+						alt={`${step.title} — PROJECT: automate process`}
+						loading={i === 0 ? 'eager' : 'lazy'}
+						decoding="async"
+					/>
+				))}
+			</div>
+		</div>
 	</div>
 </section>
+
+<script>
+	const stepper = document.querySelector('[data-stepper]');
+
+	if (stepper) {
+		const items = [...stepper.querySelectorAll('.steps li')];
+		const panels = [...stepper.querySelectorAll('[data-panel]')];
+		const dwell = Number(stepper.dataset.dwell) || 3000;
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		let index = 0;
+		let timer = null;
+
+		const show = (next) => {
+			index = (next + items.length) % items.length;
+			items.forEach((li, i) => {
+				const active = i === index;
+				li.classList.toggle('is-active', active);
+				li.querySelector('button').setAttribute('aria-expanded', String(active));
+			});
+			panels.forEach((panel, i) => panel.classList.toggle('is-active', i === index));
+		};
+
+		const stop = () => {
+			window.clearInterval(timer);
+			timer = null;
+			stepper.classList.remove('is-playing');
+		};
+
+		const play = () => {
+			if (timer || reduce) return;
+			stepper.classList.add('is-playing');
+			timer = window.setInterval(() => show(index + 1), dwell);
+		};
+
+		items.forEach((li, i) => {
+			li.querySelector('button').addEventListener('click', () => {
+				// A click is the visitor taking over, so the reel stops there.
+				stop();
+				show(i);
+			});
+		});
+
+		if (!reduce && 'IntersectionObserver' in window) {
+			const io = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => (entry.isIntersecting ? play() : stop()));
+				},
+				{ threshold: 0.4 }
+			);
+			io.observe(stepper);
+		}
+	}
+</script>
 
 <style>
 	.process {
@@ -90,38 +166,157 @@ const steps = [
 		max-width: 34rem;
 	}
 
-	.steps {
+	.stepper {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: clamp(1.5rem, 2.5vw, 2rem);
+		grid-template-columns: 0.85fr 1.15fr;
+		gap: clamp(2rem, 5vw, 4.5rem);
+		align-items: center;
+	}
+
+	.steps {
 		list-style: none;
-		counter-reset: step;
+		margin: 0;
+		padding: 0;
 	}
 
 	.steps li {
+		position: relative;
+		padding-left: clamp(1.25rem, 2vw, 1.75rem);
+	}
+
+	/* Rail behind every step, plus a bronze fill that rises through the active
+	   one over --dwell so the wait until the next step is visible. */
+	.steps li::before,
+	.steps li::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+	}
+
+	.steps li::before {
+		background: var(--color-border);
+	}
+
+	.steps li::after {
+		background: var(--color-accent);
+		transform: scaleY(0);
+		transform-origin: top;
+	}
+
+	.steps li.is-active::after {
+		transform: scaleY(1);
+	}
+
+	.is-playing .steps li.is-active::after {
+		animation: fill-rail var(--dwell) linear forwards;
+	}
+
+	@keyframes fill-rail {
+		from {
+			transform: scaleY(0);
+		}
+		to {
+			transform: scaleY(1);
+		}
+	}
+
+	.steps button {
 		display: flex;
-		flex-direction: column;
+		align-items: baseline;
+		gap: clamp(0.75rem, 1.5vw, 1.25rem);
+		width: 100%;
+		padding: clamp(0.85rem, 1.6vw, 1.15rem) 0;
+		background: none;
+		border: 0;
+		text-align: left;
+		cursor: pointer;
+		color: inherit;
+		font: inherit;
 	}
 
-	.steps img {
-		width: clamp(110px, 11vw, 165px);
-		height: auto;
-		margin-bottom: clamp(1.5rem, 4vw, 3.5rem);
+	.num {
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		color: var(--color-accent);
+		opacity: 0.45;
+		transition: opacity var(--transition-base);
 	}
 
-	.steps h3 {
-		margin: 0 0 var(--space-2);
+	.title {
 		font-size: var(--text-step);
 		font-weight: var(--fw-medium);
-		line-height: 1.3;
+		line-height: 1.2;
 		color: var(--color-text);
+		opacity: 0.35;
+		transition: opacity var(--transition-base);
 	}
 
-	.steps p {
+	.steps li.is-active .num,
+	.steps li.is-active .title {
+		opacity: 1;
+	}
+
+	.steps button:hover .title {
+		opacity: 0.7;
+	}
+	.steps li.is-active button:hover .title {
+		opacity: 1;
+	}
+
+	/* Collapsed by default; grid-template-rows animates cleanly from 0fr to 1fr
+	   without hard-coding the height of a wrapping paragraph. */
+	.desc {
+		display: grid;
+		grid-template-rows: 0fr;
 		margin: 0;
 		font-size: var(--text-body-lg);
 		line-height: 1.6;
 		color: var(--color-charcoal-2);
+		max-width: 34rem;
+		opacity: 0;
+		transition: grid-template-rows var(--dur-base) var(--ease-out-expo),
+			opacity var(--dur-base) var(--ease-out-expo),
+			padding-bottom var(--dur-base) var(--ease-out-expo);
+	}
+
+	.desc > span {
+		overflow: hidden;
+		min-height: 0;
+	}
+
+	.steps li.is-active .desc {
+		grid-template-rows: 1fr;
+		opacity: 1;
+		padding-bottom: clamp(0.85rem, 1.6vw, 1.15rem);
+	}
+
+	.stage {
+		position: relative;
+		aspect-ratio: 3 / 2;
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		background: var(--color-surface);
+	}
+
+	.stage img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0;
+		transform: scale(1.04);
+		transition: opacity var(--dur-slow) var(--ease-in-out-soft),
+			transform 6s var(--ease-out-expo);
+	}
+
+	.stage img.is-active {
+		opacity: 1;
+		transform: scale(1);
 	}
 
 	@media (max-width: 900px) {
@@ -129,15 +324,29 @@ const steps = [
 			grid-template-columns: 1fr;
 			gap: var(--space-6);
 		}
-		.steps {
-			grid-template-columns: repeat(2, 1fr);
+		.stepper {
+			grid-template-columns: 1fr;
 			gap: var(--space-8);
+		}
+		/* Photo first on narrow screens — it carries more than the list does. */
+		.stage {
+			order: -1;
+		}
+		.process {
+			min-height: 0;
 		}
 	}
 
-	@media (max-width: 560px) {
-		.steps {
-			grid-template-columns: 1fr;
+	@media (prefers-reduced-motion: reduce) {
+		.desc,
+		.stage img {
+			transition: none;
+		}
+		.steps li.is-active::after {
+			animation: none;
+		}
+		.stage img {
+			transform: none;
 		}
 	}
 </style>

@@ -1,9 +1,11 @@
 # 01 — Homepage
 
 **Route:** `/`
-**Source:** `src/pages/index.astro` (23 lines — pure composition, all content lives in components)
-**Target component folder:** `src/components/home/` *(already split — this page is the model for all the others)*
-**Sections:** 7 in the rebuild · 11 on the live site
+**Source:** `src/pages/index.astro` (pure composition, all content lives in components)
+**Component location:** `src/pages/_*.astro` — underscore-prefixed siblings of `index.astro`,
+which Astro excludes from routing. *(An earlier draft of this file claimed
+`src/components/home/`; that folder does not exist.)*
+**Sections:** 8 in the rebuild · 11 on the live site
 
 ---
 
@@ -11,32 +13,51 @@
 
 | ID | Section | Component | Background | Height | Motion |
 | --- | --- | --- | --- | --- | --- |
-| HOME-01 | Hero | `home/HeroSection.astro` | Black + video | `100vh` | Headline rise |
-| — | ❌ Intro statement | *missing* | — | — | — |
-| — | ❌ Scrolling marquee | *missing* | — | — | — |
-| HOME-02 | Our Process | `home/ProcessSteps.astro` | Cream | `100vh` | None |
-| HOME-03 | Our Approach (statement) | `home/StatementSection.astro` | Cream | auto | Word reveal |
+| HOME-01 | Hero | `_HeroSection.astro` | Black + video *(no scrim)* | `100vh` | Headline rise + lede |
+| HOME-02 | Logo marquee ✅ | `_LogoMarquee.astro` | `#FFF1D4` | auto | Two opposed scrolls |
+| HOME-03 | Our Process | `_ProcessSteps.astro` | Cream | `100vh` | Auto-advancing stepper (3s) |
+| HOME-04 | Our Approach (statement) | `_StatementSection.astro` | Cream | auto | Word reveal |
 | — | ❌ Technology That Elevates (4 cards) | *missing* | — | — | — |
-| HOME-04 | The Experience (7 tiles) | `home/SolutionsGrid.astro` | Cream | auto | Image scale on hover |
-| HOME-05 | Technical Silence | `home/TechnicalSilence.astro` | Cream | `100vh` | None |
+| HOME-05 | The Experience (7 tiles) | `_SolutionsGrid.astro` | Cream | auto | Image scale on hover |
+| HOME-06 | Technical Silence | `_TechnicalSilence.astro` | Cream | `100vh` | None |
 | — | ❌ Why PROJECT:automate / 17 years | *missing* | — | — | — |
-| HOME-06 | Inspiration | `home/InspirationPreview.astro` | Cream | `100vh` | Image scale + arrow nudge |
-| HOME-07 | Closing CTA | `home/CtaBanner.astro` (`variant="feature"`) | Black + video | `100vh` | None |
+| HOME-07 | Inspiration | `_InspirationPreview.astro` | Cream | `100vh` | Image scale + arrow nudge |
+| HOME-08 | Closing CTA | `ui/CtaBanner.astro` (`variant="feature"`) | Black + video | `100vh` | None |
 
-Four consecutive cream sections (HOME-02 → HOME-06) all sit on `#FFFCEF`. There is
-no visual rhythm between them — see the suggestion at the bottom of this file.
+The intro statement is no longer its own section — it now lives inside the hero as a
+sub-line. See HOME-01.
+
+The marquee band at `#FFF1D4` breaks what used to be five unbroken cream sections.
+HOME-03 → HOME-07 still all sit on `#FFFCEF` — see the suggestion at the bottom of
+this file for putting Technical Silence on charcoal.
 
 ---
 
 ## HOME-01 — Hero
 
-**What it is:** Full-viewport autoplaying muted video, dark gradient scrim,
-headline and two buttons bottom-**right** (bottom-left on mobile).
+**What it is:** Full-viewport autoplaying muted video, headline, sub-line and one
+button bottom-**right** (bottom-left on mobile).
 
 **Copy**
 
 - H1: *Tailored* / *Luxury* / *Technologies*
-- Buttons: "Book a Consultation" → `/schedule/` · "Call Now: (310) 402-4818" → `tel:`
+- Lede: *"Lighting, climate, sound and security — designed to work as one, and to disappear."*
+- Button: "Book a Consultation" → `/schedule/`
+
+**Changed from the original rebuild**
+
+- ✅ **Intro statement absorbed here.** It was going to be its own cream section
+  under the hero; standalone it read as a stranded paragraph and duplicated the job
+  of HOME-04. As a hero sub-line it does real work — the H1 is three adjectives and
+  a plural noun, and this is the line that says what the company actually installs.
+  "Disappear" also plants the thesis that HOME-06 pays off.
+- ✅ **Scrim removed.** The `.hero-scrim` gradient (black at 15–75%) is gone; the
+  video now plays at full brightness. Headline and lede keep their `text-shadow`
+  for legibility. ⚠️ Worth re-checking if the hero video is ever replaced with a
+  brighter clip — there is no overlay left to protect the type.
+- ✅ **"Call Now" button removed.** A phone number as a primary-weight hero CTA was
+  direct-response, not luxury. The number still appears in the header, footer and
+  on the contact pages.
 
 **Media**
 
@@ -53,26 +74,24 @@ a YouTube embed — that note is stale, the code self-hosts.)*
 
 - `@keyframes rise` — each of the 3 headline words: `opacity 0→1`,
   `translateY(0.6em→0)`, `0.9s cubic-bezier(0.22, 1, 0.36, 1)`, 120ms stagger.
-- Buttons: background colour transition only.
+- Lede reuses the same `rise` keyframe at `0.42s` delay, so it trails the third
+  headline word rather than arriving with it.
+- Button: background colour transition only.
 - Respects `prefers-reduced-motion`. ✅
 
 **Suggestions**
 
 1. **Hold the video still for ~400ms before the words arrive.** Right now the
    headline animates while the video is still fading up from poster. Sequence it:
-   video settles → scrim deepens → words rise. Costs one `animation-delay`.
+   video settles → words rise. Costs one `animation-delay`.
 2. **Slow the video.** Play at `0.85×` via `video.playbackRate`. Almost
    subliminal, and it's the single most common trick on high-end property sites.
 3. **A scroll cue.** 100vh with nothing indicating more content below is a real
    bounce risk. A 1px bronze line that draws downward on a 2s loop, bottom-centre.
-4. **Buttons.** "Call Now: (310) 402-4818" as a primary-weight hero CTA is
-   direct-response, not luxury. Consider "Private Consultation" as the single
-   hero action and move the phone number to a small bronze line beneath it.
-5. **Headline.** "Tailored Luxury Technologies" is three adjectives and a plural
-   noun — it does not say what you do. The live site's own sub-line is stronger:
-   *"Integrated technology, thoughtfully designed to make luxury homes more
-   intuitive, comfortable, connected, and effortless."* That line is currently
-   dropped entirely (see next section).
+4. ~~**Buttons.**~~ ✅ Done — the phone CTA is gone, "Book a Consultation" is the
+   single hero action.
+5. ~~**Headline.**~~ ✅ Partly done — the H1 is unchanged, but it now has a sub-line
+   that carries the meaning. Still worth revisiting the H1 itself at some point.
 
 Reference for hero treatment:
 [molteni.it](https://www.molteni.it/en) (video hold + single line of type) and
@@ -80,77 +99,171 @@ Reference for hero treatment:
 
 ---
 
-## ❌ MISSING — Intro statement
+## ✅ RESOLVED — Intro statement
 
-**On live, not in rebuild.** Directly under the hero, a single centred line:
+The live site ran this as a centred line under the hero:
 
 > Integrated technology, thoughtfully designed to make luxury homes more
 > intuitive, comfortable, connected, and effortless.
 
-**Recommendation:** bring it back as `home/HeroStatement.astro`. One sentence on
-cream, large, lots of air, word-reveal on scroll. It's the only place on the page
-that plainly states what the company does.
+**What was built instead:** the line moved *into* the hero rather than returning as
+its own section, and the copy was rewritten to name the systems:
+
+> Lighting, climate, sound and security — designed to work as one, and to disappear.
+
+A standalone version was built first (`_HeroStatement.astro`) and deleted — on cream
+with nothing around it, it read as a stranded paragraph, and it duplicated the job of
+HOME-04's word-reveal statement. See HOME-01.
 
 ---
 
-## ❌ MISSING — Scrolling marquee
+## ✅ RESOLVED — Scrolling marquee
 
-**On live, not in rebuild.** A horizontal ticker repeating *"Tailored Luxury
-Technology Systems Designed for your lifestyle"* six times, driven by custom JS
-in the live page (`.containerholder` + `scrolled-into-view`, `transform:
-translateX(100%)`, `transition: transform 2s ease`).
+**What live had:** a horizontal text ticker repeating *"Tailored Luxury Technology
+Systems Designed for your lifestyle"* six times, driven by custom JS
+(`.containerholder` + `scrolled-into-view`, `transform: translateX(100%)`,
+`transition: transform 2s ease`).
 
-**Recommendation:** **do not rebuild this one.** A text marquee is a 2021 Elementor
-tic and it repeats a phrase already used as the H1 — it reads as filler. If you want
-a band there, make it a **logo marquee** instead: Savant, Control4, Lutron, Crestron,
-Basalte, Josh.ai. You already have all six logos at `/images/brands/logos/`, and they
-are currently only used on `/brands/`. That band does real work — it borrows six
-brands' credibility on the homepage.
-
-Reference: the partner strip on
-[cinemascapes.com](https://www.cinemascapes.com/) — same industry, same device.
+**What was built:** a **logo marquee** instead — see HOME-02 below. The text ticker
+was deliberately not rebuilt; it repeated a phrase already used as the H1 and read
+as filler.
 
 ---
 
-## HOME-02 — Our Process
+## HOME-02 — Logo marquee ✅ NEW
 
-**What it is:** Eyebrow "Our Process", split intro (heading left / paragraph
-right), then a 4-column row of icon + title + description.
+**What it is:** two logo strips scrolling in opposite directions on a warm
+`#FFF1D4` band, hairline-bordered top and bottom. Sits directly under the hero.
+
+| Row | Content | Direction | Duration |
+| --- | --- | --- | --- |
+| 1 | 12 manufacturer logos | left → right | 36s |
+| 2 | 3 certification badges | right → left | 30s |
+
+**Media** — `/images/vendors/` (renamed from the original Canva exports)
+
+`savant` · `control4` · `lutron` · `crestron` · `josh-ai` · `alarm-com` · `qolsys` ·
+`ruckus` · `sophos` · `eero` · `rega` · `coastal-source`
+
+Certifications reuse `/images/badges/`: `cedia-certified`, `hta-design-partner`,
+`cert-level-luxury`.
+
+**How it works**
+
+- Each row renders its set twice and animates `translateX` between `0` and `-50%`,
+  so the second half is exactly where the first half started when the loop wraps.
+- ⚠️ **Spacing must stay as `margin-inline` on the items, never `gap` on the track.**
+  A track of 2N items has 2N−1 gaps, so its midpoint falls half a gap short of where
+  the duplicate half actually begins, and the loop visibly jumps by that half gap
+  (44px at desktop) every cycle. This was a real bug and it is easy to reintroduce.
+- Sets are repeated up to a floor of 10 items per half (`repeatToFill`) so a half is
+  always wider than the viewport — with only 3 certifications, two copies would leave
+  a blank stretch on anything wider than ~700px.
+- Logos sit at full colour and full opacity on the band. **No grayscale filter** —
+  the backgrounds were stripped on the design side specifically so the band colour
+  shows through.
+- Aspect ratios run from 1.6:1 to 8.2:1, so each logo sits in a fixed box and
+  contains within it. Sizing by height alone would make Crestron eight times wider
+  than Sophos.
+
+**Open issue — the certification row**
+
+The three badge assets predate this section and have **not** had the same treatment
+as the vendor logos:
+
+| Badge | Problem |
+| --- | --- |
+| `cert-level-luxury.webp` | White box + grey bar baked in — reads as a rectangle on the cream band |
+| `hta-design-partner.webp` | Only 280×40; renders blurry and nearly invisible |
+| `cedia-certified.webp` | ✅ Fine — circular, transparent |
+
+Replacements should be background-removed and ~800px wide minimum. Also note the
+header and footer already display all four badges, so this row currently repeats
+what is elsewhere on the page.
+
+---
+
+## HOME-03 — Our Process
+
+**What it is:** Eyebrow "Our Process", split intro (heading left / paragraph right),
+then a **two-column auto-advancing stepper** — the four steps listed down the left,
+one photograph on the right that swaps with the active step.
+
+```
+01  Understand          ┌────────────────────┐
+    description shown   │                    │
+    for the active step │       IMAGE        │
+02  Design              │   (swaps with the  │
+03  Integrate           │    active step)    │
+04  Refine              └────────────────────┘
+```
 
 **Copy** — "From Vision to Effortless Living."
 Steps: **Understand** · **Design** · **Integrate** · **Refine**
 
-**Media**
+**Behaviour**
 
-| Step | Path | Proposed rename |
+- Sequence starts when the section reaches `threshold: 0.4`, then advances every
+  **3s**: 01 → 02 → 03 → 04 → back to 01, looping while in view.
+- Pauses when the section scrolls out of view and resumes on return, so it is never
+  running against an empty screen.
+- **Clicking a step takes over** — it jumps there and stops the reel. Steps are real
+  `<button>`s, so they are keyboard-reachable and carry `aria-expanded`.
+- Dwell time lives in one place: `dwellMs` in the frontmatter, passed to CSS as
+  `--dwell` and to JS as `data-dwell`.
+
+**Animation**
+
+- Active step: number and title go to full opacity, inactive sit at `0.35`.
+- Description collapses/expands with `grid-template-rows: 0fr → 1fr`, so no height
+  is hard-coded and a paragraph can wrap freely.
+- A bronze rail fills top-to-bottom through the active step over `--dwell`, which
+  makes the 3s wait legible rather than arbitrary. It only animates while
+  `.is-playing` — once a visitor clicks, the rail sits full instead of implying a
+  countdown that is no longer running.
+- Image crossfades over `--dur-slow` with a slow `scale(1.04 → 1)` settle.
+- Respects `prefers-reduced-motion` — no autoplay, no crossfade, steps stay clickable.
+
+**Media** — `/images/home/process/`
+
+| Step | File | Placeholder sourced from |
 | --- | --- | --- |
-| Understand | `/images/home/process/step-1.webp` | `process-01-understand.webp` |
-| Design | `/images/home/process/step-2.webp` | `process-02-design.webp` |
-| Integrate | `/images/home/process/step-3.webp` | `process-03-integrate.webp` |
-| Refine | `/images/home/process/step-4.webp` | `process-04-refine.webp` |
+| 01 Understand | `understand.webp` | `home/pillar-lighting.webp` — woman at a wall panel |
+| 02 Design | `design.webp` | `home/pillar-shades.webp` — bright architectural interior |
+| 03 Integrate | `integrate.webp` | `home/pillar-energy.webp` — rack, panel and EV charger |
+| 04 Refine | `refine.webp` | `home/pillar-control.webp` — app in hand |
 
-Rendered at 165×146. On live these are PNGs named
-`Heading-1-→-Design-technology_and-living-—-as_one.png` — meaningless export names,
-correctly cleaned up in the rebuild, but `step-1`…`step-4` still don't say what
-they are.
+⚠️ **All four are placeholders.** There is no process/behind-the-scenes photography
+anywhere in the repo — every image on the site is finished-room work — so these were
+picked from the unused `pillar-*` set to read roughly as *person → architecture →
+hardware → personalisation*. Replace them at these exact paths and no code changes
+are needed. `integrate.webp` is the weakest: it is a 2:1 source cropped to 3:2 and
+leaves a lot of dead wall.
 
-**Animation today:** none.
+**Now unused:** `step-1.webp` … `step-4.webp` — the large outlined numerals from the
+previous 4-column layout. The stepper renders `01`–`04` as text, so these assets are
+no longer referenced. Kept on disk rather than deleted, in case the numerals get
+reused elsewhere.
+
+**Superseded**
+
+The previous 4-column row (icon + title + description, staggered reveal, bronze
+hairline threading the four numerals) was replaced wholesale by this stepper. The
+old doc suggestions — self-drawing SVG icons, a connecting hairline, bronze step
+numbers, 70ms column stagger — no longer apply to this layout.
 
 **Suggestions**
 
-1. **These should be SVG, not WebP.** They're line icons. As inline SVG you get a
-   self-drawing stroke (`stroke-dasharray` / `stroke-dashoffset` over 1.2s) as each
-   step enters view — the single best-value animation on this page, and it makes
-   the process feel like a process.
-2. **Connect the steps.** A hairline running through all four icons that draws
-   left-to-right as the row reveals. Turns four cards into one sequence.
-3. **Number them.** `01 / 02 / 03 / 04` in bronze above each title. There's already
-   a `counter-reset: step` in the CSS that is never used.
-4. Stagger the four columns in at 70ms.
+1. **Get real process photography.** This section now has four image slots and
+   nothing genuine to put in them. A consultation at a dining table, a drawing set
+   or elevation, a rack being terminated, a hand on a keypad at dusk — four shots
+   would do more for this page than any further animation.
+2. **Consider 4s rather than 3s.** The Design and Integrate descriptions run two
+   lines; 3s is slightly tight to read one and register the image change.
 
 ---
 
-## HOME-03 — Our Approach (statement)
+## HOME-04 — Our Approach (statement)
 
 **What it is:** Eyebrow "Luxury Smart Home Automation", then four display lines
 revealed word by word on scroll.
@@ -195,7 +308,7 @@ and precision."*
 **This is the strongest writing on the entire live site and it was dropped.**
 
 **Recommendation:** rebuild as `home/ExperiencePillars.astro`, placed between
-HOME-03 and HOME-04. But **cut it to three cards** and drop "Entertainment" —
+HOME-04 and HOME-05. But **cut it to three cards** and drop "Entertainment" —
 it overlaps "Audio Solutions", and three reads more confident than four.
 
 ⚠️ The 8 `pillar-*.webp` files in `/images/home/` were almost certainly staged for
@@ -205,7 +318,7 @@ photography** — not those.
 
 ---
 
-## HOME-04 — The Experience (7 tiles)
+## HOME-05 — The Experience (7 tiles)
 
 **What it is:** Asymmetric mosaic. Four rows with deliberately uneven column
 splits mirroring the live site at 1440px: `38/60` · `58/40` · `100` · `40/58`.
@@ -248,7 +361,7 @@ Each tile is a full-bleed image, bottom gradient scrim, title + arrow button.
 
 ---
 
-## HOME-05 — Technical Silence
+## HOME-06 — Technical Silence
 
 **What it is:** Full-viewport. Eyebrow "The Experience", then "Technical Silence."
 at `--text-display-xl` (160px at 1440), with a short paragraph pushed to the right.
@@ -264,7 +377,7 @@ at `--text-display-xl` (160px at 1440), with a short paragraph pushed to the rig
    HOME-01 hero video's implied energy by using a near-silent, very slow-moving
    ambient loop as a barely-visible background at 8% opacity. Optional, but it
    makes the section land.
-3. ⚠️ Eyebrow is "The Experience" here **and** on HOME-04. Two adjacent sections
+3. ⚠️ Eyebrow is "The Experience" here **and** on HOME-05. Two adjacent sections
    sharing an eyebrow is a mistake on live and it was copied over. Change this one
    to "Our Philosophy".
 
@@ -296,7 +409,7 @@ Luxury badges in a row beneath.
 
 ---
 
-## HOME-06 — Inspiration
+## HOME-07 — Inspiration
 
 **What it is:** Split intro ("Inspiration" left, one line right), then 3 project
 cards — image, location + year, name with arrow.
@@ -323,11 +436,11 @@ cards — image, location + year, name with arrow.
    the first one full-width.
 3. Add the systems installed as small bronze tags under each name ("Lighting ·
    Cinema · Shading") — it converts a pretty picture into a capability proof.
-4. Reveal: mask wipe, 70ms stagger, same as HOME-04.
+4. Reveal: mask wipe, 70ms stagger, same as HOME-05.
 
 ---
 
-## HOME-07 — Closing CTA
+## HOME-08 — Closing CTA
 
 **What it is:** Full-viewport black with the **same hero video** replayed behind a
 left-to-right gradient scrim. "Design your / Living Experience", one line, one
@@ -357,15 +470,15 @@ variant of this same component closes most other pages.
 
 | Video | Where | Source |
 | --- | --- | --- |
-| `hero.mp4` / `hero.webm` | HOME-01 **and** HOME-07 | Already extracted ✅ |
+| `hero.mp4` / `hero.webm` | HOME-01 **and** HOME-08 | Already extracted ✅ |
 | `youtube.com/watch?v=dKu7G3i0O-o` | Live `/project-single/` only | ❌ not downloaded — see `06-project-single.md` |
 
 Those are the only two videos on the entire live site. Places a third and fourth
 would genuinely earn their cost:
 
-1. **A 20–30s "Technical Silence" ambient loop** for HOME-05 — no people, no
+1. **A 20–30s "Technical Silence" ambient loop** for HOME-06 — no people, no
    product, just light changing in a beautiful room. This is the one that sells.
-2. **A distinct closing-CTA clip** for HOME-07, per the note above.
+2. **A distinct closing-CTA clip** for HOME-08, per the note above.
 3. Per-solution 10s loops for the 13 solution-page heroes, replacing static
    `hero.webp`. Highest effort, so treat as phase 3.
 
@@ -373,31 +486,34 @@ would genuinely earn their cost:
 
 ## Page-level suggestions
 
-1. **Break the cream monotony.** HOME-02 → HOME-06 are five consecutive sections
-   on `#FFFCEF`. Put HOME-05 (Technical Silence) on charcoal with cream type. The
-   page then reads dark → light → **dark** → light → dark, which gives the scroll a
-   shape. This is a one-line change and it is the highest-impact edit on the page.
+1. **Break the cream monotony.** Partly addressed — the HOME-02 marquee band at
+   `#FFF1D4` now interrupts the run. But HOME-03 → HOME-07 are still five
+   consecutive sections on `#FFFCEF`. Put HOME-06 (Technical Silence) on charcoal
+   with cream type. The page then reads dark → light → **dark** → light → dark,
+   which gives the scroll a shape. This is a one-line change and it remains the
+   highest-impact edit on the page.
 2. **Height budget.** Five sections at `min-height: 100vh` makes the homepage
-   roughly 8 screens tall with 7 sections of content. Release HOME-02 and HOME-06
-   from `100vh` and let them size to content.
+   roughly 8 screens tall. Release HOME-03 and HOME-07 from `100vh` and let them
+   size to content.
 3. **Section order.** Suggested target order once the missing sections return:
 
    | | Section | Note |
    | --- | --- | --- |
-   | 1 | Hero | |
-   | 2 | Intro statement | ❌ restore |
-   | 3 | Brand logo marquee | 🆕 replaces the text marquee |
-   | 4 | The Experience — 7 tiles | **moved up** — what you sell, above the fold+1 |
-   | 5 | Our Approach (statement) | |
-   | 6 | Technical Silence | **on charcoal** |
-   | 7 | Our Process | |
-   | 8 | Why PROJECT:automate + numbers | ❌ restore |
-   | 9 | Inspiration | expand to 6 |
-   | 10 | Closing CTA | new video |
+   | 1 | Hero *(with intro line)* | ✅ built |
+   | 2 | Logo marquee | ✅ built |
+   | 3 | The Experience — 7 tiles | **move up** — what you sell, above the fold+1 |
+   | 4 | Our Approach (statement) | |
+   | 5 | Technical Silence | **on charcoal** |
+   | 6 | Our Process | ✅ animated |
+   | 7 | Why PROJECT:automate + numbers | ❌ restore |
+   | 8 | Inspiration | expand to 6 |
+   | 9 | Closing CTA | new video |
 
-   The current order makes a first-time visitor read a 4-step process before
-   learning what the company installs.
+   ⚠️ **Still outstanding:** the live order is unchanged, so a first-time visitor
+   reads a 4-step process (HOME-03) before learning what the company installs
+   (HOME-05). Moving The Experience above Our Process is a reorder of two lines in
+   `index.astro`.
 4. **Missing entirely, on both versions: a client voice.** No testimonial, no
    architect quote, no named project. For a referral-driven luxury trade, one
-   pull-quote from an interior designer between HOME-06 and HOME-07 would do more
+   pull-quote from an interior designer between HOME-07 and HOME-08 would do more
    than any animation in this document.

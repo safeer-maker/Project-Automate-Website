@@ -59,7 +59,8 @@ const certificationRow = repeatToFill(certifications, 10);
 
 <style>
 	.marquee-section {
-		background: var(--color-bg);
+		background: var(--color-surface-2);
+		border-block: 1px solid var(--color-border);
 		padding-block: clamp(2.5rem, 6vw, 4.5rem);
 		display: flex;
 		flex-direction: column;
@@ -84,11 +85,15 @@ const certificationRow = repeatToFill(certifications, 10);
 		);
 	}
 
+	/* Spacing lives on the items as margin, never as `gap` on the track. A
+	   track of 2N items has 2N-1 gaps, so its midpoint falls half a gap short
+	   of where the duplicate half actually starts, and the -50% loop jumps by
+	   that half gap every cycle. Equal margins make every item advance the
+	   same distance, so 50% is exactly one half. */
 	.marquee-track {
 		display: flex;
 		align-items: center;
 		width: max-content;
-		gap: clamp(3rem, 6vw, 5.5rem);
 		will-change: transform;
 	}
 
@@ -110,6 +115,7 @@ const certificationRow = repeatToFill(certifications, 10);
 		justify-content: center;
 		width: clamp(130px, 14vw, 200px);
 		height: clamp(48px, 5vw, 72px);
+		margin-inline: clamp(1.5rem, 3vw, 2.75rem);
 	}
 
 	.marquee-item.is-certification {
