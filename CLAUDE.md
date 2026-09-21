@@ -1,12 +1,20 @@
 ## Development
 
-When starting the dev server, use background mode:
+Start the dev server with:
 
 ```
-astro dev --background
+npm run dev
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+This runs `scripts/dev.mjs`, a thin wrapper around `astro dev` that keeps the dev server tied to the terminal's lifetime — closing the terminal or hitting Ctrl+C kills the whole process tree. Do NOT use `astro dev --background`; that starts a detached daemon that keeps running after the terminal closes.
+
+## Deployment
+
+Production deploys to Cloudflare Workers happen automatically via Cloudflare's own Git integration — **not** via a local or CI `wrangler deploy`. When a PR merges into the `stage` branch, Cloudflare detects the change on that branch directly, builds the site, and redeploys it on Workers itself.
+
+- `wrangler.jsonc` at the repo root is a static, minimal config (just `name`, `compatibility_date`, and `assets.directory`) that tells Cloudflare's build how to serve this static site. It is not invoked manually — no `wrangler` npm dependency or `wrangler deploy` script is needed in this repo.
+- This is separate from `.github/workflows/deploy.yml`, which deploys the same static build to GitHub Pages independently.
+- To ship a change to production: merge into `stage`. Do not add a `wrangler deploy` step back into `package.json` or CI for this.
 
 ## Documentation
 
