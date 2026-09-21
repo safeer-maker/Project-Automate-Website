@@ -1,0 +1,26 @@
+---
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Button from '../../components/ui/Button.astro';
+---
+
+<section class="section hero">
+	<div class="container">
+		<SectionHeading
+			eyebrow="Technology Support Membership"
+			title="Reliable Support for Every Connected Home"
+			subtitle="Choose a membership plan that keeps your home technology running smoothly with responsive remote assistance, priority service, and expert support whenever you need it."
+			align="center"
+		/>
+		<div class="hero-actions">
+			<Button href="#membership" variant="primary" size="lg">Explore Membership Plans</Button>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero-actions {
+		display: flex;
+		justify-content: center;
+		margin-top: var(--space-4);
+	}
+</style>

@@ -1,0 +1,60 @@
+---
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+
+const features = [
+	'Centralized whole-home automation and control',
+	'Intelligent architectural lighting',
+	'Automated shades and privacy control',
+	'Multi-room audio and video distribution',
+	'Dedicated media and entertainment spaces',
+	'Enterprise-grade networking and Wi-Fi',
+	'Integrated surveillance and access control',
+	'Energy monitoring and intelligent power management',
+];
+---
+
+<section class="section features">
+	<div class="container">
+		<SectionHeading
+			eyebrow="Main System Features"
+			title="Design Your Living Experience"
+			subtitle="From lighting and shading to entertainment, climate, security, and networking, every system works together discreetly — allowing the technology to disappear while the experience remains."
+		/>
+		<ul class="feature-list">
+			{features.map((feature) => <li>{feature}</li>)}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.feature-list {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-3) var(--space-8);
+		max-width: 900px;
+	}
+
+	.feature-list li {
+		position: relative;
+		padding-left: var(--space-6);
+		color: var(--color-text);
+		font-weight: var(--fw-medium);
+	}
+
+	.feature-list li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.6em;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--color-accent);
+	}
+
+	@media (max-width: 900px) {
+		.feature-list {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

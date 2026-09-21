@@ -1,0 +1,58 @@
+---
+import { withBase } from '../../lib/paths.ts';
+
+const badges = [
+	{ src: withBase('/images/badges/17-years-badge.webp'), alt: '17+ Years in business badge' },
+	{ src: withBase('/images/badges/cedia-certified.webp'), alt: 'CEDIA Smart Home Certified Expert Provider' },
+	{ src: withBase('/images/badges/cert-level-luxury.webp'), alt: 'Certification Level: Luxury' },
+	{ src: withBase('/images/badges/hta-design-partner.webp'), alt: 'HTA Design Partner' },
+];
+---
+
+<section class="section experience">
+	<div class="container experience-inner">
+		<p class="experience-line">For over 17 years, we've shaped intelligent spaces where technology and everyday living work as one.</p>
+		<ul class="badges">
+			{badges.map((badge) => (
+				<li><img src={badge.src} alt={badge.alt} loading="lazy" width="120" height="120" /></li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.experience {
+		border-top: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.experience-inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+	}
+
+	.experience-line {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-semibold);
+		color: var(--color-text);
+		max-width: 480px;
+		margin: 0;
+	}
+
+	.badges {
+		display: flex;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+	}
+
+	.badges img {
+		width: 80px;
+		height: 80px;
+		object-fit: contain;
+		opacity: 0.9;
+	}
+</style>

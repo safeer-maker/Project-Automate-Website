@@ -1,0 +1,55 @@
+---
+import { withBase } from '../../lib/paths.ts';
+---
+
+<section class="section founder">
+	<div class="container founder-grid">
+		<img src={withBase('/images/about-us/founder-joshua-trevithick.webp')} alt="Joshua Trevithick, Founder and CEO of PROJECT: automate" loading="lazy" />
+		<div class="founder-text">
+			<span class="eyebrow">Founder &amp; CEO</span>
+			<h2>Joshua Trevithick</h2>
+			<p>
+				With nearly three decades of personal experience in the AV and home automation
+				industry, Joshua has built PROJECT: automate on a simple belief: technology should
+				simplify daily routines, elevate comfort, and blend seamlessly into the architecture of
+				every home. Every system is designed with clarity, precision, and long-term usability
+				in mind.
+			</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.founder-grid {
+		display: grid;
+		grid-template-columns: 320px 1fr;
+		gap: var(--space-12);
+		align-items: center;
+	}
+
+	.founder-grid img {
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.founder-text h2 {
+		margin-bottom: var(--space-4);
+	}
+
+	.founder-text p {
+		font-size: var(--text-lg);
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.founder-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.founder-grid img {
+			max-width: 320px;
+		}
+	}
+</style>

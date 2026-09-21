@@ -1,0 +1,27 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import Button from '../../components/ui/Button.astro';
+---
+
+<section class="section closing-cta">
+	<div class="container">
+		<h2>Ready to Turn This Range Into a Plan?</h2>
+		<p>Let PROJECT: automate turn your estimate into a refined, buildable proposal.</p>
+		<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule Consultation</Button>
+	</div>
+</section>
+
+<style>
+	.closing-cta {
+		text-align: center;
+		background: linear-gradient(135deg, var(--color-charcoal), var(--color-navy));
+		border-top: 1px solid var(--color-border-on-dark);
+		color: var(--color-text-on-dark);
+	}
+
+	.closing-cta p {
+		font-size: var(--text-lg);
+		margin-bottom: var(--space-8);
+		color: var(--color-text-on-dark-muted);
+	}
+</style>

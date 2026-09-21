@@ -1,0 +1,30 @@
+<section class="section overview">
+	<div class="container overview-grid">
+		<p class="lead">Overlooking the Pacific, this contemporary residence was designed around openness, natural light, and uninterrupted ocean views. PROJECT:automate developed an integrated technology experience that complements the architecture while giving the homeowners effortless control over their environment.</p>
+		<div class="overview-body">
+			<p>The architecture of Pacific Horizon Residence was created to maintain a constant connection with the surrounding coastline. Expansive glass, open living spaces, and carefully selected natural materials shaped the character of the home.</p>
+			<p>The technology needed to support that vision without competing with it. PROJECT:automate planned every system around the architecture, placing controls, speakers, sensors, equipment, and wiring where they would remain discreet and visually unobtrusive.</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.overview-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-12);
+	}
+
+	.lead {
+		font-size: var(--text-2xl);
+		color: var(--color-text);
+		font-weight: var(--fw-medium);
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.overview-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

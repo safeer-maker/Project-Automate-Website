@@ -1,0 +1,56 @@
+---
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+---
+
+<section class="section why-matters">
+	<div class="container">
+		<SectionHeading eyebrow="Why It Matters" title="Technology decisions shape how the whole home performs" />
+		<div class="why-grid">
+			<div class="why-item">
+				<span class="why-num">01</span>
+				<h3>Define the scope</h3>
+				<p>Property size, room count and project goals set the boundaries every downstream decision is measured against.</p>
+			</div>
+			<div class="why-item">
+				<span class="why-num">02</span>
+				<h3>Set realistic expectations</h3>
+				<p>A clear planning range early on keeps design, budget and timeline aligned before commitments are made.</p>
+			</div>
+			<div class="why-item">
+				<span class="why-num">03</span>
+				<h3>Budget with confidence</h3>
+				<p>Understanding the likely investment up front lets you prioritize the systems that matter most to your lifestyle.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.why-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-8);
+	}
+
+	.why-num {
+		display: block;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-bold);
+		color: var(--color-accent);
+		margin-bottom: var(--space-3);
+	}
+
+	.why-item h3 {
+		margin-bottom: var(--space-2);
+	}
+
+	.why-item p {
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.why-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

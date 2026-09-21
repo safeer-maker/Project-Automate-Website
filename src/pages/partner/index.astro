@@ -1,11 +1,12 @@
 ---
 import { withBase } from '../../lib/paths.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import FeatureList from '../../components/brands/FeatureList.astro';
-import Button from '../../components/ui/Button.astro';
-import CtaBanner from '../../components/home/CtaBanner.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+import HeroSection from './_HeroSection.astro';
+import CredentialsSection from './_CredentialsSection.astro';
+import ClosingSection from './_ClosingSection.astro';
 
 const partners = [
 	{
@@ -46,112 +47,21 @@ const education = [
 			'Take part in our own custom-tailored courses, built around the common challenges smart home installers and dealers face every day.',
 	},
 ];
-
-const badges = [
-	{ src: withBase('/images/badges/17-years-badge.webp'), alt: '17+ Years in business badge' },
-	{ src: withBase('/images/badges/cedia-certified.webp'), alt: 'CEDIA Smart Home Certified Expert Provider' },
-	{ src: withBase('/images/badges/cert-level-luxury.webp'), alt: 'Certification Level: Luxury' },
-	{ src: withBase('/images/badges/hta-design-partner.webp'), alt: 'HTA Design Partner' },
-];
 ---
 
 <PageLayout
 	title="Partner Program"
 	description="The PROJECT: automate Partner Program for architects, interior designers, general contractors, and design-build professionals — coordinated smart home technology integration across Los Angeles."
 >
-	<section class="partner-hero">
-		<div class="container hero-content">
-			<span class="eyebrow">Partner Program</span>
-			<h1>We help curate your client's technology systems for the perfect aesthetic goal.</h1>
-			<p>
-				PROJECT: automate partners with architects, interior designers, general contractors, and
-				other design-build professionals to integrate technology without compromising the
-				aesthetic intent of the space. As an HTA Design Partner, we help coordinate smart home
-				technology from the planning stage through installation — supporting cleaner execution,
-				fewer conflicts, and a more seamless experience for both the design team and the client.
-			</p>
-			<p>
-				We also offer educational Lunch &amp; Learn sessions to help design professionals better
-				understand residential technology planning and integration.
-			</p>
-			<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule a Lunch &amp; Learn</Button>
-		</div>
-	</section>
+	<HeroSection />
 
 	<CapabilityList eyebrow="Who We Partner With" title="Built for design-build teams." items={partners} />
 
-	<section class="section credentials">
-		<div class="container">
-			<SectionHeading
-				eyebrow="Credentials That Set the Standard"
-				title="One of the nation's leading certified Savant dealers."
-				subtitle="We work with hundreds of suppliers, clients, and businesses throughout Los Angeles. Joining our Partner Program gives you access to one of the nation's leading certified Savant dealers and smart home installers."
-			/>
-			<ul class="badges">
-				{badges.map((badge) => (
-					<li><img src={badge.src} alt={badge.alt} loading="lazy" width="110" height="110" /></li>
-				))}
-			</ul>
-		</div>
-	</section>
+	<CredentialsSection />
 
 	<FeatureList eyebrow="For Design Professionals" title="Continuing education, built in." features={education} />
 
-	<section class="section closing">
-		<div class="container">
-			<SectionHeading
-				eyebrow="Let's Start Your Journey"
-				title="Step into the future with PROJECT: automate."
-				subtitle="Access smart solutions, expert knowledge, and a network that drives success."
-				align="center"
-			/>
-		</div>
-	</section>
+	<ClosingSection />
 
 	<CtaBanner />
 </PageLayout>
-
-<style>
-	.partner-hero {
-		padding-block: var(--space-32) var(--space-24);
-		background: linear-gradient(135deg, var(--color-surface), var(--color-navy));
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	.hero-content {
-		max-width: 720px;
-	}
-
-	.hero-content h1 {
-		font-size: var(--text-5xl);
-		margin-bottom: var(--space-6);
-	}
-
-	.hero-content p {
-		font-size: var(--text-lg);
-	}
-
-	.hero-content p:last-of-type {
-		margin-bottom: var(--space-8);
-	}
-
-	.credentials .badges {
-		display: flex;
-		gap: var(--space-8);
-		flex-wrap: wrap;
-		margin-top: var(--space-8);
-	}
-
-	.credentials .badges img {
-		width: 80px;
-		height: 80px;
-		object-fit: contain;
-		opacity: 0.9;
-	}
-
-	@media (max-width: 700px) {
-		.hero-content h1 {
-			font-size: var(--text-4xl);
-		}
-	}
-</style>

@@ -1,0 +1,53 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+---
+
+<section class="section philosophy">
+	<div class="container philosophy-grid">
+		<img src={withBase('/images/about-us/philosophy-keypad-and-view.webp')} alt="In-wall smart home keypad beside a living room with a sunset view" loading="lazy" />
+		<div class="philosophy-text">
+			<SectionHeading eyebrow="Our Philosophy" title="Technology, made invisible." />
+			<p>
+				The best smart homes are not the ones that demand attention. They are the ones that
+				feel calm, intuitive, and naturally integrated into everyday living.
+			</p>
+			<p>
+				At PROJECT: automate, we believe technology should simplify routines, elevate comfort,
+				and blend beautifully into the architecture of the home. Every decision we make is
+				guided by clarity, precision, and long-term usability — one system, every experience
+				connected.
+			</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.philosophy-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-12);
+		align-items: center;
+	}
+
+	.philosophy-grid img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.philosophy-text :global(.section-heading) {
+		margin-bottom: var(--space-6);
+	}
+
+	.philosophy-text p {
+		margin-bottom: var(--space-4);
+	}
+
+	@media (max-width: 900px) {
+		.philosophy-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -3,8 +3,8 @@ import { withBase } from '../../../lib/paths.ts';
 import BrandLayout from '../../../layouts/BrandLayout.astro';
 import FeatureList from '../../../components/brands/FeatureList.astro';
 import DailyExperience from '../../../components/brands/DailyExperience.astro';
-import SectionHeading from '../../../components/ui/SectionHeading.astro';
-import CtaBanner from '../../../components/home/CtaBanner.astro';
+import CtaBanner from '../../../components/ui/CtaBanner.astro';
+import FeaturedInstallSection from './_FeaturedInstallSection.astro';
 
 const features = [
 	{
@@ -61,25 +61,7 @@ const scenes = [
 
 	<DailyExperience eyebrow="Daily Experience" title="A home that anticipates your routine." scenes={scenes} />
 
-	<section class="section featured-install">
-		<div class="container">
-			<SectionHeading
-				eyebrow="Featured Crestron Project"
-				title="Intelligent luxury from every room."
-				align="center"
-			/>
-			<img src={withBase('/images/brands/crestron/os3-feature.webp')} alt="Crestron OS3 platform powering a luxury residence" loading="lazy" />
-		</div>
-	</section>
+	<FeaturedInstallSection />
 
 	<CtaBanner />
 </BrandLayout>
-
-<style>
-	.featured-install img {
-		width: 100%;
-		border-radius: var(--radius-lg);
-		aspect-ratio: 16 / 9;
-		object-fit: cover;
-	}
-</style>

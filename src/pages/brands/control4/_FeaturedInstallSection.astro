@@ -1,0 +1,24 @@
+---
+import { withBase } from '../../../lib/paths.ts';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+---
+
+<section class="section featured-install">
+	<div class="container">
+		<SectionHeading
+			eyebrow="Featured Control4 Installation"
+			title="Seamless intelligence throughout a modern residence."
+			align="center"
+		/>
+		<img src={withBase('/images/brands/control4/featured-installation.webp')} alt="Control4-powered luxury home theater" loading="lazy" />
+	</div>
+</section>
+
+<style>
+	.featured-install img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>

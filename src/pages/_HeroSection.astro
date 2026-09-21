@@ -1,6 +1,6 @@
 ---
-import { withBase } from '../../lib/paths.ts';
-import { siteInfo } from '../../data/site.ts';
+import { withBase } from '../lib/paths.ts';
+import { siteInfo } from '../data/site.ts';
 
 const phone = siteInfo.phones[1] ?? siteInfo.phones[0];
 const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;

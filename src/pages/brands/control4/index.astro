@@ -3,8 +3,8 @@ import { withBase } from '../../../lib/paths.ts';
 import BrandLayout from '../../../layouts/BrandLayout.astro';
 import FeatureList from '../../../components/brands/FeatureList.astro';
 import DailyExperience from '../../../components/brands/DailyExperience.astro';
-import SectionHeading from '../../../components/ui/SectionHeading.astro';
-import CtaBanner from '../../../components/home/CtaBanner.astro';
+import CtaBanner from '../../../components/ui/CtaBanner.astro';
+import FeaturedInstallSection from './_FeaturedInstallSection.astro';
 
 const features = [
 	{
@@ -61,25 +61,7 @@ const scenes = [
 
 	<DailyExperience eyebrow="Daily Experience" title="Technology that simplifies every part of the day." scenes={scenes} />
 
-	<section class="section featured-install">
-		<div class="container">
-			<SectionHeading
-				eyebrow="Featured Control4 Installation"
-				title="Seamless intelligence throughout a modern residence."
-				align="center"
-			/>
-			<img src={withBase('/images/brands/control4/featured-installation.webp')} alt="Control4-powered luxury home theater" loading="lazy" />
-		</div>
-	</section>
+	<FeaturedInstallSection />
 
 	<CtaBanner />
 </BrandLayout>
-
-<style>
-	.featured-install img {
-		width: 100%;
-		border-radius: var(--radius-lg);
-		aspect-ratio: 16 / 9;
-		object-fit: cover;
-	}
-</style>

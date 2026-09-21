@@ -1,0 +1,95 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+
+const gallery = [
+	{
+		location: 'Malibu — 2025',
+		name: 'Oceanfront Villa',
+		image: withBase('/images/get-inspired/inspiration-malibu.webp'),
+	},
+	{
+		location: 'Hidden Hills — 2024',
+		name: 'Marazul Estate',
+		image: withBase('/images/get-inspired/inspiration-hidden-hills.webp'),
+	},
+	{
+		location: 'Manhattan Beach — 2023',
+		name: 'Alpine Retreat',
+		image: withBase('/images/get-inspired/inspiration-manhattan-beach.webp'),
+	},
+];
+---
+
+<section class="section gallery">
+	<div class="container">
+		<SectionHeading
+			eyebrow="Gallery"
+			title="More Projects, More Inspiration"
+			subtitle="A closer look at homes where technology feels effortless."
+			align="center"
+		/>
+
+		<div class="grid">
+			{gallery.map((project) => (
+				<figure class="project">
+					<img src={project.image} alt={`${project.name}, ${project.location}`} loading="lazy" width="640" height="480" />
+					<figcaption>
+						<span class="location">{project.location}</span>
+						<span class="name">{project.name}</span>
+					</figcaption>
+				</figure>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-6);
+	}
+
+	.project {
+		margin: 0;
+		position: relative;
+		border-radius: var(--radius-md);
+		overflow: hidden;
+	}
+
+	.project img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+	}
+
+	.project figcaption {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: var(--space-4);
+		background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), transparent);
+		display: flex;
+		flex-direction: column;
+		color: var(--color-text-on-dark);
+	}
+
+	.location {
+		font-size: var(--text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--color-accent);
+	}
+
+	.name {
+		font-weight: var(--fw-semibold);
+	}
+
+	@media (max-width: 900px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,84 @@
+---
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+
+const steps = [
+	{
+		num: '01',
+		title: 'Understand',
+		description: 'We begin by learning about your space, lifestyle, routines, and expectations.',
+	},
+	{
+		num: '02',
+		title: 'Design',
+		description: 'We create a tailored technology plan that complements your architecture.',
+	},
+	{
+		num: '03',
+		title: 'Integrate',
+		description: 'Every system is installed, connected, and programmed with precision and minimal visual impact.',
+	},
+	{
+		num: '04',
+		title: 'Refine',
+		description: 'We test, personalize, and fine-tune every detail until your complete experience feels effortless.',
+	},
+];
+---
+
+<section class="section process">
+	<div class="container">
+		<SectionHeading eyebrow="Our Process" title="From idea to installation." align="center" />
+		<ol class="steps">
+			{steps.map((step) => (
+				<li class="step">
+					<span class="step-number">{step.num}</span>
+					<h3>{step.title}</h3>
+					<p>{step.description}</p>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.steps {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--space-8);
+		margin-top: var(--space-12);
+	}
+
+	.step {
+		border-top: 1px solid var(--color-border);
+		padding-top: var(--space-6);
+	}
+
+	.step-number {
+		display: block;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-bold);
+		color: var(--color-accent);
+		margin-bottom: var(--space-3);
+	}
+
+	.step h3 {
+		margin-bottom: var(--space-2);
+	}
+
+	.step p {
+		font-size: var(--text-sm);
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.steps {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.steps {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,35 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import Button from '../../components/ui/Button.astro';
+---
+
+<section class="section program">
+	<div class="container program-inner">
+		<p>
+			PROJECT: automate is built to support design-build teams — architects, interior
+			designers, general contractors, and other construction partners — by making technology
+			planning, coordination, and execution seamless from concept through completion.
+		</p>
+		<p>
+			As CEDIA-certified Design Build Partners, we proudly offer CEU credits for qualified
+			professionals who attend our PROJECT: automate–sponsored Lunch &amp; Learn sessions,
+			helping you meet continuing education requirements while staying current on best
+			practices in luxury residential technology integration.
+		</p>
+		<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule a Lunch &amp; Learn Event</Button>
+	</div>
+</section>
+
+<style>
+	.program-inner {
+		max-width: 720px;
+	}
+
+	.program-inner p {
+		font-size: var(--text-lg);
+	}
+
+	.program-inner :global(.btn) {
+		margin-top: var(--space-4);
+	}
+</style>

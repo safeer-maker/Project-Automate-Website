@@ -1,0 +1,83 @@
+---
+import { withBase } from '../../lib/paths.ts';
+
+const stories = [
+	{
+		title: 'A Kitchen Made For Royalty',
+		text: 'Lighting has the power to transform an ordinary kitchen into something extraordinary — and when the kitchen is already stunning, the right lighting can make it a true work of art. For this project, we installed multiple smart recessed ceiling lights, seamlessly integrated into the home’s overall smart system. Each fixture can be controlled individually with the touch of a button or simple voice commands.',
+		image: withBase('/images/get-inspired/kitchen-lighting.webp'),
+		alt: 'Smart recessed lighting integrated throughout a luxury kitchen',
+	},
+	{
+		title: 'Stunning Privacy',
+		text: 'Privacy was a top priority for this client, so we integrated electric shading throughout their residence. These smart shades can be programmed to open and close automatically based on the time of day, or adjusted instantly with a simple button press or voice command. The result is a perfect balance of privacy and elegance.',
+		image: withBase('/images/get-inspired/privacy-shading.webp'),
+		alt: 'Illuminated residence at night with automated privacy shading',
+	},
+	{
+		title: 'Elegant Safety',
+		text: 'For this project, we designed a lighting system that not only enhances nighttime safety around the client’s multiple pools but also elevates the overall outdoor ambiance. The lights gradually shift throughout the day, creating the perfect atmosphere by nightfall. And when a little more privacy is desired, the entire system can be dimmed or turned off instantly with the touch of a button.',
+		image: withBase('/images/get-inspired/pool-lighting.webp'),
+		alt: 'Poolside lighting scene designed for nighttime safety and ambiance',
+	},
+];
+---
+
+<section class="section stories">
+	<div class="container">
+		{stories.map((story, i) => (
+			<div class={`story-row ${i % 2 === 1 ? 'reverse' : ''}`}>
+				<div class="story-image">
+					<img src={story.image} alt={story.alt} loading="lazy" />
+				</div>
+				<div class="story-copy">
+					<h3>{story.title}</h3>
+					<p>{story.text}</p>
+				</div>
+			</div>
+		))}
+	</div>
+</section>
+
+<style>
+	.story-row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-12);
+		align-items: center;
+	}
+
+	.story-row + .story-row {
+		margin-top: var(--space-16);
+	}
+
+	.story-row.reverse .story-image {
+		order: 2;
+	}
+
+	.story-image img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.story-copy h3 {
+		font-size: var(--text-3xl);
+		margin-bottom: var(--space-4);
+	}
+
+	.story-copy p {
+		font-size: var(--text-lg);
+	}
+
+	@media (max-width: 900px) {
+		.story-row {
+			grid-template-columns: 1fr;
+		}
+
+		.story-row.reverse .story-image {
+			order: 0;
+		}
+	}
+</style>

@@ -1,0 +1,86 @@
+---
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+
+const faqs = [
+	{
+		q: 'What is included in basic support?',
+		a: "Basic Support includes priority customer assistance during business hours, routine maintenance guidance, troubleshooting, and access to our member-only support resources. It's designed to keep your systems running smoothly with dependable help whenever you need it.",
+	},
+	{
+		q: 'What qualifies as an urgent issue?',
+		a: 'An urgent issue is any problem that causes a complete service outage, major security concern, or significantly impacts your ability to operate. Urgent requests receive priority response according to your membership plan.',
+	},
+	{
+		q: 'Are on-site service charges included?',
+		a: 'On-site service visits are not included in standard memberships unless specifically stated in your plan. Members receive discounted on-site service rates and priority scheduling whenever a visit is required.',
+	},
+	{
+		q: 'Can I change my membership later?',
+		a: 'Yes. You can upgrade or downgrade your membership at any time. Plan changes typically take effect at the start of your next billing cycle, though upgrades may be activated immediately.',
+	},
+	{
+		q: 'How does annual billing work?',
+		a: 'Annual billing provides a full year of membership with a single upfront payment. Members who choose annual billing often receive discounted pricing compared to monthly plans, making it the most cost-effective option.',
+	},
+];
+---
+
+<section class="section faq">
+	<div class="container faq-wrap">
+		<SectionHeading eyebrow="Frequently Asked Questions" title="Membership questions, answered" />
+		<div class="faq-list">
+			{faqs.map((item) => (
+				<details>
+					<summary>{item.q}</summary>
+					<p>{item.a}</p>
+				</details>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.faq-wrap {
+		max-width: 780px;
+	}
+
+	.faq-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	details {
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-4) var(--space-6);
+	}
+
+	summary {
+		cursor: pointer;
+		font-weight: var(--fw-semibold);
+		font-size: var(--text-lg);
+		color: var(--color-text);
+		list-style: none;
+	}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
+	summary::after {
+		content: '+';
+		float: right;
+		color: var(--color-accent);
+		font-size: var(--text-xl);
+	}
+
+	details[open] summary::after {
+		content: '−';
+	}
+
+	details p {
+		margin-top: var(--space-4);
+		margin-bottom: 0;
+	}
+</style>

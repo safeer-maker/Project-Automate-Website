@@ -1,0 +1,54 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import Button from '../../components/ui/Button.astro';
+---
+
+<section class="partner-hero">
+	<div class="container hero-content">
+		<span class="eyebrow">Partner Program</span>
+		<h1>We help curate your client's technology systems for the perfect aesthetic goal.</h1>
+		<p>
+			PROJECT: automate partners with architects, interior designers, general contractors, and
+			other design-build professionals to integrate technology without compromising the
+			aesthetic intent of the space. As an HTA Design Partner, we help coordinate smart home
+			technology from the planning stage through installation — supporting cleaner execution,
+			fewer conflicts, and a more seamless experience for both the design team and the client.
+		</p>
+		<p>
+			We also offer educational Lunch &amp; Learn sessions to help design professionals better
+			understand residential technology planning and integration.
+		</p>
+		<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule a Lunch &amp; Learn</Button>
+	</div>
+</section>
+
+<style>
+	.partner-hero {
+		padding-block: var(--space-32) var(--space-24);
+		background: linear-gradient(135deg, var(--color-surface), var(--color-navy));
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.hero-content {
+		max-width: 720px;
+	}
+
+	.hero-content h1 {
+		font-size: var(--text-5xl);
+		margin-bottom: var(--space-6);
+	}
+
+	.hero-content p {
+		font-size: var(--text-lg);
+	}
+
+	.hero-content p:last-of-type {
+		margin-bottom: var(--space-8);
+	}
+
+	@media (max-width: 700px) {
+		.hero-content h1 {
+			font-size: var(--text-4xl);
+		}
+	}
+</style>

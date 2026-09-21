@@ -1,0 +1,29 @@
+---
+import { withBase } from '../../../lib/paths.ts';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+---
+
+<section class="section featured-install">
+	<div class="container">
+		<SectionHeading
+			eyebrow="Featured Lutron Installation"
+			title="Coastal residence with intelligent lighting."
+			subtitle="This luxury home combines Lutron lighting and automated shading to create elegant spaces that balance daylight, privacy, and comfort while complementing the home's architecture."
+			align="center"
+		/>
+		<img
+			src={withBase('/images/brands/lutron-2/motorized-shades.webp')}
+			alt="Luxury living room with Lutron motorized roller shades and glass windows"
+			loading="lazy"
+		/>
+	</div>
+</section>
+
+<style>
+	.featured-install img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>

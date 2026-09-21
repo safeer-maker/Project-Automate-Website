@@ -1,0 +1,76 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+---
+
+<section class="section hta-considers">
+	<div class="container">
+		<SectionHeading eyebrow="What HTA Considers" title="One home. Multiple systems. Designed to work as one." />
+		<div class="pillars">
+			<div class="pillar">
+				<h3>Infrastructure</h3>
+				<p>Networking, wiring, racks, power, and the hidden foundation.</p>
+			</div>
+			<div class="pillar">
+				<h3>Experience</h3>
+				<p>Control, lighting, entertainment, comfort, and daily usability.</p>
+			</div>
+			<div class="pillar">
+				<h3>Protection</h3>
+				<p>Security, surveillance, resilience, serviceability, and long-term support.</p>
+			</div>
+		</div>
+		<div class="hta-attribution">
+			<img src={withBase('/images/badges/hta-design-partner.webp')} alt="HTA Design Partner" width="56" height="56" loading="lazy" />
+			<p>The Home Technology Association (HTA) helps homeowners plan smarter technology investments by setting trusted standards for home automation, entertainment, security, and system design.</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.pillars {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-8);
+		margin-bottom: var(--space-12);
+	}
+
+	.pillar {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		padding: var(--space-6);
+	}
+
+	.pillar h3 {
+		margin-bottom: var(--space-2);
+	}
+
+	.pillar p {
+		margin: 0;
+	}
+
+	.hta-attribution {
+		display: flex;
+		align-items: center;
+		gap: var(--space-6);
+		max-width: 720px;
+	}
+
+	.hta-attribution img {
+		width: 56px;
+		height: 56px;
+		object-fit: contain;
+		flex-shrink: 0;
+	}
+
+	.hta-attribution p {
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.pillars {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

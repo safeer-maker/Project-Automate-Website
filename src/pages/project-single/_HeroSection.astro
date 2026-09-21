@@ -1,0 +1,64 @@
+---
+import { withBase } from '../../lib/paths.ts';
+---
+
+<section class="section hero">
+	<div class="container">
+		<span class="eyebrow">Success Story</span>
+		<h1>Pacific Horizon Residence</h1>
+		<p class="hero-subtitle">Coastal Living, Intelligently Connected</p>
+		<div class="hero-meta">
+			<span>Location: Pacific Coast, California</span>
+			<span class="dot" aria-hidden="true">&middot;</span>
+			<span>Scope: Lighting, Shading, Audio/Video, Networking, Security</span>
+			<span class="dot" aria-hidden="true">&middot;</span>
+			<span>Status: Completed</span>
+		</div>
+	</div>
+	<div class="hero-image">
+		<img src={withBase('/images/project-single/hero-pacific-horizon.webp')} alt="Pacific Horizon Residence, a coastal contemporary smart home" width="1586" height="992" />
+	</div>
+</section>
+
+<style>
+	.hero {
+		padding-bottom: 0;
+		text-align: center;
+	}
+
+	.hero h1 {
+		max-width: 900px;
+		margin-inline: auto;
+	}
+
+	.hero-subtitle {
+		font-size: var(--text-xl);
+		color: var(--color-text-muted);
+		max-width: 640px;
+		margin-inline: auto;
+	}
+
+	.hero-meta {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: var(--space-2);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		margin-top: var(--space-6);
+	}
+
+	.hero-meta .dot {
+		color: var(--color-accent);
+	}
+
+	.hero-image {
+		margin-top: var(--space-12);
+	}
+
+	.hero-image img {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>

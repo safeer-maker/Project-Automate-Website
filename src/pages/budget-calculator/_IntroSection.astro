@@ -1,0 +1,48 @@
+---
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+---
+
+<section class="section intro">
+	<div class="container">
+		<SectionHeading
+			eyebrow="How the Estimator Helps"
+			title="Plan with confidence before the project begins."
+			subtitle="This calculator turns your project requirements into a practical planning range — helping you understand the likely level of investment before speaking with a qualified technology integrator."
+		/>
+		<ol class="steps">
+			<li><span class="step-num">1</span>Describe the property and project type</li>
+			<li><span class="step-num">2</span>Select the systems and experience level</li>
+			<li><span class="step-num">3</span>Review an informed planning range</li>
+		</ol>
+	</div>
+</section>
+
+<style>
+	.steps {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-8);
+		margin-top: var(--space-8);
+		font-size: var(--text-lg);
+		font-weight: var(--fw-semibold);
+	}
+
+	.steps li {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+	}
+
+	.step-num {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		border: 1px solid var(--color-border);
+		color: var(--color-accent);
+		font-size: var(--text-sm);
+		flex-shrink: 0;
+	}
+</style>
