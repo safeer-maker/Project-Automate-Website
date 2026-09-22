@@ -26,9 +26,9 @@ const projects = [
 			<p>Explore homes where technology enhances the way you live.</p>
 		</div>
 
-		<div class="grid">
-			{projects.map((project) => (
-				<a class="project" href={withBase('/get-inspired/')}>
+		<div class="grid" data-projects>
+			{projects.map((project, i) => (
+				<a class="project" href={withBase('/get-inspired/')} style={`--project-index:${i}`}>
 					<div class="project-image">
 						<img src={project.image} alt={`${project.name}, ${project.location}`} loading="lazy" width="405" height="364" />
 					</div>
@@ -46,10 +46,11 @@ const projects = [
 </section>
 
 <style>
+	/* Released from min-height:100vh — the content is three cards and an intro,
+	   and the page was running to roughly eight screens. */
 	.inspiration {
 		display: flex;
 		align-items: center;
-		min-height: 100vh;
 		background: var(--color-bg);
 		padding-block: clamp(4rem, 9vw, 7.5rem);
 	}
@@ -92,10 +93,18 @@ const projects = [
 		display: block;
 	}
 
+	/* Same mask wipe and 70ms stagger as the experience mosaic. */
 	.project-image {
 		border-radius: 20px;
 		overflow: hidden;
 		margin-bottom: var(--space-4);
+		clip-path: inset(0 0 100% 0);
+		transition: clip-path 900ms var(--ease-out-expo);
+		transition-delay: calc(var(--project-index) * 70ms);
+	}
+
+	.grid.is-visible .project-image {
+		clip-path: inset(0);
 	}
 
 	.project-image img {
@@ -147,4 +156,28 @@ const projects = [
 			gap: var(--space-8);
 		}
 	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.project-image {
+			clip-path: inset(0);
+			transition: none;
+		}
+	}
 </style>
+
+<script>
+	const grid = document.querySelector('[data-projects]');
+	if (grid) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					grid.classList.add('is-visible');
+					io.disconnect();
+				});
+			},
+			{ threshold: 0.15 }
+		);
+		io.observe(grid);
+	}
+</script>

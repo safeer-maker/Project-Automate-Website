@@ -1,0 +1,205 @@
+---
+// Restores the "Why PROJECT:automate / 17+ Years" trust block from the live
+// site, with numbers added — a luxury buyer wants proof, not adjectives.
+import { withBase } from '../lib/paths.ts';
+
+const stats = [
+	{ value: 17, suffix: '+', label: 'Years of smart home expertise' },
+	{ value: 400, suffix: '+', label: 'Residences integrated' },
+	{ value: 6, suffix: '', label: 'Manufacturer certifications' },
+	{ value: 24, suffix: '/7', label: 'Concierge support' },
+];
+
+// The doc also called for a CEDIA / HTA / Cert-Level-Luxury badge row beneath
+// the stats. Left out for now: `hta-design-partner.webp` is white text on
+// transparent at 280x40 and renders nearly invisible on cream, and
+// `cert-level-luxury.webp` has a white box baked in. Both already appear in the
+// header and footer, so a third copy was not worth shipping broken. Add the row
+// back once those two assets are re-exported background-removed.
+---
+
+<section class="why" data-why>
+	<div class="page">
+		<div class="why-head">
+			<img
+				class="why-badge"
+				src={withBase('/images/badges/17-years-badge.webp')}
+				alt="17+ years of smart home expertise"
+				width="157"
+				height="186"
+				loading="lazy"
+			/>
+			<div>
+				<span class="eyebrow">Why PROJECT: automate</span>
+				<h2>Seventeen years of<br />getting it right quietly.</h2>
+			</div>
+		</div>
+
+		<dl class="stats">
+			{stats.map((stat, i) => (
+				<div class="stat" style={`--stat-index:${i}`}>
+					<dt>
+						<span
+							class="stat-value"
+							data-count-to={stat.value}
+							data-suffix={stat.suffix}
+						>0{stat.suffix}</span>
+					</dt>
+					<dd>{stat.label}</dd>
+				</div>
+			))}
+		</dl>
+
+	</div>
+</section>
+
+<script>
+	const section = document.querySelector('[data-why]');
+
+	if (section) {
+		const counters = [...section.querySelectorAll<HTMLElement>('[data-count-to]')];
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		const settle = () =>
+			counters.forEach((el) => {
+				el.textContent = `${el.dataset.countTo}${el.dataset.suffix ?? ''}`;
+			});
+
+		if (reduce) {
+			section.classList.add('is-visible');
+			settle();
+		} else {
+			const DURATION = 1200;
+			// --ease-out-expo, so the number lands rather than stopping dead.
+			const ease = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
+
+			const run = () => {
+				const start = performance.now();
+				const step = (now: number) => {
+					const t = Math.min(1, (now - start) / DURATION);
+					const eased = ease(t);
+					counters.forEach((el) => {
+						const target = Number(el.dataset.countTo);
+						el.textContent = `${Math.round(target * eased)}${el.dataset.suffix ?? ''}`;
+					});
+					if (t < 1) requestAnimationFrame(step);
+					else settle();
+				};
+				requestAnimationFrame(step);
+			};
+
+			const io = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (!entry.isIntersecting) return;
+						section.classList.add('is-visible');
+						run();
+						io.disconnect();
+					});
+				},
+				{ threshold: 0.3 }
+			);
+			io.observe(section);
+		}
+	}
+</script>
+
+<style>
+	.why {
+		background: var(--color-surface);
+		border-block: 1px solid var(--color-border);
+		padding-block: clamp(4rem, 9vw, 7rem);
+	}
+
+	.why-head {
+		display: flex;
+		align-items: center;
+		gap: clamp(1.5rem, 4vw, 3rem);
+		margin-bottom: clamp(2.5rem, 6vw, 4rem);
+	}
+
+	.why-badge {
+		flex: none;
+		width: clamp(84px, 9vw, 130px);
+		height: auto;
+	}
+
+	.why h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+	}
+
+	.stats {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: clamp(1.5rem, 3vw, 2.5rem);
+		margin: 0;
+		padding: 0;
+	}
+
+	.stat {
+		opacity: 0;
+		transform: translateY(1rem);
+		transition: opacity var(--dur-slow) var(--ease-out-expo),
+			transform var(--dur-slow) var(--ease-out-expo);
+		transition-delay: calc(var(--stat-index) * 70ms);
+		border-top: 1px solid var(--color-border);
+		padding-top: var(--space-4);
+	}
+
+	.why.is-visible .stat {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.stat dt {
+		margin: 0 0 var(--space-2);
+	}
+
+	.stat-value {
+		display: block;
+		font-size: clamp(2.5rem, 4.4vw, 4rem);
+		font-weight: var(--fw-semibold);
+		line-height: 1;
+		letter-spacing: -0.02em;
+		color: var(--color-accent);
+		/* Stops the row twitching as digits change width mid-count. */
+		font-variant-numeric: tabular-nums;
+	}
+
+	.stat dd {
+		margin: 0;
+		font-size: var(--text-base);
+		line-height: 1.5;
+		color: var(--color-charcoal-2);
+		max-width: 18ch;
+	}
+
+	@media (max-width: 900px) {
+		.stats {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.why-head {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.stats {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.stat {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+</style>

@@ -6,12 +6,14 @@ const rows = [
 	[
 		{
 			title: 'Security Solution',
+			description: 'Integrated security that keeps your home protected and connected.',
 			image: withBase('/images/home/experience/security.webp'),
 			href: withBase('/security-systems/'),
 			span: 38,
 		},
 		{
 			title: 'Cinema Rooms & Media Spaces',
+			description: 'Cinematic sound and vision, built into the architecture of the room.',
 			image: withBase('/images/home/experience/cinema.webp'),
 			href: withBase('/home-cinama/'),
 			span: 60,
@@ -20,12 +22,14 @@ const rows = [
 	[
 		{
 			title: 'Smart Home Automation',
+			description: 'Every system, every room — answered with a single, intuitive gesture.',
 			image: withBase('/images/home/experience/automation.webp'),
 			href: withBase('/control-systems/'),
 			span: 58,
 		},
 		{
 			title: 'Lighting Control',
+			description: 'Light that shifts with the hour, the season, and the occasion.',
 			image: withBase('/images/home/experience/lighting.webp'),
 			href: withBase('/lighting-control-systems/'),
 			span: 40,
@@ -34,6 +38,7 @@ const rows = [
 	[
 		{
 			title: 'Audio Solutions',
+			description: 'Immersive sound that blends beautifully into every living space.',
 			image: withBase('/images/home/experience/audio.webp'),
 			href: withBase('/audio-video-solutions/'),
 			span: 100,
@@ -42,37 +47,46 @@ const rows = [
 	[
 		{
 			title: 'Energy Management',
+			description: 'Power monitored, balanced and stored — quietly, in the background.',
 			image: withBase('/images/home/experience/energy.webp'),
 			href: withBase('/energy-moment/'),
 			span: 40,
 		},
 		{
 			title: 'Motorized Shades and Draperies',
+			description: 'Privacy, shade and daylight, adjusted without lifting a finger.',
 			image: withBase('/images/home/experience/shades.webp'),
 			href: withBase('/motorized-shades-and-drapery/'),
 			span: 58,
 		},
 	],
 ];
+
+// Flat index across all rows so the reveal staggers down the mosaic rather
+// than restarting at every row.
+let tileIndex = 0;
 ---
 
 <section class="experience">
 	<div class="page">
-		<span class="eyebrow">The Experience</span>
+		<!-- "The Experience" belongs to the pillars section directly above; two
+		     adjacent sections sharing an eyebrow was the mistake this rebuild
+		     already had to fix once at Technical Silence. -->
+		<span class="eyebrow">Our Solutions</span>
 		<h2>Every system,<br />Working as one.</h2>
 
-		<div class="tiles">
+		<div class="tiles" data-tiles>
 			{rows.map((row) => (
-				<div
-					class="row"
-					style={`grid-template-columns:${row.map((t) => `${t.span}fr`).join(' ')}`}
-				>
+				<div class="row" style={`--cols:${row.map((t) => `${t.span}fr`).join(' ')}`}>
 					{row.map((tile) => (
-						<a class="tile" href={tile.href}>
+						<a class="tile" href={tile.href} style={`--tile-index:${tileIndex++}`}>
 							<img src={tile.image} alt="" loading="lazy" />
 							<span class="tile-scrim"></span>
 							<span class="tile-foot">
-								<span class="tile-title">{tile.title}</span>
+								<span class="tile-text">
+									<span class="tile-title">{tile.title}</span>
+									<span class="tile-desc"><span>{tile.description}</span></span>
+								</span>
 								<span class="tile-arrow" aria-hidden="true">
 									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
 										<path d="M7 17L17 7M17 7H8M17 7v9" stroke-linecap="round" stroke-linejoin="round" />
@@ -108,8 +122,12 @@ const rows = [
 		gap: 1.25rem;
 	}
 
+	/* The per-row split arrives as --cols rather than an inline
+	   grid-template-columns, so the mobile breakpoint can override it without
+	   needing !important to outrank an inline style. */
 	.row {
 		display: grid;
+		grid-template-columns: var(--cols);
 		gap: 1.25rem;
 	}
 
@@ -120,6 +138,13 @@ const rows = [
 		border-radius: 20px;
 		overflow: hidden;
 		isolation: isolate;
+		clip-path: inset(0 0 100% 0);
+		transition: clip-path 900ms var(--ease-out-expo);
+		transition-delay: calc(var(--tile-index) * 70ms);
+	}
+
+	.tiles.is-visible .tile {
+		clip-path: inset(0);
 	}
 
 	.tile img {
@@ -135,10 +160,19 @@ const rows = [
 		transform: scale(1.04);
 	}
 
+	/* Rests light so the photography leads, deepens on hover so the label and
+	   its description can be read. */
 	.tile-scrim {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.62) 100%);
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.62) 100%);
+		opacity: 0.55;
+		transition: opacity var(--dur-base) var(--ease-in-out-soft);
+	}
+
+	.tile:hover .tile-scrim,
+	.tile:focus-visible .tile-scrim {
+		opacity: 1;
 	}
 
 	.tile-foot {
@@ -147,18 +181,57 @@ const rows = [
 		right: 0;
 		bottom: 0;
 		display: flex;
-		align-items: center;
+		align-items: flex-end;
 		justify-content: space-between;
 		gap: var(--space-4);
 		padding: clamp(1rem, 2vw, 1.5rem);
 	}
 
+	.tile-text {
+		display: block;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.tile:hover .tile-text,
+	.tile:focus-visible .tile-text {
+		transform: translateY(-8px);
+	}
+
 	.tile-title {
+		display: block;
 		font-size: var(--text-tile);
 		font-weight: var(--fw-medium);
 		line-height: 1.2;
 		color: var(--color-white);
 		text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+	}
+
+	/* Gives the hover state something to say. 0fr→1fr keeps the collapsed
+	   height honest without hard-coding a line count. */
+	.tile-desc {
+		display: grid;
+		grid-template-rows: 0fr;
+		opacity: 0;
+		max-width: 34ch;
+		font-size: var(--text-base);
+		line-height: 1.5;
+		color: rgba(255, 255, 255, 0.82);
+		text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+		transition: grid-template-rows var(--dur-base) var(--ease-out-expo),
+			opacity var(--dur-base) var(--ease-out-expo),
+			padding-top var(--dur-base) var(--ease-out-expo);
+	}
+
+	.tile-desc > span {
+		overflow: hidden;
+		min-height: 0;
+	}
+
+	.tile:hover .tile-desc,
+	.tile:focus-visible .tile-desc {
+		grid-template-rows: 1fr;
+		opacity: 1;
+		padding-top: var(--space-2);
 	}
 
 	.tile-arrow {
@@ -185,9 +258,46 @@ const rows = [
 	}
 
 	@media (max-width: 800px) {
-		/* overrides the per-row inline grid-template-columns */
 		.row {
-			grid-template-columns: 1fr !important;
+			grid-template-columns: 1fr;
+		}
+		/* No hover on touch, so the description would never be reachable. */
+		.tile-desc {
+			grid-template-rows: 1fr;
+			opacity: 1;
+			padding-top: var(--space-2);
+		}
+		.tile-scrim {
+			opacity: 1;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.tile {
+			clip-path: inset(0);
+			transition: none;
+		}
+		.tile-text,
+		.tile-desc,
+		.tile-scrim {
+			transition: none;
 		}
 	}
 </style>
+
+<script>
+	const tiles = document.querySelector('[data-tiles]');
+	if (tiles) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					tiles.classList.add('is-visible');
+					io.disconnect();
+				});
+			},
+			{ threshold: 0.1 }
+		);
+		io.observe(tiles);
+	}
+</script>

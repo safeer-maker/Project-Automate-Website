@@ -1,0 +1,147 @@
+---
+// Restores "Technology That Elevates Everyday Life" from the live site, cut
+// from four cards to three — live's "Entertainment" overlapped "Audio
+// Solutions", and three reads more confident than four.
+//
+// Deliberately typographic, no photography. The 8 pillar-*.webp files that were
+// staged for this section are byte-identical duplicates of images used
+// elsewhere, and two of them now back the process stepper. Rather than repeat
+// imagery, the cards lead on the copy — which is the strongest writing on the
+// live site.
+const pillars = [
+	{
+		title: 'Control',
+		copy: 'Every system, every room — answered with a single, intuitive gesture.',
+	},
+	{
+		title: 'Atmosphere',
+		copy: 'Light, warmth and shade compose for the mood of every moment.',
+	},
+	{
+		title: 'Audio Solutions',
+		copy: 'Immersive entertainment that blends beautifully into every living space.',
+	},
+];
+---
+
+<section class="pillars">
+	<div class="page">
+		<span class="eyebrow">The Experience</span>
+		<h2>Technology that elevates<br />everyday life.</h2>
+
+		<ul class="pillar-list" data-pillars>
+			{pillars.map((pillar, i) => (
+				<li style={`--pillar-index:${i}`}>
+					<span class="pillar-rule" aria-hidden="true"></span>
+					<h3>{pillar.title}</h3>
+					<p>{pillar.copy}</p>
+				</li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<script>
+	const list = document.querySelector('[data-pillars]');
+	if (list) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					list.classList.add('is-visible');
+					io.disconnect();
+				});
+			},
+			{ threshold: 0.25 }
+		);
+		io.observe(list);
+	}
+</script>
+
+<style>
+	.pillars {
+		background: var(--color-bg);
+		padding-block: clamp(4rem, 9vw, 7.5rem);
+	}
+
+	.pillars h2 {
+		margin: 0 0 clamp(2.5rem, 6vw, 4.5rem);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+	}
+
+	.pillar-list {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: clamp(2rem, 4vw, 3.5rem);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.pillar-list li {
+		opacity: 0;
+		transform: translateY(1.25rem);
+		transition: opacity var(--dur-slow) var(--ease-out-expo),
+			transform var(--dur-slow) var(--ease-out-expo);
+		transition-delay: calc(var(--pillar-index) * 70ms);
+	}
+
+	.pillar-list.is-visible li {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.pillar-rule {
+		display: block;
+		height: 1px;
+		background: var(--color-accent);
+		opacity: 0.4;
+		margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 1s var(--ease-out-expo);
+		transition-delay: calc(var(--pillar-index) * 70ms + 120ms);
+	}
+
+	.pillar-list.is-visible .pillar-rule {
+		transform: scaleX(1);
+	}
+
+	.pillar-list h3 {
+		margin: 0 0 var(--space-3);
+		font-size: var(--text-step);
+		font-weight: var(--fw-medium);
+		line-height: 1.25;
+		color: var(--color-text);
+	}
+
+	.pillar-list p {
+		margin: 0;
+		font-size: var(--text-body-lg);
+		line-height: 1.6;
+		color: var(--color-charcoal-2);
+		max-width: 32ch;
+	}
+
+	@media (max-width: 900px) {
+		.pillar-list {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.pillar-list li {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+		.pillar-rule {
+			transform: scaleX(1);
+			transition: none;
+		}
+	}
+</style>

@@ -10,10 +10,13 @@ const { variant = 'compact' } = Astro.props;
 
 <section class:list={['cta', `cta-${variant}`]}>
 	{variant === 'feature' && (
-		<div class="cta-media">
+		<div
+			class="cta-media"
+			style={`background-image:url(${withBase('/images/home/hero/poster.webp')})`}
+		>
 			<video
 				class="cta-video"
-				autoplay
+				data-cta-video
 				muted
 				loop
 				playsinline
@@ -32,9 +35,33 @@ const { variant = 'compact' } = Astro.props;
 	<div class="page cta-inner">
 		<h2>Design your<br />Living Experience</h2>
 		<p>Intelligent technology, designed around your lifestyle.</p>
-		<a class="cta-btn" href={withBase('/get-started/')}>Let&rsquo;s Talk</a>
+		<a class="cta-btn" href={withBase('/schedule/')}>Schedule a Consultation</a>
 	</div>
 </section>
+
+<script>
+	// preload="none" keeps the 4MB clip off the initial load, but it also means
+	// the poster pops to video the moment it appears. Starting playback on
+	// intersection and fading in over 600ms hides the swap.
+	const video = document.querySelector<HTMLVideoElement>('[data-cta-video]');
+
+	if (video) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					video.play().catch(() => {
+						/* Autoplay refused — the poster stays, which is fine. */
+					});
+					video.classList.add('is-playing');
+					io.disconnect();
+				});
+			},
+			{ threshold: 0.2 }
+		);
+		io.observe(video);
+	}
+</script>
 
 <style>
 	.cta {
@@ -59,6 +86,9 @@ const { variant = 'compact' } = Astro.props;
 		position: absolute;
 		inset: 0;
 		z-index: 0;
+		/* Holds the poster while the video is still faded out. */
+		background-size: cover;
+		background-position: center;
 	}
 
 	.cta-video {
@@ -68,6 +98,12 @@ const { variant = 'compact' } = Astro.props;
 		height: 100%;
 		object-fit: cover;
 		pointer-events: none;
+		opacity: 0;
+		transition: opacity 600ms var(--ease-in-out-soft);
+	}
+
+	.cta-video.is-playing {
+		opacity: 1;
 	}
 
 	.cta-scrim {

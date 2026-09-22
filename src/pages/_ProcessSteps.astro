@@ -3,7 +3,9 @@ import { withBase } from '../lib/paths.ts';
 
 // How long each step stays highlighted before the sequence advances. Shared
 // with the CSS progress rail via --dwell, so there is one source of truth.
-const dwellMs = 3000;
+// 3s was tight — the Design and Integrate descriptions run two lines, and you
+// could not finish one and register the image change before it moved on.
+const dwellMs = 4000;
 
 const steps = [
 	{
@@ -76,41 +78,41 @@ const steps = [
 </section>
 
 <script>
-	const stepper = document.querySelector('[data-stepper]');
+	const stepper = document.querySelector<HTMLElement>('[data-stepper]');
 
 	if (stepper) {
-		const items = [...stepper.querySelectorAll('.steps li')];
-		const panels = [...stepper.querySelectorAll('[data-panel]')];
+		const items = [...stepper.querySelectorAll<HTMLElement>('.steps li')];
+		const panels = [...stepper.querySelectorAll<HTMLElement>('[data-panel]')];
 		const dwell = Number(stepper.dataset.dwell) || 3000;
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		let index = 0;
-		let timer = null;
+		let timer: number | null = null;
 
-		const show = (next) => {
+		const show = (next: number) => {
 			index = (next + items.length) % items.length;
 			items.forEach((li, i) => {
 				const active = i === index;
 				li.classList.toggle('is-active', active);
-				li.querySelector('button').setAttribute('aria-expanded', String(active));
+				li.querySelector('button')?.setAttribute('aria-expanded', String(active));
 			});
 			panels.forEach((panel, i) => panel.classList.toggle('is-active', i === index));
 		};
 
 		const stop = () => {
-			window.clearInterval(timer);
+			if (timer !== null) window.clearInterval(timer);
 			timer = null;
 			stepper.classList.remove('is-playing');
 		};
 
 		const play = () => {
-			if (timer || reduce) return;
+			if (timer !== null || reduce) return;
 			stepper.classList.add('is-playing');
 			timer = window.setInterval(() => show(index + 1), dwell);
 		};
 
 		items.forEach((li, i) => {
-			li.querySelector('button').addEventListener('click', () => {
+			li.querySelector('button')?.addEventListener('click', () => {
 				// A click is the visitor taking over, so the reel stops there.
 				stop();
 				show(i);
@@ -130,10 +132,11 @@ const steps = [
 </script>
 
 <style>
+	/* Released from min-height:100vh — the stepper sizes to its own content and
+	   the page was running to roughly eight screens. */
 	.process {
 		display: flex;
 		align-items: center;
-		min-height: 100vh;
 		padding-block: clamp(4rem, 9vw, 7.5rem);
 	}
 
