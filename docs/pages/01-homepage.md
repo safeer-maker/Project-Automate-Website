@@ -16,10 +16,10 @@ which Astro excludes from routing. *(An earlier draft of this file claimed
 | HOME-01 | Hero | `_HeroSection.astro` | Black + video *(no scrim)* | `100vh` | Headline rise + lede |
 | HOME-02 | Logo marquee ✅ | `_LogoMarquee.astro` | `#FFF1D4` | auto | Two opposed scrolls |
 | HOME-03 | Our Process | `_ProcessSteps.astro` | Cream | `100vh` | Auto-advancing stepper (3s) |
-| HOME-04 | Our Approach (statement) | `_StatementSection.astro` | Cream | auto | Word reveal |
+| HOME-04 | Our Approach (statement) | `_StatementSection.astro` | Cream | auto | Scroll-driven word reveal |
 | — | ❌ Technology That Elevates (4 cards) | *missing* | — | — | — |
 | HOME-05 | The Experience (7 tiles) | `_SolutionsGrid.astro` | Cream | auto | Image scale on hover |
-| HOME-06 | Technical Silence | `_TechnicalSilence.astro` | Cream | `100vh` | None |
+| HOME-06 | Technical Silence | `_TechnicalSilence.astro` | Black + scrubbed frames | `100vh` | Scroll-scrubbed lighting reveal |
 | — | ❌ Why PROJECT:automate / 17 years | *missing* | — | — | — |
 | HOME-07 | Inspiration | `_InspirationPreview.astro` | Cream | `100vh` | Image scale + arrow nudge |
 | HOME-08 | Closing CTA | `ui/CtaBanner.astro` (`variant="feature"`) | Black + video | `100vh` | None |
@@ -265,32 +265,42 @@ numbers, 70ms column stagger — no longer apply to this layout.
 
 ## HOME-04 — Our Approach (statement)
 
-**What it is:** Eyebrow "Luxury Smart Home Automation", then four display lines
-revealed word by word on scroll.
+**What it is:** Eyebrow "Our Approach", then one display sentence that reveals word
+by word as you scroll through it.
 
 **Copy:** *"We create intelligent living environments where comfort, control and
-design work seamlessly as one enhancing everyday life with clarity, simplicity,
+design work seamlessly as one, enhancing everyday life with clarity, simplicity,
 and precision."*
 
-**Animation today** ✅ the best thing on the site
+**Animation today** ✅ scroll-driven
 
-- Words start at `opacity: 0.14`, transition to `1` over `0.5s`, 45ms stagger,
-  triggered by `IntersectionObserver` at `threshold: 0.3`, observer disconnects
-  after firing. Reduced-motion handled.
+- Word opacity is mapped directly to scroll position — no timer, no stagger.
+  Progress runs from the heading's top passing **85%** of the viewport to reaching
+  **30%**, a little over half a screen of scrolling, so the sentence finishes while
+  it is still comfortably in view.
+- The leading edge is feathered across **4 words** rather than switching each word
+  on individually, which reads as a sweep instead of a stutter.
+- Words rest at `opacity: 0.14` and resolve to `1`.
+- Scroll listener is rAF-throttled and only attached while the heading is within
+  `100px` of the viewport, so it costs nothing on the rest of the page.
+- **Progressive enhancement:** the dimming is applied by JS, not CSS. Without
+  JS the sentence renders fully legible rather than nearly invisible.
+- Reduced motion: fully lit, no scroll handler attached at all.
+
+**Fixed along the way:** the copy used to be a hard-coded array of four "display
+lines", but each line was wider than the `24ch` measure and wrapped *again*,
+orphaning the word "work" onto a line of its own. It is now a single string that
+wraps naturally inside a `32ch` measure with `text-wrap: balance`, giving four even
+lines.
 
 **Suggestions**
 
-1. **Drive it by scroll position, not a timer.** Right now the section can be
-   fully past before the animation finishes, or finish before you've read it. Map
-   word opacity to the section's scroll progress so the text literally reveals as
-   you scroll. Reference:
-   [apple.com/airpods-pro](https://www.apple.com/airpods-pro/) — the canonical
-   version of this.
-2. The eyebrow says "Luxury Smart Home Automation" but live labels it
-   "Our Approach". Pick one — ⚠️ the rebuild currently shows the SEO phrase where
-   the live site shows the human label.
-3. The copy is missing a comma and runs two clauses together ("work seamlessly as
-   one enhancing everyday life"). Same error is on live. Worth fixing here.
+1. ~~**Drive it by scroll position, not a timer.**~~ ✅ Done — see above. Reference
+   was [apple.com/airpods-pro](https://www.apple.com/airpods-pro/).
+2. ~~**Eyebrow.**~~ ✅ Done — now reads "Our Approach", matching the live site's
+   human label rather than the SEO phrase.
+3. ~~**Missing comma.**~~ ✅ Done — "work seamlessly as one**,** enhancing everyday
+   life". ⚠️ The error is still live on the production site.
 
 ---
 
@@ -363,23 +373,80 @@ Each tile is a full-bleed image, bottom gradient scrim, title + arrow button.
 
 ## HOME-06 — Technical Silence
 
-**What it is:** Full-viewport. Eyebrow "The Experience", then "Technical Silence."
-at `--text-display-xl` (160px at 1440), with a short paragraph pushed to the right.
+**What it is:** Full-viewport, **on dark**. Eyebrow "Our Philosophy", then "Technical
+Silence." at `--text-display-xl` (160px at 1440) in white, with a short paragraph
+pushed to the right — all over a **scroll-scrubbed frame sequence** of landscape
+lighting coming up across an estate at night.
 
-**Animation today:** none. The biggest type on the site just sits there.
+**Animation today** ✅ scroll-scrubbed video
+
+The section's background is a `<canvas>` playing a 75-frame sequence whose frame
+index is driven by scroll position. The clip is a *reveal* — the estate starts
+essentially unlit and the landscape lighting comes up over 5 seconds — so scrolling
+into the section literally turns the lights on. That makes the motion argue the
+section's point instead of decorating it.
+
+- Progress runs from the section's top being one viewport below the fold to it
+  reaching the top of the viewport — one screen of scrolling, ~12px per frame — so
+  the lighting finishes coming up as the section fills the screen and then **holds
+  lit** while you read.
+- **Adjacent frames are crossfaded** by the fractional part of the frame index. The
+  camera is static and only the light level changes, so blending reads as a
+  continuous ramp with no ghosting. This is what lets 75 frames feel smooth; without
+  it you would need roughly double the frames and double the bytes.
+- Frames preload in parallel; until a given frame lands the canvas falls back to the
+  nearest loaded one, so scrubbing never shows a blank. Scroll listener is
+  rAF-throttled and only attached within `150%` of the viewport.
+- Canvas is a 1280×720 bitmap with `object-fit: cover` — `object-fit` applies to
+  `<canvas>` as a replaced element, so one bitmap fills any viewport undistorted.
+- **Phones and save-data** skip the sequence entirely and get the final lit frame as
+  a still. 3.7MB is not worth spending on a phone.
+- ⚠️ **Deliberately not gated on `prefers-reduced-motion`,** unlike every other
+  animation on this page. The camera in this clip is static — nothing travels across
+  the screen, only the light level changes — so the scrub is a cross-fade rather than
+  motion. Gating it silently disabled the entire effect for anyone who had turned
+  Windows *Settings → Accessibility → Visual effects → Animation effects* off, which
+  is a common performance tweak. If the clip is ever replaced with one that pans or
+  moves, put the reduced-motion gate back.
+
+**Media** — `/images/home/technical-silence/frame-001.webp` … `frame-075.webp`
+
+| | |
+| --- | --- |
+| Source | `/videos/Homepage/Landscapre_lighting_video.mp4` (1920×1080, 60fps, 5.0s, 4.9MB) |
+| Sampling | every 4th frame → 75 frames |
+| Encode | scaled to 1280 wide, WebP quality 72 |
+| Total | ~3.7MB (≈50KB per frame) — comparable to `hero.webm` at 2.9MB |
+
+Regenerate after swapping the clip:
+
+```
+ffmpeg -i <clip> -vf "select='not(mod(n\,4))',scale=1280:-2" -vsync 0 \
+  -c:v libwebp -quality 72 -compression_level 6 \
+  public/images/home/technical-silence/frame-%03d.webp
+```
+
+Measured alternatives, for when this gets revisited: 1920-wide q72 averages 95KB per
+frame (13MB at 150 frames) and 1600-wide q72 averages 69KB. AVIF was tested and
+rejected — marginal size win, much slower encode, and slower decode, which matters
+when 75 images must decode during a scroll.
+
+⚠️ **The source .mp4 still sits in `public/`,** so it ships to production as 4.9MB of
+dead weight — nothing references it now that the frames exist. Move it out of
+`public/` (or delete it) before the next deploy.
 
 **Suggestions**
 
-1. This is the page's thesis statement and it should be its most deliberate
-   moment. Reveal "Technical" and "Silence." as two separate mask-wipes, 200ms
-   apart, then the paragraph fades in 400ms later.
-2. **Then take the sound out.** Literally: on entering this section, fade the
-   HOME-01 hero video's implied energy by using a near-silent, very slow-moving
-   ambient loop as a barely-visible background at 8% opacity. Optional, but it
-   makes the section land.
-3. ⚠️ Eyebrow is "The Experience" here **and** on HOME-05. Two adjacent sections
-   sharing an eyebrow is a mistake on live and it was copied over. Change this one
-   to "Our Philosophy".
+1. ~~Reveal "Technical" and "Silence." as two mask-wipes.~~ Superseded — the section
+   now has the scrubbed background as its deliberate moment. A type reveal on top of
+   it would be one effect too many.
+2. ~~**Then take the sound out** — a near-silent ambient loop at 8% opacity.~~ ✅ Done,
+   and better than specified: a real clip at full opacity, driven by scroll rather
+   than playing on its own.
+3. ~~⚠️ Eyebrow duplicated with HOME-05.~~ ✅ Done — this one is now "Our Philosophy".
+4. 🆕 **This resolves page-level suggestion 1** (see the bottom of this file): the
+   cream run is now broken by a genuinely dark section, and the page reads
+   dark → light → dark → light → **dark** → light → dark.
 
 ---
 
@@ -486,12 +553,11 @@ would genuinely earn their cost:
 
 ## Page-level suggestions
 
-1. **Break the cream monotony.** Partly addressed — the HOME-02 marquee band at
-   `#FFF1D4` now interrupts the run. But HOME-03 → HOME-07 are still five
-   consecutive sections on `#FFFCEF`. Put HOME-06 (Technical Silence) on charcoal
-   with cream type. The page then reads dark → light → **dark** → light → dark,
-   which gives the scroll a shape. This is a one-line change and it remains the
-   highest-impact edit on the page.
+1. ~~**Break the cream monotony.**~~ ✅ Done. The HOME-02 marquee band at `#FFF1D4`
+   interrupts the run, and HOME-06 (Technical Silence) is now genuinely dark — black
+   with a scrubbed night-lighting background and white type. The page reads
+   dark → light → dark → light → **dark** → light → dark, which gives the scroll a
+   shape.
 2. **Height budget.** Five sections at `min-height: 100vh` makes the homepage
    roughly 8 screens tall. Release HOME-03 and HOME-07 from `100vh` and let them
    size to content.

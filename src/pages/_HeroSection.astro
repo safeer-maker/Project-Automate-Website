@@ -39,7 +39,23 @@ import { withBase } from "../lib/paths.ts";
 			</div>
 		</div>
 	</div>
+
+	<a class="hero-cue" href="#after-hero" aria-label="Scroll to content">
+		<span class="hero-cue-line" aria-hidden="true"></span>
+	</a>
 </section>
+
+<script>
+	const video = document.querySelector<HTMLVideoElement>('.hero-video');
+	if (video) {
+		// Slightly under real time. Almost subliminal, but it stops the clip
+		// feeling like stock footage.
+		const settle = () => (video.playbackRate = 0.85);
+		settle();
+		// Some browsers reset playbackRate when the source finishes loading.
+		video.addEventListener('loadeddata', settle);
+	}
+</script>
 
 <style>
 	.hero {
