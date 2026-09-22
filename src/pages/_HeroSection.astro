@@ -1,5 +1,5 @@
 ---
-import { withBase } from '../lib/paths.ts';
+import { withBase } from "../lib/paths.ts";
 ---
 
 <section class="hero">
@@ -12,24 +12,31 @@ import { withBase } from '../lib/paths.ts';
 			loop
 			playsinline
 			preload="auto"
-			poster={withBase('/images/home/hero/poster.webp')}
+			poster={withBase("/images/home/hero/poster.webp")}
 			aria-hidden="true"
 			tabindex="-1"
 		>
-			<source src={withBase('/videos/hero.webm')} type="video/webm" />
-			<source src={withBase('/videos/hero.mp4')} type="video/mp4" />
+			<source src={withBase("/videos/hero.webm")} type="video/webm" />
+			<source src={withBase("/videos/hero.mp4")} type="video/mp4" />
 		</video>
 	</div>
 
 	<div class="hero-inner">
-		<h1 class="hero-title">
-			<span>Tailored</span> <span>Luxury</span> <span>Technologies</span>
-		</h1>
-		<p class="hero-lede">
-			Lighting, climate, sound and security — designed to work as one, and to disappear.
-		</p>
-		<div class="hero-actions">
-			<a class="hero-btn hero-btn-primary" href={withBase('/schedule/')}>Book a Consultation</a>
+		<div class="hero-box">
+			<h1 class="hero-title">
+				<span>Tailored Luxury</span>
+				<span>Technologies</span>
+			</h1>
+			<p class="hero-lede">
+				<span>Lighting, climate, sound and security,</span>
+				<span>designed to work as one, and to disappear.</span>
+			</p>
+			<div class="hero-actions">
+				<a
+					class="hero-btn hero-btn-primary"
+					href={withBase("/schedule/")}>Book a Consultation</a
+				>
+			</div>
 		</div>
 	</div>
 </section>
@@ -85,7 +92,13 @@ import { withBase } from '../lib/paths.ts';
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;
-		text-align: right;
+	}
+
+	/* The block sits right, but the type inside reads left-to-right like any
+	   other English copy — a right-aligned ragged edge fought the reading order. */
+	.hero-box {
+		width: min(34rem, 100%);
+		text-align: left;
 	}
 
 	.hero-title {
@@ -99,14 +112,11 @@ import { withBase } from '../lib/paths.ts';
 	}
 
 	.hero-title span {
-		display: inline-block;
+		display: block;
 		animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 	}
 	.hero-title span:nth-child(2) {
 		animation-delay: 0.12s;
-	}
-	.hero-title span:nth-child(3) {
-		animation-delay: 0.24s;
 	}
 
 	@keyframes rise {
@@ -122,21 +132,24 @@ import { withBase } from '../lib/paths.ts';
 
 	.hero-lede {
 		margin: 0 0 var(--space-6);
-		max-width: 34rem;
 		font-size: clamp(1rem, 1.35vw, 1.1875rem);
 		font-weight: var(--fw-regular);
 		line-height: 1.55;
 		color: var(--color-text-on-dark);
 		text-shadow: 0 1px 16px rgba(0, 0, 0, 0.5);
-		/* Trails the third headline word, which lands at 0.24s + 0.9s. */
-		animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.42s both;
+		/* Trails the second headline line, which lands at 0.12s + 0.9s. */
+		animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+	}
+
+	.hero-lede span {
+		display: block;
 	}
 
 	.hero-actions {
 		display: flex;
 		gap: var(--space-3);
 		flex-wrap: wrap;
-		justify-content: flex-end;
+		justify-content: flex-start;
 	}
 
 	.hero-btn {
@@ -149,7 +162,9 @@ import { withBase } from '../lib/paths.ts';
 		border-radius: var(--radius-sm);
 		border: 1px solid transparent;
 		white-space: nowrap;
-		transition: background-color var(--transition-base), border-color var(--transition-base);
+		transition:
+			background-color var(--transition-base),
+			border-color var(--transition-base);
 	}
 
 	.hero-btn-primary {
@@ -163,10 +178,11 @@ import { withBase } from '../lib/paths.ts';
 	@media (max-width: 700px) {
 		.hero-inner {
 			align-items: flex-start;
-			text-align: left;
 		}
-		.hero-actions {
-			justify-content: flex-start;
+		/* Forced line breaks stop earning their keep once the column is narrow
+		   enough that each one wraps anyway. */
+		.hero-lede span {
+			display: inline;
 		}
 	}
 

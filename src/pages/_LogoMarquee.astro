@@ -1,8 +1,8 @@
 ---
-// Two auto-scrolling logo strips: brands we've installed (left→right) and
-// certifications (right→left). Backgrounds have been stripped from every
-// logo on the design side, so they sit directly on the section's cream
-// background rather than in cards.
+// Auto-scrolling strip of the brands we install, left→right. Backgrounds have
+// been stripped from every logo on the design side, so they sit directly on the
+// section's band rather than in cards. The certification strip that used to sit
+// beneath this one now lives in _CertificationMarquee.astro.
 import { withBase } from '../lib/paths.ts';
 
 const vendors = [
@@ -20,19 +20,11 @@ const vendors = [
 	{ name: 'Coastal Source', logo: '/images/vendors/coastal-source.png' },
 ];
 
-const certifications = [
-	{ name: 'CEDIA Certified', logo: '/images/badges/cedia-certified.webp' },
-	{ name: 'HTA Design Partner', logo: '/images/badges/hta-design-partner.webp' },
-	{ name: 'Cert Level Luxury', logo: '/images/badges/cert-level-luxury.webp' },
-];
-
 // A marquee half has to be wider than the viewport or the loop shows a gap.
-// Three certifications aren't enough, so the set is repeated up to a floor.
 const repeatToFill = <T,>(items: T[], minimum: number): T[] =>
 	Array.from({ length: Math.ceil(minimum / items.length) }, () => items).flat();
 
 const vendorRow = repeatToFill(vendors, 10);
-const certificationRow = repeatToFill(certifications, 10);
 ---
 
 <section class="marquee-section">
@@ -45,26 +37,13 @@ const certificationRow = repeatToFill(certifications, 10);
 			))}
 		</div>
 	</div>
-
-	<div class="marquee-row" data-direction="rtl">
-		<div class="marquee-track">
-			{[...certificationRow, ...certificationRow].map((item) => (
-				<span class="marquee-item is-certification">
-					<img src={withBase(item.logo)} alt={item.name} decoding="async" />
-				</span>
-			))}
-		</div>
-	</div>
 </section>
 
 <style>
 	.marquee-section {
 		background: var(--color-surface-2);
 		border-block: 1px solid var(--color-border);
-		padding-block: clamp(2.5rem, 6vw, 4.5rem);
-		display: flex;
-		flex-direction: column;
-		gap: clamp(2rem, 5vw, 3.5rem);
+		padding-block: clamp(1.25rem, 2.5vw, 2rem);
 	}
 
 	.marquee-row {
@@ -101,10 +80,6 @@ const certificationRow = repeatToFill(certifications, 10);
 		animation: scroll-ltr 36s linear infinite;
 	}
 
-	.marquee-row[data-direction='rtl'] .marquee-track {
-		animation: scroll-rtl 30s linear infinite;
-	}
-
 	/* Logo aspect ratios run from 1.6 to 8.2, so each sits in a fixed box and
 	   contains within it — wide wordmarks cap on width, squat marks on height,
 	   which keeps them optically the same size rather than mathematically. */
@@ -116,11 +91,6 @@ const certificationRow = repeatToFill(certifications, 10);
 		width: clamp(130px, 14vw, 200px);
 		height: clamp(48px, 5vw, 72px);
 		margin-inline: clamp(1.5rem, 3vw, 2.75rem);
-	}
-
-	.marquee-item.is-certification {
-		width: clamp(110px, 11vw, 160px);
-		height: clamp(56px, 6vw, 84px);
 	}
 
 	.marquee-item img {
@@ -137,15 +107,6 @@ const certificationRow = repeatToFill(certifications, 10);
 		}
 		to {
 			transform: translateX(0%);
-		}
-	}
-
-	@keyframes scroll-rtl {
-		from {
-			transform: translateX(0%);
-		}
-		to {
-			transform: translateX(-50%);
 		}
 	}
 
