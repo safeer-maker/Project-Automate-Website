@@ -16,18 +16,20 @@ const framePath = (n: number) =>
 ---
 
 <section class="silence" data-silence data-frames={FRAME_COUNT} data-src={framePath(0)}>
-	<div class="silence-media">
-		<canvas data-canvas width="1280" height="720" aria-hidden="true"></canvas>
-		<div class="silence-scrim"></div>
-	</div>
+	<div class="silence-stage">
+		<div class="silence-media">
+			<canvas data-canvas width="1280" height="720" aria-hidden="true"></canvas>
+			<div class="silence-scrim"></div>
+		</div>
 
-	<div class="page">
-		<span class="eyebrow">Our Philosophy</span>
-		<h2>Technical<br />Silence.</h2>
-		<p>
-			The finest technology is the kind you never notice — working quietly in the background,
-			leaving only comfort, clarity, and a sense of calm behind.
-		</p>
+		<div class="page silence-copy">
+			<span class="eyebrow">Our Philosophy</span>
+			<h2>Technical Silence.</h2>
+			<p>
+				The finest technology is the kind you never notice — working quietly in the background,
+				leaving only comfort, clarity, and a sense of calm behind.
+			</p>
+		</div>
 	</div>
 </section>
 
@@ -105,10 +107,12 @@ const framePath = (n: number) =>
 				queued = false;
 				const rect = section.getBoundingClientRect();
 				const vh = window.innerHeight;
-				// 0 when the section's top is one screen below the fold, 1 once it
-				// has risen to the top — so the lighting finishes coming up just as
-				// the section fills the viewport, and holds while you read it.
-				const raw = (vh - rect.top) / vh;
+				// The section is taller than the screen and its inner stage is
+				// sticky, so it stays pinned while you scroll through it. Progress
+				// runs 0 → 1 across exactly that pinned distance, which guarantees
+				// every frame is seen before the page moves on.
+				const travel = section.offsetHeight - vh;
+				const raw = travel > 0 ? -rect.top / travel : 1;
 				const progress = Math.min(1, Math.max(0, raw));
 
 				const exact = progress * (total - 1);
@@ -153,15 +157,23 @@ const framePath = (n: number) =>
 </script>
 
 <style>
+	/* Taller than the screen so the sticky stage inside stays pinned while the
+	   frame sequence plays out. 150vh of travel across 75 frames is ~18px of
+	   scroll per frame. */
 	.silence {
 		position: relative;
-		display: flex;
-		align-items: center;
-		min-height: 100vh;
-		padding-block: clamp(4rem, 9vw, 7.5rem);
-		overflow: hidden;
+		height: 250vh;
 		background: var(--color-black);
 		color: var(--color-text-on-dark);
+	}
+
+	.silence-stage {
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		overflow: hidden;
 	}
 
 	.silence-media {
@@ -197,25 +209,29 @@ const framePath = (n: number) =>
 		);
 	}
 
-	.silence > .page {
+	.silence-copy {
 		position: relative;
 		z-index: 1;
 		width: 100%;
 	}
 
+	/* Was --text-display-xl (160px), which was nearly three times every other
+	   heading on the page and read as a different site. Matched to the section
+	   headings elsewhere. */
 	.silence h2 {
-		margin: 0 0 clamp(2rem, 5vw, 4rem);
-		font-size: var(--text-display-xl);
-		font-weight: var(--fw-semibold);
-		line-height: 1;
-		letter-spacing: -0.03em;
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.015em;
 		color: var(--color-text-on-dark);
 		text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
 	}
 
+	/* Sits under the heading rather than pushed out to the right margin. */
 	.silence p {
-		margin: 0 0 0 auto;
-		max-width: 28rem;
+		margin: 0;
+		max-width: 34rem;
 		font-size: var(--text-body-lg);
 		line-height: 1.6;
 		color: var(--color-text-on-dark-muted);
@@ -223,8 +239,16 @@ const framePath = (n: number) =>
 	}
 
 	@media (max-width: 700px) {
-		.silence p {
-			margin-left: 0;
+		/* The still is shown instead of the sequence here, so there is nothing
+		   to pin and the extra scroll height would just be dead space. */
+		.silence {
+			height: auto;
+		}
+		.silence-stage {
+			position: static;
+			height: auto;
+			min-height: 100vh;
+			padding-block: clamp(4rem, 9vw, 7.5rem);
 		}
 	}
 </style>
