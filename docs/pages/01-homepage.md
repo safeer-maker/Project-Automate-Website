@@ -71,9 +71,23 @@ button bottom-**right** (bottom-left on mobile).
 
 | Asset | Path | Size | Note |
 | --- | --- | --- | --- |
-| Video (webm) | `/videos/hero.webm` | 2.9 MB | Primary source |
-| Video (mp4) | `/videos/hero.mp4` | 4.0 MB | Fallback |
-| Poster | `/images/home/hero/poster.webp` | | |
+| Video (mp4), desktop | `/videos/hero.mp4` | 8.3 MB | Primary source (H.264, broad hw decode), `min-width: 701px`, 1600×900 |
+| Video (webm), desktop | `/videos/hero.webm` | 7.5 MB | Fallback (VP9), `min-width: 701px`, 1600×900 |
+| Video (mp4), mobile | `/videos/hero-mobile.mp4` | 2.9 MB | Primary source, `max-width: 700px`, 960×540 |
+| Video (webm), mobile | `/videos/hero-mobile.webm` | 3.3 MB | Fallback, `max-width: 700px`, 960×540 |
+| Poster | `/images/home/hero/poster.webp` | 150 KB | |
+
+mp4/H.264 is listed first in each `<source>` group (browsers play whichever
+source they hit first that they support — they don't benchmark). VP9
+hardware-decode support is inconsistent across GPUs, and software VP9 decode at
+1080p was causing visible stutter; H.264 hardware decode is close to universal.
+Resolution is capped below source res and both codecs use a hard bitrate
+ceiling (`-maxrate`/`-bufsize`, or `-b:v` as ceiling for VP9's constrained-quality
+mode) so there are no bitrate spikes for the decoder to fall behind on.
+
+Desktop sources re-encoded from `/videos/Homepage/project-automate-hero-1080.mp4`,
+mobile from `/videos/Homepage/project-automate-hero-720.mp4` (raw source clips,
+1920×1080/30fps/~50s each, kept for reference/regeneration).
 
 ✅ Self-hosted, not a YouTube iframe. *(`docs/known-issues.md` still claims this is
 a YouTube embed — that note is stale, the code self-hosts.)*

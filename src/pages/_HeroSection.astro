@@ -1,4 +1,27 @@
 ---
+// Desktop sources are re-encoded from /videos/Homepage/project-automate-hero-1080.mp4,
+// mobile sources from /videos/Homepage/project-automate-hero-720.mp4 (both raw
+// source clips, kept for reference/regeneration). Poster is a still pulled from
+// the desktop clip at 3s.
+//
+// mp4/H.264 is listed before webm/VP9 in every <source> group on purpose: the
+// browser plays whichever source it hits first that it supports, it doesn't
+// benchmark them, and VP9 has much patchier hardware-decode support than H.264
+// across GPUs. Listing webm first was causing software-decoded VP9 stutter on
+// otherwise capable machines. Resolution is also capped below source res
+// (1600px desktop / 960px mobile) with a hard bitrate ceiling (-maxrate/-bufsize,
+// or -b:v as a ceiling in VP9's constrained-quality mode) so there are no bitrate
+// spikes the decoder has to catch up on.
+//
+// To regenerate after swapping the clip:
+//   ffmpeg -i <clip> -vf scale=1600:-2 -r 30 -c:v libx264 -preset slow -crf 26 \
+//     -maxrate 1800k -bufsize 3600k -g 60 -keyint_min 60 -pix_fmt yuv420p -an \
+//     -movflags +faststart public/videos/hero.mp4
+//   ffmpeg -i <clip> -vf scale=1600:-2 -r 30 -c:v libvpx-vp9 -crf 34 -b:v 1400k \
+//     -maxrate 1400k -bufsize 2800k -g 60 -keyint_min 60 -row-mt 1 -tile-columns 2 \
+//     -pix_fmt yuv420p -an public/videos/hero.webm
+//   (repeat at scale=960:-2 for hero-mobile.mp4 crf 28/maxrate 900k, and
+//   hero-mobile.webm crf 37/b:v 700k)
 import { withBase } from "../lib/paths.ts";
 ---
 
@@ -16,8 +39,18 @@ import { withBase } from "../lib/paths.ts";
 			aria-hidden="true"
 			tabindex="-1"
 		>
-			<source src={withBase("/videos/hero.webm")} type="video/webm" />
+			<source
+				media="(max-width: 700px)"
+				src={withBase("/videos/hero-mobile.mp4")}
+				type="video/mp4"
+			/>
+			<source
+				media="(max-width: 700px)"
+				src={withBase("/videos/hero-mobile.webm")}
+				type="video/webm"
+			/>
 			<source src={withBase("/videos/hero.mp4")} type="video/mp4" />
+			<source src={withBase("/videos/hero.webm")} type="video/webm" />
 		</video>
 	</div>
 
