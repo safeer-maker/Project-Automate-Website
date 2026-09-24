@@ -25,12 +25,18 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			     the clip it opened with. Encoded from media-src/videos/
 			     closing-original-hero.mp4 with its fade-from/to-black trimmed
 			     (-ss 1.0 -to 28.2); the posters are each encode's exact first frame,
-			     so the fade from still to film never shows a different picture. -->
+			     so the fade from still to film never shows a different picture.
+			     Portrait phones get a 540x960 centre crop of the 1080p master
+			     (same settings as the hero's hero-portrait.*), not the 16:9 film
+			     cover-fitted and upscaled ~4.5x. -->
 			<picture class="cta-poster">
+				<source media="(max-width: 700px) and (orientation: portrait)" srcset={withBase('/images/home/closing/poster-portrait.webp')} width="540" height="960" />
 				<source media="(max-width: 700px)" srcset={withBase('/images/home/closing/poster-mobile.webp')} width="960" height="540" />
 				<img src={withBase('/images/home/closing/poster.webp')} alt="" width="1600" height="900" loading="lazy" decoding="async" />
 			</picture>
 			<video class="cta-video" data-cta-video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+				<source media="(max-width: 700px) and (orientation: portrait)" src={withBase('/videos/closing-portrait.mp4')} type="video/mp4" />
+				<source media="(max-width: 700px) and (orientation: portrait)" src={withBase('/videos/closing-portrait.webm')} type="video/webm" />
 				<source media="(max-width: 700px)" src={withBase('/videos/closing-mobile.mp4')} type="video/mp4" />
 				<source media="(max-width: 700px)" src={withBase('/videos/closing-mobile.webm')} type="video/webm" />
 				<source src={withBase('/videos/closing.mp4')} type="video/mp4" />
@@ -38,10 +44,6 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			</video>
 			<span class="cta-scrim"></span>
 		</div>
-		<button class="cta-toggle" type="button" data-cta-toggle aria-label="Pause background video" hidden>
-			<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
-			<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.8v8.4l6.6-4.2z" fill="currentColor" /></svg>
-		</button>
 	)}
 
 	{isFeature ? (
@@ -49,7 +51,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			<h2>Your home, composed.</h2>
 			<p class="cta-body">Intelligent technology, designed around the way you live.</p>
 			<div class="cta-actions">
-				<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Schedule a Consultation</a>
+				<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Book a Consultation</a>
 				<a class="cta-phone" href={phoneHref}>
 					or call the studio <span>{phone}</span>
 				</a>
@@ -63,8 +65,18 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		<div class="page cta-inner">
 			<h2>Design your<br />Living Experience</h2>
 			<p class="cta-body">Intelligent technology, designed around your lifestyle.</p>
-			<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Schedule a Consultation</a>
+			<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Book a Consultation</a>
 		</div>
+	)}
+
+	{/* After the copy in the markup so the tab order follows the reading order
+	    (focus used to jump down to the toggle, then back up under the sticky
+	    header). Absolutely positioned, so nothing moves on screen. */}
+	{isFeature && (
+		<button class="cta-toggle" type="button" data-cta-toggle aria-label="Pause background video" hidden>
+			<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+			<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.8v8.4l6.6-4.2z" fill="currentColor" /></svg>
+		</button>
 	)}
 </section>
 
@@ -221,7 +233,9 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	.cta-toggle {
 		position: absolute;
 		z-index: 2;
-		right: var(--page-gutter);
+		/* On the content grid's right edge, not the screen's: past the 1440
+		   page width it drifted up to 200px outside the layout. */
+		right: max(var(--page-gutter), calc((100% - var(--page-max)) / 2 + var(--page-gutter)));
 		bottom: clamp(1.25rem, 3vh, 2rem);
 		display: grid;
 		place-items: center;
@@ -281,10 +295,12 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		opacity: 1;
 	}
 
+	/* The film ends on bright sunset horizons (t=15–24s) right behind the
+	   copy column, so the scrim holds ~0.7 across it before easing off. */
 	.cta-scrim {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(90deg, rgba(10, 10, 10, 0.82) 0%, rgba(10, 10, 10, 0.45) 60%, rgba(10, 10, 10, 0.3) 100%);
+		background: linear-gradient(90deg, rgba(10, 10, 10, 0.82) 0%, rgba(10, 10, 10, 0.7) 45%, rgba(10, 10, 10, 0.3) 100%);
 	}
 
 	.cta-inner {
@@ -338,9 +354,11 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		text-shadow: 0 2px 40px rgba(0, 0, 0, 0.35);
 	}
 
+	/* Full white: at 0.7 the line fell to ~3.6:1 over the sunset frames. */
 	.cta-feature .cta-body {
 		margin-bottom: clamp(2rem, 4vw, 2.75rem);
 		font-size: clamp(1.125rem, 1.4vw, 1.3rem);
+		color: var(--color-text-on-dark);
 	}
 
 	.cta-actions {
@@ -421,7 +439,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 
 	@media (max-width: 599px) {
 		.cta-scrim {
-			background: linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.72) 100%);
+			background: linear-gradient(180deg, rgba(10, 10, 10, 0.68) 0%, rgba(10, 10, 10, 0.72) 100%);
 		}
 	}
 </style>

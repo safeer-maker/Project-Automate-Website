@@ -26,36 +26,55 @@ interface Props {
 
 const { instance = 'inline', deferLoad = false, primary = false } = Astro.props;
 const id = instance === 'inline' ? `inline-${ghl.formId}` : `inline-${ghl.formId}-${instance}`;
+
+// A generic outline of a form, not a field-for-field copy, so it doesn't go
+// stale when the GHL form changes.
+const skeletonFields = 9;
 ---
 
 <div class="ghl-form-shell" data-ghl-shell style={`--ghl-form-height:${ghl.formHeight}px`}>
+	<!-- Fills the reserved height while the form loads: on a slow connection
+	     a visitor could otherwise scroll into a whole screen of empty cream. -->
 	<div class="ghl-form-loading" aria-hidden="true">
 		<span class="ghl-form-loading-bar"></span>
 		<span class="ghl-form-loading-label">Preparing your private consultation form…</span>
+		{Array.from({ length: skeletonFields }, () => (
+			<span class="ghl-skeleton-field">
+				<span class="ghl-skeleton-label"></span>
+				<span class="ghl-skeleton-input"></span>
+			</span>
+		))}
+		<span class="ghl-skeleton-submit"></span>
 	</div>
-	<iframe
-		class="ghl-form"
-		src={primary ? ghlFormUrl : undefined}
-		data-src={ghlFormUrl}
-		data-ghl-manual-load={deferLoad ? '' : undefined}
-		data-ghl-primary={primary ? '' : undefined}
-		style={`height:${ghl.formHeight}px`}
-		id={id}
-		data-layout="{'id':'INLINE'}"
-		data-trigger-type="alwaysShow"
-		data-trigger-value=""
-		data-activation-type="alwaysActivated"
-		data-activation-value=""
-		data-deactivation-type="neverDeactivate"
-		data-deactivation-value=""
-		data-form-name={ghl.formName}
-		data-height={ghl.formHeight}
-		data-layout-iframe-id={id}
-		data-form-id={ghl.formId}
-		data-cookie-consent="true"
-		data-cookie-consent-provider="ghl_cookie"
-		title={ghl.formName}
-	></iframe>
+	<!-- form_embed.js moves an iframe into a `${id}-wrapper` container of its
+	     own unless it already sits in one, and moving an iframe reloads it: the
+	     form appeared, blanked for a frame and loaded a second time (losing
+	     anything typed). Providing the wrapper up front keeps it in place. -->
+	<div id={`${id}-wrapper`}>
+		<iframe
+			class="ghl-form"
+			src={primary ? ghlFormUrl : undefined}
+			data-src={ghlFormUrl}
+			data-ghl-manual-load={deferLoad ? '' : undefined}
+			data-ghl-primary={primary ? '' : undefined}
+			style={`height:${ghl.formHeight}px`}
+			id={id}
+			data-layout="{'id':'INLINE'}"
+			data-trigger-type="alwaysShow"
+			data-trigger-value=""
+			data-activation-type="alwaysActivated"
+			data-activation-value=""
+			data-deactivation-type="neverDeactivate"
+			data-deactivation-value=""
+			data-form-name={ghl.formName}
+			data-height={ghl.formHeight}
+			data-layout-iframe-id={id}
+			data-form-id={ghl.formId}
+			data-cookie-consent="true"
+			data-cookie-consent-provider="ghl_cookie"
+			title="Private consultation request form"
+		></iframe>
+	</div>
 </div>
 
 <script>
@@ -132,19 +151,82 @@ const id = instance === 'inline' ? `inline-${ghl.formId}` : `inline-${ghl.formId
 	}
 
 	/* Sits behind the iframe (which form_embed.js keeps transparent until the
-	   form is ready), so the slot reads as "arriving" rather than empty. */
+	   form is ready), so the slot reads as "arriving" rather than empty: a
+	   quiet card the size of the form, with label and field bars. */
 	.ghl-form-loading {
 		position: absolute;
-		inset: 0 0 auto;
-		display: grid;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
 		gap: var(--space-4);
-		padding-top: var(--space-6);
+		padding: clamp(1.5rem, 3vw, 2rem);
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: var(--color-surface);
 		transition: opacity var(--dur-base) var(--ease-in-out-soft);
 		pointer-events: none;
 	}
 
+	/* Gone entirely once the form is in (after the fade), so it can never
+	   show through or around the loaded form. */
 	.ghl-form-shell.is-loaded .ghl-form-loading {
 		opacity: 0;
+		visibility: hidden;
+		transition:
+			opacity var(--dur-base) var(--ease-in-out-soft),
+			visibility 0s linear var(--dur-base);
+	}
+
+	.ghl-skeleton-field {
+		display: grid;
+		gap: var(--space-2);
+		margin-top: var(--space-4);
+	}
+
+	.ghl-skeleton-label,
+	.ghl-skeleton-input,
+	.ghl-skeleton-submit {
+		display: block;
+		border-radius: var(--radius-sm);
+		background: rgba(22, 16, 8, 0.06);
+	}
+
+	.ghl-skeleton-label {
+		width: 32%;
+		height: 0.75rem;
+	}
+
+	.ghl-skeleton-field:nth-of-type(3n + 2) .ghl-skeleton-label {
+		width: 46%;
+	}
+
+	.ghl-skeleton-input {
+		height: 3rem;
+		border: 1px solid var(--color-border);
+		background: var(--color-white);
+	}
+
+	.ghl-skeleton-submit {
+		height: 3rem;
+		margin-top: var(--space-8);
+		background: rgba(150, 111, 56, 0.18);
+	}
+
+	/* A slow, low-contrast sheen so the card reads as loading, not broken. */
+	.ghl-form-loading::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+		transform: translateX(-100%);
+		animation: ghl-sheen 2.4s var(--ease-in-out-soft) infinite;
+	}
+
+	@keyframes ghl-sheen {
+		to {
+			transform: translateX(100%);
+		}
 	}
 
 	.ghl-form-loading-bar {
@@ -184,6 +266,9 @@ const id = instance === 'inline' ? `inline-${ghl.formId}` : `inline-${ghl.formId
 			animation: none;
 			width: 100%;
 			opacity: 0.4;
+		}
+		.ghl-form-loading::after {
+			display: none;
 		}
 	}
 </style>

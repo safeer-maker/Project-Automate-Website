@@ -8,12 +8,20 @@ const year = new Date().getFullYear();
 
 // The HTA Design Partner mark is white-on-transparent, so it vanishes on the
 // light chip the other badges need — it gets a dark chip of its own.
+// The -sm files are 150px tall (enough for the 44px chip at 3x); the originals
+// (785–1853px, ~125KB for three) stay for the pages that show them large.
+// width/height are each file's own size, so a chip is laid out at its final
+// width before the image arrives; CSS sets the rendered height.
 const badges = [
-	{ src: '/images/badges/hta-design-partner.webp', alt: 'HTA Design Partner', dark: true },
-	{ src: '/images/badges/cedia-certified.webp', alt: 'CEDIA Smart Home CE Provider' },
-	{ src: '/images/badges/cert-level-luxury.webp', alt: 'HTA Certified — Luxury Level' },
-	{ src: '/images/badges/17-years-badge.webp', alt: '17+ Years of Smart Home Expertise' },
+	{ src: '/images/badges/hta-design-partner.webp', alt: 'HTA Design Partner', width: 280, height: 40, dark: true },
+	{ src: '/images/badges/cedia-certified-sm.webp', alt: 'CEDIA Smart Home CE Provider', width: 150, height: 150 },
+	{ src: '/images/badges/cert-level-luxury-sm.webp', alt: 'HTA Certified — Luxury Level', width: 319, height: 150 },
+	{ src: '/images/badges/17-years-badge-sm.webp', alt: '17+ Years of Smart Home Expertise', width: 126, height: 150 },
 ];
+
+// "Building 7" and "Suite 400" never split across lines. Only here: line1
+// also feeds the JSON-LD streetAddress, which should stay plain.
+const addressLine1 = siteInfo.address.line1.replace(/(Building|Suite) /g, '$1\u00a0');
 ---
 
 <footer class="site-footer">
@@ -22,13 +30,9 @@ const badges = [
 			{/* 150×97 matches the file's 451×291 ratio — nothing in CSS resizes it, so these attributes are its rendered size. */}
 			<img src={withBase('/images/logo/logo-static.webp')} alt="PROJECT: automate logo" width="150" height="97" />
 			<p class="tagline">{siteInfo.tagline}</p>
-
-			<form class="newsletter" data-placeholder-form>
-				<label for="footer-email" class="visually-hidden">Email</label>
-				<input id="footer-email" type="email" name="email" placeholder="Email" required />
-				<button type="submit">Submit</button>
-			</form>
-			<p class="newsletter-success" data-form-success hidden>Thanks — you're on the list.</p>
+			{/* The newsletter field that sat here was a placeholder: it said
+			    "you're on the list" but sent the address nowhere. Removed until
+			    there is a real list to connect it to. */}
 
 			<ul class="social">
 				{siteInfo.social.map((s) => (
@@ -75,7 +79,7 @@ const badges = [
 				{siteInfo.phones.map((phone) => (
 					<li><a href={`tel:${phone.replace(/[^0-9+]/g, '')}`}>{phone}</a></li>
 				))}
-				<li>{siteInfo.address.line1}<br />{siteInfo.address.line2}</li>
+				<li>{addressLine1}<br />{siteInfo.address.line2}</li>
 			</ul>
 			<Button href={withBase('/schedule/')} data-ghl-form-open variant="outline" size="md" class="footer-cta">Book a Consultation</Button>
 		</div>
@@ -84,13 +88,13 @@ const badges = [
 	<div class="container badge-row">
 		{badges.map((badge) => (
 			<div class:list={['badge-chip', { 'badge-chip--dark': badge.dark }]}>
-				<img src={withBase(badge.src)} alt={badge.alt} loading="lazy" decoding="async" />
+				<img src={withBase(badge.src)} alt={badge.alt} width={badge.width} height={badge.height} loading="lazy" decoding="async" />
 			</div>
 		))}
 	</div>
 
 	<div class="container footer-bottom">
-		<p>&copy; {year} {siteInfo.legalName}. All rights reserved.</p>
+		<p>&copy; {year} {siteInfo.legalName} All rights reserved.</p>
 		<ul class="legal-links">
 			{legalLinks.map((item) => (
 				<li><a href={item.href}>{item.label}</a></li>
@@ -101,17 +105,6 @@ const badges = [
 </footer>
 
 <script>
-	document.querySelectorAll('.newsletter[data-placeholder-form]').forEach((form) => {
-		form.addEventListener('submit', (e) => {
-			e.preventDefault();
-			const successEl = form.parentElement?.querySelector('[data-form-success]');
-			if (successEl instanceof HTMLElement) {
-				form.classList.add('is-hidden');
-				successEl.hidden = false;
-			}
-		});
-	});
-
 	// Fade the footer's columns + badges up into place the first time it's scrolled into view.
 	const footer = document.querySelector('.site-footer');
 	if (footer && 'IntersectionObserver' in window) {
@@ -153,58 +146,7 @@ const badges = [
 	.tagline {
 		max-width: 320px;
 		font-size: var(--text-sm);
-	}
-
-	.newsletter {
-		display: flex;
-		align-items: stretch;
-		max-width: 320px;
-		margin-bottom: var(--space-4);
-		border: none;
-		border-bottom: 1px solid var(--color-border-on-dark);
-		transition: border-color var(--dur-fast) ease, border-width var(--dur-fast) ease;
-	}
-
-	.newsletter:focus-within {
-		border-bottom: 2px solid var(--color-accent);
-	}
-
-	.newsletter input {
-		flex: 1;
-		min-width: 0;
-		background: transparent;
-		border: none;
-		color: var(--color-text-on-dark);
-		font-size: var(--text-sm);
-		padding: var(--space-3) 0;
-	}
-
-	.newsletter input::placeholder {
-		color: var(--color-text-on-dark-muted);
-	}
-
-	.newsletter button {
-		background: transparent;
-		color: var(--color-accent);
-		border: none;
-		font-size: var(--text-sm);
-		font-weight: var(--fw-semibold);
-		padding: 0 0 0 var(--space-4);
-		transition: color var(--dur-fast) ease;
-	}
-
-	.newsletter button:hover {
-		color: var(--color-accent-hover);
-	}
-
-	.newsletter-success {
-		font-size: var(--text-sm);
-		color: var(--color-accent);
-		margin-bottom: var(--space-4);
-	}
-
-	.newsletter.is-hidden {
-		display: none;
+		text-wrap: pretty;
 	}
 
 	.social {
@@ -212,18 +154,24 @@ const badges = [
 		gap: var(--space-4);
 	}
 	.social a {
+		/* Padding brings the tap target to ~44px without moving the text. */
+		display: inline-block;
+		padding-block: 0.75rem;
+		margin-block: -0.75rem;
 		color: var(--color-text-on-dark-muted);
 		font-size: var(--text-sm);
 	}
 	.social a:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 
+	/* Gold-light, not the brand bronze: 14px caps on charcoal need 4.5:1,
+	   and the bronze is 4.17:1 here (gold-light 5.57:1). */
 	.footer-col h3 {
 		font-size: var(--text-sm);
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 		margin-bottom: var(--space-4);
 	}
 
@@ -254,6 +202,7 @@ const badges = [
 	.contact-list li {
 		font-size: var(--text-sm);
 		color: var(--color-text-on-dark-muted);
+		text-wrap: pretty;
 	}
 
 	.footer-cta {
@@ -261,13 +210,26 @@ const badges = [
 	}
 
 	.badge-row {
+		position: relative;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--space-4);
 		padding-block: var(--space-8);
 		margin-top: var(--space-12);
-		border-top: 1px solid var(--color-border-on-dark);
+	}
+
+	/* The two hairlines are inset by the container's padding, so they start
+	   and end with the content above them rather than out in the gutter. */
+	.badge-row::before,
+	.footer-bottom::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: var(--container-padding);
+		right: var(--container-padding);
+		height: 1px;
+		background: var(--color-border-on-dark);
 	}
 
 	/* The source badges carry their own white/black/transparent backgrounds —
@@ -333,6 +295,7 @@ const badges = [
 	}
 
 	.footer-bottom {
+		position: relative;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
@@ -340,9 +303,13 @@ const badges = [
 		gap: var(--space-4);
 		margin-top: var(--space-16);
 		padding-top: var(--space-8);
-		border-top: 1px solid var(--color-border-on-dark);
 		font-size: var(--text-xs);
 		color: var(--color-text-on-dark-muted);
+	}
+
+	/* The global p margin lifted the copyright 8px above its row. */
+	.footer-bottom p {
+		margin: 0;
 	}
 
 	.legal-links {
@@ -350,14 +317,17 @@ const badges = [
 		gap: var(--space-6);
 	}
 	.legal-links a:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 
 	.credit {
+		display: inline-block;
+		padding-block: 0.75rem;
+		margin-block: -0.75rem;
 		color: var(--color-text-on-dark-muted);
 	}
 	.credit:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-hover);
 	}
 
 	@media (max-width: 1100px) {
@@ -376,6 +346,21 @@ const badges = [
 		/* The email address is wider than half a 375px screen. */
 		.footer-concierge {
 			grid-column: 1 / -1;
+		}
+		/* Taller tap targets (the links were 17–19px), key for the studio's
+		   phone numbers and email. The padding replaces the list gap, so the
+		   rhythm only loosens slightly. */
+		.footer-col ul {
+			gap: 0;
+		}
+		.footer-col a,
+		.contact-list a,
+		.legal-links a {
+			display: inline-block;
+			padding-block: 0.625rem;
+		}
+		.footer-col .footer-all {
+			margin-top: 0;
 		}
 	}
 </style>

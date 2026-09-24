@@ -68,11 +68,11 @@ export const megaMenuDefaultImage = imageUrl('residences/hidden-hills-pool', 640
 export const megaMenuDefaultLine = 'One home, every system, designed as one.';
 
 export const primaryNav = linkify([
-	{ label: 'About us', href: '/about-us/' },
-	{ label: 'Design partner', href: '/design-partners/' },
+	{ label: 'About Us', href: '/about-us/' },
+	{ label: 'Design Partner', href: '/design-partners/' },
 	{ label: 'Journal', href: '/blog/' },
 	{ label: 'HTA Budget Calculator', href: '/budget-calculator/' },
-	{ label: 'Contact us', href: '/schedule/' },
+	{ label: 'Contact Us', href: '/schedule/' },
 ]);
 
 export const brandLinks = linkify([

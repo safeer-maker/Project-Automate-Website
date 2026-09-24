@@ -5,7 +5,12 @@
 import GhlForm from './GhlForm.astro';
 ---
 
-<dialog class="ghl-modal" data-ghl-modal aria-labelledby="ghl-modal-title">
+<!-- inert while closed: GHL writes visibility:visible inline on its iframe,
+     which beat the dialog's inherited visibility:hidden, so Tab past the
+     footer went into the invisible, off-screen form. inert takes the whole
+     dialog out of focus and the accessibility tree without changing layout,
+     so the preloaded form keeps its fonts and width. -->
+<dialog class="ghl-modal" data-ghl-modal aria-labelledby="ghl-modal-title" inert>
 	<div class="ghl-modal-panel">
 		<button class="ghl-modal-close" type="button" data-ghl-modal-close aria-label="Close form">&times;</button>
 		<span class="eyebrow">Private Consultation</span>
@@ -35,9 +40,13 @@ import GhlForm from './GhlForm.astro';
 			// Deferred a frame: Lenis's own click handler (stopInertiaOnNavigate) runs
 			// after this one, sees a link to another path (/schedule/) and resets —
 			// which would cancel a scroll started synchronously here.
-			const lenis = (window as Window & { lenis?: { scrollTo: (el: Element) => void } }).lenis;
+			// A duration, not Lenis's default lerp: a lerp only ends when the
+			// rounded position equals the rounded target, which never happens
+			// for a target on a half pixel, and the unfinished glide then
+			// overrides every keyboard or native scroll.
+			const lenis = (window as Window & { lenis?: { scrollTo: (el: Element, options?: { duration?: number }) => void } }).lenis;
 			requestAnimationFrame(() => {
-				if (lenis) lenis.scrollTo(primaryForm);
+				if (lenis) lenis.scrollTo(primaryForm, { duration: 1.2 });
 				else primaryForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
 			});
 		});
@@ -75,8 +84,12 @@ import GhlForm from './GhlForm.astro';
 
 		const open = () => {
 			load();
+			dialog.inert = false;
 			dialog.showModal();
 		};
+		dialog.addEventListener('close', () => {
+			dialog.inert = true;
+		});
 
 		document.addEventListener('click', (e) => {
 			const trigger = (e.target as Element | null)?.closest?.('[data-ghl-form-open]');
@@ -123,6 +136,11 @@ import GhlForm from './GhlForm.astro';
 		visibility: hidden;
 		pointer-events: none;
 	}
+
+	/* Don't hide the closed form's iframe itself (e.g. visibility:hidden
+	   !important): a hidden iframe never loads its web font, so the preloaded
+	   form opened in a serif fallback for up to ~20s. It's already off-screen,
+	   and `inert` on the dialog keeps it out of the Tab order. */
 
 	.ghl-modal::backdrop {
 		background: rgba(10, 10, 10, 0.7);

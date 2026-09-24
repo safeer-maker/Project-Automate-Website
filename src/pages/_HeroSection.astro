@@ -26,10 +26,19 @@
 //     -pix_fmt yuv420p -an public/videos/hero.webm
 //   (repeat at scale=960:-2 for hero-mobile.mp4 crf 28/maxrate 900k, and
 //   hero-mobile.webm crf 37/b:v 700k)
+//
+// Portrait phones get their own 9:16 crop (hero-portrait.*): cover-fitting the
+// 16:9 mobile film into a portrait screen showed only ~250 source px across,
+// a 4.5x upscale. The crop is the centre of the 1920x1080 mobile master (the
+// same framing phones saw before), at the same pixel count and bitrate caps:
+//   -vf crop=608:1080:656:0,scale=540:960:flags=lanczos, then the mobile
+//   x264/VP9 settings above. The 960x540 files stay for small landscape screens.
 import { withBase } from "../lib/paths.ts";
 
 const poster = withBase("/images/home/hero/poster.webp");
 const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
+const posterPortrait = withBase("/images/home/hero/poster-portrait.webp");
+const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 ---
 
 <section class="hero" aria-labelledby="hero-title">
@@ -40,21 +49,35 @@ const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
 		     nothing jumps. It's the page's LCP image, hence fetchpriority. The
 		     video's own `poster` isn't used: it can't vary by breakpoint. -->
 		<picture class="hero-poster">
+			<source media={portraitPhone} srcset={posterPortrait} width="540" height="960" />
 			<source media="(max-width: 700px)" srcset={posterMobile} width="960" height="540" />
 			<img src={poster} alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
 		</picture>
 		<!-- No autoplay attribute: the script starts playback once a few
-		     seconds are buffered (see below). -->
+		     seconds are buffered (see below). preload="none" in the markup so
+		     reduced-motion visitors, who only ever see the still, don't download
+		     the film; the inline script right after upgrades it for everyone
+		     else during parse, so their fetch starts as early as before. -->
 		<video
 			class="hero-video"
 			data-hero-video
 			muted
 			loop
 			playsinline
-			preload="auto"
+			preload="none"
 			aria-hidden="true"
 			tabindex="-1"
 		>
+			<source
+				media={portraitPhone}
+				src={withBase("/videos/hero-portrait.mp4")}
+				type="video/mp4"
+			/>
+			<source
+				media={portraitPhone}
+				src={withBase("/videos/hero-portrait.webm")}
+				type="video/webm"
+			/>
 			<source
 				media="(max-width: 700px)"
 				src={withBase("/videos/hero-mobile.mp4")}
@@ -68,22 +91,28 @@ const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
 			<source src={withBase("/videos/hero.mp4")} type="video/mp4" />
 			<source src={withBase("/videos/hero.webm")} type="video/webm" />
 		</video>
+		<script is:inline>
+			{
+				const v = document.querySelector('[data-hero-video]');
+				if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+					v.preload = 'auto';
+					v.load();
+				}
+			}
+		</script>
 		<span class="hero-scrim"></span>
 	</div>
 
-	<!-- Moving backgrounds need a way to stop them (WCAG 2.2.2). Shown once
-	     the script runs; it's the only control for the film. -->
-	<button class="hero-toggle" type="button" data-hero-toggle aria-label="Pause background video" hidden>
-		<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
-		<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.8v8.4l6.6-4.2z" fill="currentColor" /></svg>
-	</button>
-
 	<div class="hero-inner">
 		<div class="hero-box">
+			<!-- The h1 already names Los Angeles and luxury; the eyebrow says
+			     what the studio does and where it is instead of repeating them.
+			     Short enough to stay on one line on a phone. The literal spaces
+			     keep the phrases apart for screen readers (the gap is visual). -->
 			<p class="hero-eyebrow">
-				<span>Luxury Home Automation</span>
-				<span class="hero-eyebrow-dot" aria-hidden="true">·</span>
-				<span>Los Angeles</span>
+				<span>Home Technology</span>{' '}
+				<span class="hero-eyebrow-dot" aria-hidden="true">·</span>{' '}
+				<span>Manhattan Beach</span>
 			</p>
 			<!-- Each line sits in its own overflow mask so it can rise into view.
 			     The literal space between them keeps the heading's text (and its
@@ -96,7 +125,7 @@ const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
 			<p class="hero-lede">
 				Lighting, climate, sound and security, designed to work as one, and to disappear.
 			</p>
-			<div class="hero-actions">
+			<div class="hero-actions" data-cookie-clear>
 				<a
 					class="hero-btn"
 					href={withBase("/schedule/")}
@@ -117,6 +146,15 @@ const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
 			</div>
 		</div>
 	</div>
+
+	<!-- Moving backgrounds need a way to stop them (WCAG 2.2.2). Shown once
+	     the script runs; it's the only control for the film. After the copy in
+	     the markup so the tab order follows the reading order; it's absolutely
+	     positioned, so nothing moves on screen. -->
+	<button class="hero-toggle" type="button" data-hero-toggle data-cookie-clear aria-label="Pause background video" hidden>
+		<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+		<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.8v8.4l6.6-4.2z" fill="currentColor" /></svg>
+	</button>
 </section>
 
 <script>
@@ -199,6 +237,11 @@ const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
 			if (video.paused) {
 				userPaused = false;
 				started = true;
+				// Reduced motion: the film was never fetched (preload="none").
+				if (video.readyState === 0) {
+					video.preload = 'auto';
+					video.load();
+				}
 				play();
 			} else {
 				userPaused = true;
@@ -269,7 +312,9 @@ const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
 	.hero-toggle {
 		position: absolute;
 		z-index: 2;
-		right: var(--page-gutter);
+		/* On the content grid's right edge, not the screen's: past the 1440
+		   page width it drifted up to 200px outside the layout. */
+		right: max(var(--page-gutter), calc((100% - var(--page-max)) / 2 + var(--page-gutter)));
 		bottom: clamp(1.25rem, 3vh, 2rem);
 		display: grid;
 		place-items: center;
@@ -344,6 +389,15 @@ const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;
+	}
+
+	/* The pause toggle shares the page gutter with "Discover the approach",
+	   and on 720–900px-tall laptops 10vh left it only 10–23px under the
+	   link's arrow. Always clear the toggle (its offset + 40px) by 1.5rem. */
+	@media (min-width: 701px) {
+		.hero-inner {
+			padding-bottom: max(clamp(3.5rem, 10vh, 7rem), calc(clamp(1.25rem, 3vh, 2rem) + 40px + 1.5rem));
+		}
 	}
 
 	/* The block sits right, but the type inside reads left-to-right like any

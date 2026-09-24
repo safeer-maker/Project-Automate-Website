@@ -85,10 +85,15 @@
 	--text-body-lg: 1.125rem; /* 18px body copy */
 
 	/* Layout */
-	--container-max: 1280px;
-	--container-padding: 1.5rem;
 	--page-max: 1440px; /* full-bleed section width cap */
 	--page-gutter: clamp(1.25rem, 5.5vw, 5rem); /* 80px at 1440 */
+	/* One site grid: .container (header, footer, inner-page sections) used to
+	   be 1280px with a fixed 24px gutter while .page sections were 1440px with
+	   the gutter above, so the header's logo and CTA sat 18–32px off every
+	   homepage section's edges. Both now resolve to the same values; the
+	   names stay because the bleed scrollers reference --container-padding. */
+	--container-max: var(--page-max);
+	--container-padding: var(--page-gutter);
 	--radius-sm: 4px;
 	--radius-md: 8px;
 	--radius-lg: 16px;

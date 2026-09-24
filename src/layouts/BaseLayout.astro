@@ -10,7 +10,8 @@ import '../styles/global.css';
 // Imported (not public/) so Vite hashes them and applies the deploy base —
 // these resolve to the same emitted files the @font-face rules reference.
 import manrope400 from '../styles/fonts/manrope-latin-400-normal.woff2';
-import manrope700 from '../styles/fonts/manrope-latin-700-normal.woff2';
+import manrope500 from '../styles/fonts/manrope-latin-500-normal.woff2';
+import manrope600 from '../styles/fonts/manrope-latin-600-normal.woff2';
 
 type Crumb = { name: string; path: string };
 
@@ -223,8 +224,13 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
 		<link rel="icon" type="image/webp" href={withBase('/images/logo/favicon.webp')} />
 		<meta name="generator" content={Astro.generator} />
 
-		<link rel="preload" href={manrope700} as="font" type="font/woff2" crossorigin />
+		<!-- The weights every page's first screen uses: body (400), nav links and
+		     headings (500), header CTA and eyebrows (600). Found only through CSS,
+		     500/600 arrived after first paint and the desktop nav reflowed 7–18px
+		     when they swapped in. 700 (only <strong>/<b>) isn't worth a preload. -->
 		<link rel="preload" href={manrope400} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={manrope500} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={manrope600} as="font" type="font/woff2" crossorigin />
 
 		<Seo
 			title={title}
@@ -251,9 +257,12 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
 		<script is:inline async src={ghlFormEmbedScript}></script>
 	</head>
 	<body>
+		<!-- Keyboard bypass past the header's eight stops; invisible until focused. -->
+		<a class="skip-link" href="#main">Skip to content</a>
+		<!-- First in the body so "Got it" is an early Tab stop; it's fixed-position. -->
+		<CookieNotice />
 		<slot />
 		<GhlFormModal />
-		<CookieNotice />
 		<SmoothScroll />
 	</body>
 </html>

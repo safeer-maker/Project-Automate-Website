@@ -21,7 +21,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			    navigation, so Tab moves through the links and no arrow-key model is implied. */}
 			<div class="nav-item" data-mega-menu>
 				<button class="nav-link mega-trigger" type="button" aria-expanded="false" aria-controls="mega-panel">
-					Core services
+					Core Services
 					<svg class="nav-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
 						<path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 					</svg>
@@ -65,7 +65,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		</nav>
 
 		<div class="header-actions">
-			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" class="cta-schedule" aria-label="Schedule Consultation"><span class="cta-schedule-verb">Schedule</span>Consultation</Button>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" class="cta-schedule" aria-label="Book a Consultation"><span class="cta-schedule-verb">Book</span><span class="cta-schedule-rest">a Consultation</span></Button>
 			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
 				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
 					<path d="M1.41602 5.66666H32.5827V8.62318H1.41602V5.66666ZM1.41602 25.3768H32.5827V28.3333H1.41602V25.3768ZM1.41602 15.5217H32.5827V18.4783H1.41602V15.5217Z" fill="currentColor"></path>
@@ -83,7 +83,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		<ul class="offcanvas-nav">
 			<li class="has-submenu" style="--i: 0">
 				<button class="submenu-trigger" data-submenu-trigger aria-expanded="false" aria-controls="offcanvas-services">
-					Core services <span class="chevron" aria-hidden="true">+</span>
+					Core Services <span class="chevron" aria-hidden="true">+</span>
 				</button>
 				<div class="submenu" id="offcanvas-services" data-submenu>
 					<div class="submenu-inner">
@@ -114,8 +114,9 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			    attached the first time the menu opens (see setOpen), not on page load.
 			    The clip renders ≤ ~372px wide, so the mobile encodes are plenty. */}
 			<div class="concierge-badges">
-				<img data-src={withBase('/images/badges/cedia-certified.webp')} alt="CEDIA Certified" width="96" height="48" decoding="async" />
-				<img data-src={withBase('/images/badges/cert-level-luxury.webp')} alt="Certified Luxury Level" width="96" height="48" decoding="async" />
+				{/* 150px-tall renditions: plenty for the 40px slot at 3x (the originals are 1182–1853px). */}
+				<img data-src={withBase('/images/badges/cedia-certified-sm.webp')} alt="CEDIA Certified" width="150" height="150" decoding="async" />
+				<img data-src={withBase('/images/badges/cert-level-luxury-sm.webp')} alt="Certified Luxury Level" width="319" height="150" decoding="async" />
 			</div>
 			<video class="concierge-clip" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
 				<source data-src={withBase('/videos/hero-mobile.mp4')} type="video/mp4" />
@@ -123,7 +124,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			</video>
 		</div>
 
-		<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">Schedule Consultation</Button>
+		<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">Book a Consultation</Button>
 	</nav>
 </div>
 
@@ -410,8 +411,9 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		margin-right: 0.3em;
 	}
 
-	/* The verb carries its own trailing space (margin), so it can drop out on
-	   narrow phones without leaving a stray one.
+	/* The verb carries its own trailing space (margin); on the narrowest
+	   phones the rest of the label drops out and the verb stands alone, so the
+	   button still says what it does ("Book"), not just "Consultation".
 	   Scoped through .header-actions so it outranks Button's own size classes,
 	   which otherwise keep the desktop padding and push the bar past 375px. */
 	@media (max-width: 480px) {
@@ -428,8 +430,11 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	}
 
 	@media (max-width: 400px) {
-		.header-actions :global(.cta-schedule-verb) {
+		.header-actions :global(.cta-schedule-rest) {
 			display: none;
+		}
+		.header-actions :global(.cta-schedule-verb) {
+			margin-right: 0;
 		}
 	}
 
