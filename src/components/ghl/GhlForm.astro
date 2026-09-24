@@ -1,0 +1,74 @@
+---
+// The GHL lead form iframe. form_embed.js (loaded once in BaseLayout) finds it,
+// resizes it to fit its content, and passes our cookie-consent state into it.
+import { ghl, ghlFormUrl } from '../../data/ghl.ts';
+
+interface Props {
+	/**
+	 * Distinguishes multiple copies of the form on one page (e.g. the homepage
+	 * section and the popup). form_embed.js deletes iframes that share an id,
+	 * so each copy needs its own.
+	 */
+	instance?: string;
+	/**
+	 * Leave loading to the caller (the popup preloads it after page load). Otherwise
+	 * the form loads itself as it nears the viewport.
+	 */
+	deferLoad?: boolean;
+}
+
+const { instance = 'inline', deferLoad = false } = Astro.props;
+const id = instance === 'inline' ? `inline-${ghl.formId}` : `inline-${ghl.formId}-${instance}`;
+---
+
+<iframe
+	class="ghl-form"
+	data-src={ghlFormUrl}
+	data-ghl-manual-load={deferLoad ? '' : undefined}
+	style={`height:${ghl.formHeight}px`}
+	id={id}
+	data-layout="{'id':'INLINE'}"
+	data-trigger-type="alwaysShow"
+	data-trigger-value=""
+	data-activation-type="alwaysActivated"
+	data-activation-value=""
+	data-deactivation-type="neverDeactivate"
+	data-deactivation-value=""
+	data-form-name={ghl.formName}
+	data-height={ghl.formHeight}
+	data-layout-iframe-id={id}
+	data-form-id={ghl.formId}
+	data-cookie-consent="true"
+	data-cookie-consent-provider="ghl_cookie"
+	title={ghl.formName}
+></iframe>
+
+<script>
+	// Why not loading="lazy": form_embed.js parks an iframe off-screen until it
+	// has loaded, and a lazy iframe off-screen never loads — so it never appears.
+	// An iframe without src is ignored by form_embed.js until the form inside
+	// reports in, so we set src ourselves as it approaches the viewport.
+	const io = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				if (!entry.isIntersecting) return;
+				const frame = entry.target as HTMLIFrameElement;
+				frame.src = frame.dataset.src!;
+				io.unobserve(frame);
+			});
+		},
+		{ rootMargin: '800px 0px' }
+	);
+	document
+		.querySelectorAll<HTMLIFrameElement>('iframe.ghl-form[data-src]:not([data-ghl-manual-load])')
+		.forEach((frame) => io.observe(frame));
+</script>
+
+<style>
+	.ghl-form {
+		display: block;
+		width: 100%;
+		border: none;
+		border-radius: var(--radius-md);
+	}
+</style>

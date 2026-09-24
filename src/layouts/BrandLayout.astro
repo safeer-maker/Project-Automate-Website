@@ -24,7 +24,7 @@ const { brandName, logo, heroImage, heroTitle, heroSubtitle, description } = Ast
 			<img class="brand-logo" src={logo} alt={`${brandName} logo`} />
 			<h1>{heroTitle}</h1>
 			{heroSubtitle && <p>{heroSubtitle}</p>}
-			<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule Consultation</Button>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">Schedule Consultation</Button>
 		</div>
 	</section>
 

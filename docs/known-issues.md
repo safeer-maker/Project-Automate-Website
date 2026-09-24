@@ -11,27 +11,21 @@ Checkbox = not started. Strike through / move to "Resolved" as you go.
 
 ## Priority 1 — Blocks going live
 
-- [ ] **Forms don't send anywhere.** Every form on the site (Get Started, Outdoor
-      Lighting & Audio, Schedule, the Footer newsletter) is a client-side-only
-      placeholder (`PlaceholderFormScript.astro`) — it just hides the form and shows
-      a "thanks" message. Nothing is emailed, stored, or sent to a CRM. Needs real
-      submission handling (GoHighLevel, a Cloudflare Worker + email API, etc.) before
-      this can replace the live site, which uses MetForm.
-      See `src/components/forms/PlaceholderFormScript.astro` and every page that
-      imports it.
+- [x] ~~**Forms don't send anywhere.**~~ Resolved: the Schedule, Get Started and
+      Outdoor Lighting & Audio forms, the new homepage section, and a site-wide
+      popup now all embed the GoHighLevel form (`src/components/ghl/`, IDs in
+      `src/data/ghl.ts`). The Footer newsletter is still a client-side placeholder.
+      Note the GHL IDs point at a temporary sub-account — see CLAUDE.md.
 
 - [ ] **`/thank-you/` is unreachable.** It exists as a page but nothing redirects to
-      it — forms currently show an inline success message instead. Once real form
-      handling is wired up, decide whether to redirect there or keep the inline
-      pattern, and remove whichever approach isn't used.
+      it. Either set the GHL form's on-submit action to redirect to `/thank-you/`,
+      or keep GHL's inline thank-you message and delete the page.
 
 - [ ] **A2P/SMS compliance is still pending on your end**, per the checklist you sent:
   - IRS CP-575 or 147C letter — not yet provided
   - Industry / vertical classification — not yet provided
   - Decision: SMS opt-in via chat widget only, vs. checkbox on forms — not yet decided
-    (the current forms already have an SMS-consent checkbox baked in, e.g.
-    `src/pages/get-started/index.astro`, so if you decide "chat-widget only" those
-    checkboxes should come out)
+    (any SMS-consent checkbox now lives in the GHL form builder, not in this repo)
   - Approved sample SMS wording — not yet provided
   - Review of GoHighLevel's default Privacy Policy / Terms pages — not yet started
     (once your GHL sub-account/funnel is live)

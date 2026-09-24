@@ -1,0 +1,91 @@
+---
+// Inline GHL lead form, placed after the "Why" proof block so the page asks
+// for the enquiry once the case has been made. The same form also opens as a
+// popup from every Schedule/Book CTA (GhlFormModal in BaseLayout).
+import GhlForm from '../components/ghl/GhlForm.astro';
+import { siteInfo } from '../data/site.ts';
+
+const phone = siteInfo.phones[0];
+const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
+---
+
+<section class="consult" id="consultation">
+	<div class="page consult-grid">
+		<div class="consult-copy">
+			<span class="eyebrow">Private Consultation</span>
+			<h2>Begin with a<br />conversation.</h2>
+			<p>
+				Tell us about your home and how you want to live in it. A PROJECT: automate specialist will follow up to
+				plan a system that works as one and disappears into the architecture.
+			</p>
+			<ul class="consult-contact">
+				<li><a href={phoneHref}>{phone}</a></li>
+				<li><a href={`mailto:${siteInfo.email}`}>{siteInfo.email}</a></li>
+			</ul>
+		</div>
+
+		<GhlForm />
+	</div>
+</section>
+
+<style>
+	.consult {
+		background: var(--color-bg);
+		padding-block: clamp(4rem, 9vw, 7.5rem);
+	}
+
+	.consult-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(2rem, 6vw, 6rem);
+		align-items: start;
+	}
+
+	.consult-copy {
+		position: sticky;
+		top: 8rem;
+	}
+
+	.consult h2 {
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+	}
+
+	.consult-copy p {
+		max-width: 30rem;
+		font-size: var(--text-body-lg);
+		line-height: 1.6;
+		margin-bottom: var(--space-8);
+	}
+
+	.consult-contact {
+		display: grid;
+		gap: var(--space-2);
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--color-border);
+		max-width: 30rem;
+	}
+
+	.consult-contact a {
+		color: var(--color-text);
+		font-weight: var(--fw-medium);
+		transition: color var(--dur-fast) var(--ease-in-out-soft);
+	}
+
+	.consult-contact a:hover {
+		color: var(--color-accent);
+	}
+
+	@media (max-width: 900px) {
+		.consult-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.consult-copy {
+			position: static;
+		}
+	}
+</style>

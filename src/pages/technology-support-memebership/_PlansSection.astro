@@ -55,7 +55,7 @@ const plans = [
 					<ul>
 						{plan.features.map((f) => <li>{f}</li>)}
 					</ul>
-					<Button href={withBase('/schedule/')} variant={plan.featured ? 'primary' : 'outline'} size="md">Get Started</Button>
+					<Button href={withBase('/schedule/')} data-ghl-form-open variant={plan.featured ? 'primary' : 'outline'} size="md">Get Started</Button>
 				</div>
 			))}
 		</div>

@@ -16,6 +16,17 @@ Production deploys to Cloudflare Workers happen automatically via Cloudflare's o
 - This is separate from `.github/workflows/deploy.yml`, which deploys the same static build to GitHub Pages independently.
 - To ship a change to production: merge into `stage`. Do not add a `wrangler deploy` step back into `package.json` or CI for this.
 
+## GoHighLevel (GHL) form, tracking & cookies
+
+All GHL IDs live in one file: `src/data/ghl.ts` (`formId`, `formName`, `formHeight`, `trackingId`).
+
+- **The form and the tracking code must come from the same GHL sub-account.** The current values point at a **temporary** sub-account. Whenever the form URL/ID changes (e.g. moving to the permanent sub-account), update `trackingId` in the same change — never one without the other.
+- The form is rendered by `src/components/ghl/GhlForm.astro`: inline on the homepage (`src/pages/_ConsultationForm.astro`), `/schedule/`, `/get-started/` and `/outdoor-lighting-audio/`, and in a site-wide popup (`GhlFormModal.astro`, mounted in `BaseLayout`).
+- Any element with a `data-ghl-form-open` attribute opens the popup. Keep its `href` pointing at `/schedule/` as the no-JS / new-tab fallback. `Button` forwards the attribute.
+- The popup's form preloads in the background after page load (or on CTA hover/focus/touch) so it opens instantly. While closed, the dialog stays rendered off-screen with `visibility: hidden` — don't switch it back to `display: none`, or the preloaded form loses its web fonts and sizes itself at the wrong width.
+- Each copy of the form on a page needs a distinct `instance` prop — GHL's `form_embed.js` deletes iframes with duplicate ids.
+- Cookies: necessary only, no marketing cookies. `CookieNotice.astro` records the acknowledgement as `cookie-config=essential`, the cookie GHL's form reads (`data-cookie-consent-provider="ghl_cookie"`). Never write `all` there unless marketing cookies are deliberately introduced — and update the Privacy Policy "Cookies" section if cookie usage changes.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build

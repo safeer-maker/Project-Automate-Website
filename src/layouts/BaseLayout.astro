@@ -2,6 +2,9 @@
 import { withBase } from '../lib/paths.ts';
 import Seo from '../components/seo/Seo.astro';
 import { siteInfo } from '../data/site.ts';
+import { ghl, ghlFormEmbedScript, ghlTrackingScript } from '../data/ghl.ts';
+import GhlFormModal from '../components/ghl/GhlFormModal.astro';
+import CookieNotice from '../components/ghl/CookieNotice.astro';
 import '../styles/global.css';
 // Imported (not public/) so Vite hashes them and applies the deploy base —
 // these resolve to the same emitted files the @font-face rules reference.
@@ -52,8 +55,19 @@ const structuredData = {
 
 		<Seo title={title} description={description} image={image} />
 		<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+		<!-- Warm connections to the hosts the GHL form loads from, so the preloaded popup form starts fetching sooner. -->
+		<link rel="preconnect" href="https://api.leadconnectorhq.com" />
+		<link rel="preconnect" href="https://stcdn.leadconnectorhq.com" crossorigin />
+		<link rel="preconnect" href="https://backend.leadconnectorhq.com" crossorigin />
+
+		<!-- GoHighLevel: visitor tracking + form embed (sizing, consent hand-off). IDs live in src/data/ghl.ts. -->
+		<script is:inline async src={ghlTrackingScript} data-tracking-id={ghl.trackingId}></script>
+		<script is:inline defer src={ghlFormEmbedScript}></script>
 	</head>
 	<body>
 		<slot />
+		<GhlFormModal />
+		<CookieNotice />
 	</body>
 </html>

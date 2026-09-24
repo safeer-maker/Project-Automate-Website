@@ -49,7 +49,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		</nav>
 
 		<div class="header-actions">
-			<Button href={withBase('/schedule/')} variant="primary" class="cta-schedule">Schedule Consultation</Button>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" class="cta-schedule">Schedule Consultation</Button>
 			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
 				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
 					<path d="M1.41602 5.66666H32.5827V8.62318H1.41602V5.66666ZM1.41602 25.3768H32.5827V28.3333H1.41602V25.3768ZM1.41602 15.5217H32.5827V18.4783H1.41602V15.5217Z" fill="currentColor"></path>
@@ -94,7 +94,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			</video>
 		</div>
 
-		<Button href={withBase('/schedule/')} variant="primary" size="lg">Schedule Consultation</Button>
+		<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">Schedule Consultation</Button>
 	</nav>
 </div>
 
