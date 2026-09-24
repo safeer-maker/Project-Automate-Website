@@ -1,0 +1,141 @@
+---
+// Head metadata for every page: title, description, canonical, robots, Open
+// Graph and Twitter cards. Structured data lives in BaseLayout (one @graph).
+import { ogImageUrl, type LibraryImageId } from '../../lib/images.ts';
+
+interface Props {
+	/** The page's own title, WITHOUT the brand suffix — it's appended here when it fits. */
+	title: string;
+	description: string;
+	/** og:image — root-relative or absolute. Use ogImageUrl(id) for library photos (1200x630 JPEG). */
+	image?: string;
+	/** og:image:alt. Library og images are described automatically; pass this for anything else. */
+	imageAlt?: string;
+	canonical?: string;
+	noindex?: boolean;
+	ogType?: 'website' | 'article';
+	publishedTime?: Date;
+	modifiedTime?: Date;
+}
+
+const BRAND = 'PROJECT: automate';
+const SUFFIX = ` | ${BRAND}`;
+// Google truncates title links at ~600px (roughly 50–60 characters). A title
+// that can't carry the suffix inside that budget is better shown whole.
+const MAX_TITLE_LENGTH = 60;
+const DEFAULT_OG_IMAGE: LibraryImageId = 'residences/hidden-hills-pool';
+
+// og:image:alt for every library photo, so shared links describe the image
+// without each page having to. Describes what's in the frame only — these are
+// licensed photographs, never captioned as specific client projects.
+const OG_IMAGE_ALT: Partial<Record<LibraryImageId, string>> = {
+	'residences/malibu-cliffside': 'Cliff-top infinity pool at a contemporary residence at sunset',
+	'residences/malibu-stone-court': 'Modern residence with a softly lit stone wall at blue hour',
+	'residences/malibu-coastal': 'Ocean-view pool deck framed by tropical planting at dusk',
+	'residences/hidden-hills-pool': 'Glass pavilion beside a still pool, warmly lit at dusk',
+	'residences/hidden-hills-courtyard': 'Pool courtyard with a fire table beneath string lights',
+	'residences/manhattan-beach': 'Beach house and garden path in the evening sun',
+	'residences/stone-estate-wide': 'Limestone estate with architectural uplighting at dusk',
+	'residences/palm-drive-estate': 'Palm-lined drive leading to a glowing modern home',
+	'process/understand': 'Homeowners and a designer reviewing material samples at a kitchen table',
+	'process/design': 'White architectural model of a residence on a design desk',
+	'process/design-studio': 'Architecture studio with a scale model of a residence',
+	'process/design-plans': 'Floor plan displayed on a studio monitor',
+	'process/design-collaboration': 'Hands over architectural plans beside a house model',
+	'process/design-team': 'Design team gathered around architectural drawings, seen from above',
+	'process/design-review': 'Floor plan reviewed on a laptop during a design discussion',
+	'process/integrate': 'Technician installing landscape lighting in a manicured garden',
+	'process/integrate-site': 'Site lead reviewing drawings beside a pool',
+	'process/deliver': 'Finished modern home glowing at dusk at the end of a palm-lined drive',
+	'solutions/control-wall-panel': 'Slim touch panel on the wall of a serene living room',
+	'solutions/control-keypad': 'Finger resting on a minimalist lighting keypad',
+	'solutions/control-panel-living': 'Wall control panel beside a bright living room with a forest view',
+	'solutions/control-touch': 'Hands using a home control touchscreen',
+	'solutions/control-great-room': 'Bright great room with a wall control panel and tall windows',
+	'solutions/lighting-living-room': 'Warm living room lit by concealed cove lighting',
+	'solutions/lighting-kitchen': 'Dark kitchen with under-cabinet and pendant lighting',
+	'solutions/landscape-path': 'Lit stepping-stone path leading to a glowing entry',
+	'solutions/landscape-hillside': 'Hillside modern home with garden uplighting at night',
+	'solutions/landscape-water-wall': 'Illuminated water wall flowing into a pool at night',
+	'solutions/landscape-cascade': 'Lit cascade wall in a garden at night',
+	'solutions/landscape-installation': 'Technician placing landscape lights in a garden',
+	'solutions/audio-pergola': 'Outdoor speakers mounted on a pergola beside a pool',
+	'solutions/audio-poolside': 'Speaker built into a poolside sun lounger on a bright day',
+	'solutions/audio-garden-speaker': 'Landscape speaker set among plantings in a modern garden',
+	'solutions/audio-bollard': 'Bollard speaker on a terrace at dusk',
+	'solutions/audio-terrace': 'Terrace lounge at sunset',
+	'solutions/cinema-tiered': 'Tiered private cinema with warm step lights',
+	'solutions/cinema-garden': 'Private cinema opening onto a garden',
+	'solutions/cinema-midnight': 'Deep blue home theater with reclining seats',
+	'solutions/cinema-media-room': 'Media room with wood-slat walls and a low sofa',
+	'solutions/cinema-starlight': 'Home theater beneath a starlit ceiling',
+	'solutions/cinema-outdoor': 'Guests gathered at an outdoor poolside cinema',
+	'solutions/shades-glass-wall': 'Bright minimalist interior with floor-to-ceiling glass',
+	'solutions/security-estate-gate': 'Grand gated entrance lit at night along a palm-lined drive',
+	'solutions/security-driveway-gate': 'Modern sliding driveway gate at night',
+	'solutions/security-camera': 'Security camera on a modern home at dusk',
+	'solutions/security-smart-lock': 'Smart lock on a front door at sunset',
+	'solutions/access-lit-gate': 'Gate with an illuminated line and intercom post at dusk',
+};
+
+const {
+	title,
+	description,
+	image = ogImageUrl(DEFAULT_OG_IMAGE),
+	imageAlt,
+	canonical,
+	noindex = false,
+	ogType = 'website',
+	publishedTime,
+	modifiedTime,
+} = Astro.props;
+
+const hasBrand = /project:\s*automate/i.test(title);
+const fullTitle = hasBrand || title.length + SUFFIX.length > MAX_TITLE_LENGTH ? title : `${title}${SUFFIX}`;
+
+// Staging builds (GitHub Pages / sweb) set PUBLIC_NOINDEX=1 so the preview host
+// never competes with projectautomate.com. Page-level noindex (thank-you, 404)
+// still lets crawlers follow the links out.
+const stagingNoindex = import.meta.env.PUBLIC_NOINDEX === '1';
+const robots = stagingNoindex
+	? 'noindex, nofollow'
+	: noindex
+		? 'noindex, follow'
+		: 'index, follow, max-image-preview:large';
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const canonicalUrl = canonical ?? pageUrl;
+// A canonical on a noindex page sends Google mixed signals — leave it off.
+const showCanonical = !noindex;
+
+const imageUrl = new URL(image, Astro.site).toString();
+// Library og images are always 1200x630 JPEGs (scripts/optimize-images.mjs),
+// so their dimensions and description are known without fetching them.
+const ogLibraryId = new URL(imageUrl).pathname.match(/\/images\/og\/(.+)\.jpg$/)?.[1] as LibraryImageId | undefined;
+const imageAltText = imageAlt ?? (ogLibraryId && OG_IMAGE_ALT[ogLibraryId]) ?? title;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+{showCanonical && <link rel="canonical" href={canonicalUrl} />}
+
+<meta property="og:site_name" content={BRAND} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={imageUrl} />
+{ogLibraryId && <meta property="og:image:type" content="image/jpeg" />}
+{ogLibraryId && <meta property="og:image:width" content="1200" />}
+{ogLibraryId && <meta property="og:image:height" content="630" />}
+<meta property="og:image:alt" content={imageAltText} />
+{ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAltText} />

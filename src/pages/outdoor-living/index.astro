@@ -1,0 +1,58 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Sound That Blends Into the Landscape',
+		description:
+			'Clear, balanced music across patios, gardens, pools and entertaining areas, with no equipment to catch the eye. Landscape speakers and subwoofers are placed for even coverage across the property.',
+		imageId: 'solutions/audio-poolside',
+		imageAlt: 'A discreet speaker built into the base of a teak sun lounger beside a pool',
+	},
+	{
+		title: 'Entertainment Beyond the Living Room',
+		description:
+			'Films, sport and television, brought outside on displays made for exterior living. Weather-resistant screens, audio, networking and intuitive control arrive as one complete experience.',
+		imageId: 'solutions/cinema-outdoor',
+		imageAlt: 'Guests gathered around a large outdoor screen on a lit poolside terrace at dusk',
+	},
+	{
+		title: 'Set the Mood With a Single Touch',
+		description:
+			'Scenes for dining, relaxing, entertaining or securing the property after dark bring architectural, landscape, pathway, pool and accent lighting together as one.',
+		imageId: 'solutions/audio-pergola',
+		imageAlt: 'A white pergola with integrated speakers and linear lighting above a pool and fire table',
+	},
+] as const;
+
+const scenes = [
+	{ title: 'Dining', description: 'Warm accent light and gentle music set the table for an evening outside.' },
+	{ title: 'Entertaining', description: 'Landscape lighting, audio and the outdoor screen come together with a touch.' },
+	{ title: 'Relaxing', description: 'Path and pool lighting soften as the music settles into an easy evening.' },
+	{ title: 'After Dark', description: 'Landscape and security lighting take over quietly to watch the property overnight.' },
+];
+---
+
+<ServiceLayout
+	title="Luxury Outdoor Living Technology, LA"
+	description="Weatherproof audio, outdoor displays, landscape lighting and poolside control for Los Angeles estates, so terraces and gardens feel as connected as the home."
+	heroImageId="residences/malibu-coastal"
+	heroAlt="An ocean-view residence at dusk, its pool deck and terraces glowing with warm light"
+	heroPosition="55% 50%"
+	eyebrow="Outdoor Living"
+	heroTitle="Outdoor Living, as Connected as Your Home"
+	heroSubtitle="Music, film, light and control, extended to the terraces, pools and gardens beyond your walls."
+	intro="In Los Angeles, so much of life happens outside. We carry the comfort of the interior out to the terrace, the pool and the garden, with technology that is weather-ready, balanced and quietly concealed in the landscape."
+	serviceName="Luxury Outdoor Living Technology"
+	serviceType="Outdoor audio, video and lighting integration"
+	related={['outdoor-lighting-audio', 'audio-video-solutions', 'security-systems']}
+>
+	<CapabilityList eyebrow="Landscape Audio & Video" title="Technology woven into the landscape, never in the way of it." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="An outdoor setting that adapts to every moment." scenes={scenes} />
+
+	<CtaBanner slot="closing" />
+</ServiceLayout>

@@ -1,0 +1,30 @@
+---
+import { withBase } from '../../../lib/paths.ts';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import CtaBanner from '../../../components/ui/CtaBanner.astro';
+import HeroSection from './_HeroSection.astro';
+import OverviewSection from './_OverviewSection.astro';
+import FeaturesSection from './_FeaturesSection.astro';
+import GallerySection from './_GallerySection.astro';
+
+// No Article schema: the project may be template content the client has yet
+// to confirm (SPEC §5). BaseLayout's breadcrumb covers the hierarchy.
+---
+
+<PageLayout
+	title="Pacific Horizon Residence Case Study"
+	description="A coastal Los Angeles residence where lighting, motorized shading, entertainment, networking and security operate as one quiet system. See how it came together."
+	image={withBase('/images/project-single/hero-pacific-horizon.webp')}
+	imageAlt="Pacific Horizon Residence, a contemporary coastal home with an infinity pool at blue hour"
+	breadcrumbTitle="Pacific Horizon Residence"
+>
+	<HeroSection />
+
+	<OverviewSection />
+
+	<FeaturesSection />
+
+	<GallerySection />
+
+	<CtaBanner />
+</PageLayout>

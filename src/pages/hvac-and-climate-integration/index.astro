@@ -1,0 +1,63 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Whole-Home Climate Integration',
+		description:
+			'Climate works alongside lighting, shading, entertainment and security within one elegant interface, never a separate app or thermostat panel.',
+		image: withBase('/images/solutions/hvac-and-climate-integration/feature-1.webp'),
+		imageAlt: 'Open-plan living room with floor-to-ceiling glass looking onto a garden',
+	},
+	{
+		title: 'Automated Comfort',
+		description:
+			'The home responds to schedules, occupancy and conditions outside, holding the balance between comfort and efficiency without constant adjustment.',
+		image: withBase('/images/solutions/hvac-and-climate-integration/feature-2.webp'),
+		imageAlt: 'Living room with a tabletop touch panel and a wall display showing home controls',
+	},
+	{
+		title: 'One-Touch Temperature',
+		description:
+			'A single scene sets temperature, lighting, shades and music together, so each room is right the moment you walk in.',
+		image: withBase('/images/solutions/hvac-and-climate-integration/feature-3.webp'),
+		imageAlt: 'Hand holding a phone with a climate control app in a warmly lit room',
+	},
+];
+
+const scenes = [
+	{ title: 'Morning', description: 'Lights brighten gradually, shades rise, and each room is at your preferred temperature before the day begins.' },
+	{ title: 'Entertaining', description: 'One touch sets the atmosphere, with lighting, music and climate in concert.' },
+	{ title: 'Away', description: 'Selected lights and entertainment switch off, the climate eases back and the home is secured, in one scene.' },
+	{ title: 'Goodnight', description: 'Lights settle, the property is secured and the temperature lowers, all through one simple scene.' },
+];
+---
+
+<ServiceLayout
+	title="Climate Control & HVAC Integration, LA"
+	description="Quiet, room-by-room climate for Los Angeles residences: HVAC, sensors and thermostats integrated with shades and lighting so every space is simply comfortable."
+	heroImageId="solutions/control-great-room"
+	serviceName="Climate Control and HVAC Integration"
+	serviceType="Residential climate control and HVAC integration"
+	eyebrow="Whole-Home Climate"
+	heroTitle="Climate Control, Quietly Refined"
+	heroSubtitle="The right temperature in every room, working quietly alongside your lighting, shading and entertainment."
+	intro="Comfort is best when you never have to think about it. Thermostats, sensors and HVAC join the same system as your lighting and shades, so each room is simply the right temperature when you walk in."
+	related={['control-systems', 'lighting-control-systems', 'motorized-shades-and-drapery']}
+>
+	<CapabilityList eyebrow="Key Features" title="Comfort, efficiency and ease, in every room." items={capabilities} />
+
+	<DailyExperience
+		eyebrow="Daily Experience"
+		title="Comfort you never have to think about."
+		scenes={scenes}
+		imageId="solutions/lighting-living-room"
+		imageAlt="Warm living room with concealed cove lighting and a wall-mounted control display"
+	/>
+
+	<CtaBanner slot="closing" />
+</ServiceLayout>

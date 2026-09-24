@@ -1,0 +1,45 @@
+---
+import { ogImageUrl } from '../../lib/images.ts';
+import PageLayout from '../../layouts/PageLayout.astro';
+import FeatureList from '../../components/brands/FeatureList.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+import HeroSection from './_HeroSection.astro';
+import PartnersSection from './_PartnersSection.astro';
+import ProgramSection from './_ProgramSection.astro';
+import CredentialsSection from './_CredentialsSection.astro';
+import ClosingSection from './_ClosingSection.astro';
+
+const education = [
+	{
+		title: 'CEU Courses',
+		description:
+			'Gain access to award-winning CEU courses that allow qualified professionals to become licensed and nationally accredited in residential technology.',
+	},
+	{
+		title: 'Custom Courses',
+		description:
+			'Take part in our own custom-tailored courses, covering the coordination questions that arise on every high-end residential project, from rough-in to handover.',
+	},
+];
+---
+
+<PageLayout
+	title="For Architects, Designers & Builders"
+	description="A CEDIA-certified technology partner for Los Angeles architects, interior designers and builders: early coordination, concealed infrastructure, clean handover."
+	image={ogImageUrl('process/design-collaboration')}
+	breadcrumbTitle="Design Partners"
+>
+	<HeroSection />
+
+	<PartnersSection />
+
+	<ProgramSection />
+
+	<CredentialsSection />
+
+	<FeatureList eyebrow="For Design Professionals" title="Continuing education, built in." features={education} />
+
+	<ClosingSection />
+
+	<CtaBanner />
+</PageLayout>

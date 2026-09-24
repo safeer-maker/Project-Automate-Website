@@ -1,0 +1,273 @@
+---
+// "How we deliver it": the homepage's four steps (_ProcessSteps.astro),
+// condensed to one line each for the service pages. The full story lives at
+// /#process.
+import { withBase } from '../../lib/paths.ts';
+
+interface Props {
+	eyebrow?: string;
+	title?: string;
+}
+
+const { eyebrow = 'How We Deliver It', title = 'Four considered steps, one team.' } = Astro.props;
+
+// Condensed from the homepage wording; keep the two in step.
+const steps = [
+	{ title: 'Understand', line: 'We begin with how you live, and what should simply disappear.' },
+	{ title: 'Design', line: 'Planned around the architecture, in step with your architect and designer.' },
+	{ title: 'Integrate', line: 'Installed, connected and programmed with precision and minimal visual impact.' },
+	{ title: 'Deliver', line: 'Every scene commissioned, a personal walkthrough, then concierge care.' },
+];
+---
+
+<section class="process-strip" aria-labelledby="process-strip-title" data-process-strip>
+	<div class="container strip-inner">
+		<header class="strip-head">
+			<span class="eyebrow">{eyebrow}</span>
+			<h2 id="process-strip-title">{title}</h2>
+			<a class="strip-link" href={withBase('/#process')}>
+				How we work
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+					<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+				</svg>
+			</a>
+		</header>
+		<ol class="strip-steps">
+			{steps.map((step, i) => (
+				<li style={`--i:${i}`}>
+					<span class="step-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+					<h3>{step.title}</h3>
+					<p>{step.line}</p>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>
+
+<script>
+	// The steps settle in once, in order, when the band first comes into view.
+	document.querySelectorAll<HTMLElement>('[data-process-strip]').forEach((strip) => {
+		if (!('IntersectionObserver' in window)) {
+			strip.classList.add('is-revealed');
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (!entries.some((entry) => entry.isIntersecting)) return;
+				strip.classList.add('is-revealed');
+				io.disconnect();
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		io.observe(strip);
+	});
+</script>
+
+<style>
+	.process-strip {
+		padding-block: clamp(4rem, 8vw, 6.5rem);
+	}
+
+	.strip-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+		gap: clamp(2.5rem, 6vw, 6rem);
+		align-items: start;
+	}
+
+	.strip-head h2 {
+		max-width: 16ch;
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-3xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.strip-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		padding-block: var(--space-1);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.02em;
+		color: var(--color-text);
+		border-bottom: 1px solid var(--color-border);
+		transition:
+			color var(--dur-fast) ease,
+			border-color var(--dur-fast) ease;
+	}
+
+	.strip-link svg {
+		width: 16px;
+		height: 16px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.strip-link:hover {
+		color: var(--color-bronze-text);
+		border-color: currentColor;
+	}
+
+	.strip-link:hover svg {
+		transform: translateX(4px);
+	}
+
+	.strip-link:focus-visible {
+		outline: 2px solid var(--color-bronze);
+		outline-offset: 4px;
+		border-radius: 2px;
+	}
+
+	/* Four quiet columns hung from one continuous hairline. */
+	.strip-steps {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0 clamp(1.25rem, 2.5vw, 2.5rem);
+		border-top: 1px solid var(--color-border);
+		counter-reset: step;
+	}
+
+	.strip-steps li {
+		position: relative;
+		padding-top: var(--space-6);
+	}
+
+	/* A short bronze tick marks where each step begins on the shared rule. */
+	.strip-steps li::before {
+		content: '';
+		position: absolute;
+		top: -1px;
+		left: 0;
+		width: 2rem;
+		height: 1px;
+		background: var(--color-bronze);
+	}
+
+	.step-index {
+		display: block;
+		margin-bottom: var(--space-4);
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.14em;
+		color: var(--color-bronze-text);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.strip-steps h3 {
+		margin: 0 0 var(--space-2);
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.3;
+		letter-spacing: -0.005em;
+	}
+
+	.strip-steps p {
+		margin: 0;
+		font-size: var(--text-sm);
+		line-height: 1.65;
+		text-wrap: pretty;
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.strip-steps li {
+			opacity: 0;
+			transform: translateY(16px);
+			transition:
+				opacity 900ms var(--ease-out-expo),
+				transform 900ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 90ms);
+		}
+
+		.strip-steps li::before {
+			transform: scaleX(0);
+			transform-origin: left;
+			transition: transform 1100ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 90ms + 200ms);
+		}
+
+		.is-revealed .strip-steps li {
+			opacity: 1;
+			transform: none;
+		}
+
+		.is-revealed .strip-steps li::before {
+			transform: none;
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.strip-inner {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-8);
+		}
+
+		.strip-head {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: baseline;
+			justify-content: space-between;
+			gap: var(--space-2) var(--space-8);
+		}
+
+		.strip-head .eyebrow {
+			flex-basis: 100%;
+			margin-bottom: 0;
+		}
+
+		.strip-head h2 {
+			max-width: none;
+			margin: 0;
+		}
+	}
+
+	@media (max-width: 760px) {
+		.strip-steps {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: var(--space-8) var(--space-6);
+			border-top: 0;
+		}
+
+		/* Two rows: each step carries its own rule. */
+		.strip-steps li {
+			border-top: 1px solid var(--color-border);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.strip-head h2 {
+			font-size: var(--text-2xl);
+		}
+
+		.strip-steps {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 0;
+		}
+
+		/* Stacked: index beside the text, like a quiet numbered list. */
+		.strip-steps li {
+			display: grid;
+			grid-template-columns: 2.5rem minmax(0, 1fr);
+			column-gap: var(--space-2);
+			padding-block: var(--space-4) var(--space-6);
+		}
+
+		.strip-steps li:last-child {
+			padding-bottom: 0;
+		}
+
+		.step-index {
+			grid-row: span 2;
+			margin: 0;
+			padding-top: 0.3em;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.strip-link svg {
+			transition: none;
+		}
+	}
+</style>

@@ -1,0 +1,40 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+
+interface Props {
+	/** The page's own title, WITHOUT " | PROJECT: automate" — Seo.astro appends it when the total stays ≤ 60 chars. */
+	title: string;
+	/** 140–160 characters. */
+	description: string;
+	/** og:image URL — use ogImageUrl(id) from src/lib/images.ts. */
+	image?: string;
+	imageAlt?: string;
+	/** Bronze scroll-progress hairline in the header — blog posts and long solution pages only. */
+	progress?: boolean;
+	/** Keep this page out of search results (thank-you, 404). */
+	noindex?: boolean;
+	/** Extra JSON-LD nodes (Service, BlogPosting, FAQPage…) merged into the page's @graph. */
+	schema?: Record<string, unknown>[];
+	ogType?: 'website' | 'article';
+	publishedTime?: Date;
+	modifiedTime?: Date;
+	/** Middle breadcrumbs when the URL doesn't express the hierarchy. */
+	breadcrumbs?: { name: string; path: string }[];
+	/** Short name for the last breadcrumb ("Savant" rather than the full SEO title). */
+	breadcrumbTitle?: string;
+}
+
+const { progress = false, ...seo } = Astro.props;
+---
+
+<BaseLayout {...seo}>
+	<Header />
+	{/* Header opts in on the attribute's presence, so omit it entirely — Astro would
+	    otherwise render data-progress-track="false" and every page got the hairline. */}
+	<main data-progress-track={progress ? 'true' : undefined}>
+		<slot />
+	</main>
+	<Footer />
+</BaseLayout>

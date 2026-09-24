@@ -1,0 +1,66 @@
+---
+import type { LibraryImageId } from '../../lib/images.ts';
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+
+type Capability = { title: string; description: string; imageId: LibraryImageId; imageAlt: string };
+
+const capabilities: Capability[] = [
+	{
+		title: 'Smart Entry',
+		description:
+			'See, speak with and admit visitors from anywhere. Entry that pairs everyday convenience with genuine security.',
+		imageId: 'solutions/access-lit-gate',
+		imageAlt: 'Contemporary gate traced with a line of light beside an intercom post at dusk',
+	},
+	{
+		title: 'Quiet, Connected Protection',
+		description:
+			'Surveillance, access control and remote monitoring work together, giving you greater awareness without the residence ever feeling dominated by security equipment.',
+		imageId: 'solutions/security-smart-lock',
+		imageAlt: 'Smart lock set into a timber front door, with a sunset terrace beyond',
+	},
+	{
+		title: 'Entry, Managed From Anywhere',
+		description: 'View cameras, receive alerts, verify visitors and manage every entry point, at home or away.',
+		imageId: 'solutions/security-driveway-gate',
+		imageAlt: 'Modern sliding driveway gate and intercom post, softly lit at night',
+	},
+];
+
+const scenes = [
+	{ title: 'Arriving Home', description: 'Gates and doors recognize you and open as you approach.' },
+	{ title: 'A Visitor Arrives', description: 'See and speak with visitors from your phone or a touch panel before they are let in.' },
+	{ title: 'Deliveries', description: 'Grant one-time or scheduled access to couriers and staff, without leaving what you are doing.' },
+	{ title: 'Away', description: 'Review entry activity and alerts, and secure every access point with one command.' },
+];
+---
+
+<ServiceLayout
+	title="Estate Access Control & Intercom, LA"
+	description="Gate, door and guest access for Los Angeles estates: video intercom, mobile credentials and staff schedules, integrated with cameras and your control system."
+	heroImageId="solutions/security-estate-gate"
+	serviceName="Estate Access Control and Intercom"
+	serviceType="Residential access control and video intercom integration"
+	eyebrow="Access Control & Intercom"
+	heroTitle="Gate and Door Access, Refined"
+	heroSubtitle="Gates, doors, cameras, entry stations and mobile access, brought together as one composed experience for Los Angeles residences."
+	intro="Arrival sets the tone for a home. Family is welcomed without a pause, guests and staff are received on your terms, and everyone else is kept politely at the gate."
+	related={['security-systems', 'surveillance-systems', 'intrusion-detection-systems']}
+	relatedEyebrow="The Security Suite"
+	relatedTitle="Part of one quiet system."
+>
+	<CapabilityList eyebrow="Key Features" title="Access that feels effortless, and stays exacting." items={capabilities} />
+
+	<DailyExperience
+		eyebrow="Daily Experience"
+		title="Every arrival, received with discretion."
+		scenes={scenes}
+		imageId="residences/palm-drive-estate"
+		imageAlt="Palm-lined drive leading to a modern residence glowing at dusk"
+	/>
+
+	<CtaBanner slot="closing" />
+</ServiceLayout>

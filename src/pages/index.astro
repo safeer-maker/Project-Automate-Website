@@ -1,0 +1,37 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { ogImageUrl } from '../lib/images.ts';
+import HeroSection from './_HeroSection.astro';
+import StatementSection from './_StatementSection.astro';
+import TechnicalSilence from './_TechnicalSilence.astro';
+import DayAtHome from './_DayAtHome.astro';
+import SolutionsGrid from './_SolutionsGrid.astro';
+import InspirationPreview from './_InspirationPreview.astro';
+import ProcessSteps from './_ProcessSteps.astro';
+import WhyProjectAutomate from './_WhyProjectAutomate.astro';
+import LogoMarquee from './_LogoMarquee.astro';
+import ConsultationForm from './_ConsultationForm.astro';
+import CtaBanner from '../components/ui/CtaBanner.astro';
+
+// The page is told as a story: arrival, belief, the lights coming up, a day
+// lived in the house, the systems behind it, proof, how we work, trust, then
+// the invitation and a quiet close. The hero carries the page's only <h1>.
+---
+
+<PageLayout
+	title="Luxury Home Automation in Los Angeles"
+	description="Discreet smart home integration for Los Angeles estates: lighting, shading, cinema, climate and security, designed as one system and cared for after handover."
+	image={ogImageUrl('residences/hidden-hills-pool')}
+>
+	<HeroSection />
+	<StatementSection />
+	<TechnicalSilence />
+	<DayAtHome />
+	<SolutionsGrid />
+	<InspirationPreview />
+	<ProcessSteps />
+	<WhyProjectAutomate />
+	<LogoMarquee />
+	<ConsultationForm />
+	<CtaBanner variant="feature" />
+</PageLayout>

@@ -1,0 +1,73 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import type { LibraryImageId } from '../../lib/images.ts';
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+
+type Capability = { title: string; description: string; image?: string; imageId?: LibraryImageId; imageAlt: string };
+
+const capabilities: Capability[] = [
+	{
+		title: 'Real-Time Alerts',
+		description: 'Immediate notice by text, email or push notification, sent only to the devices you choose.',
+		image: withBase('/images/solutions/surveillance-systems/feature-1.webp'),
+		imageAlt: 'Tablet showing live camera views of a residence and its pool at night',
+	},
+	{
+		title: 'Facial Recognition',
+		description:
+			'Facial recognition and automatic number plate recognition tell familiar arrivals from the unexpected, so the system speaks up only when it should.',
+		image: withBase('/images/solutions/surveillance-systems/feature-2.webp'),
+		imageAlt: 'Homeowner reviewing camera feeds on a tablet in a bright living room',
+	},
+	{
+		title: 'Every Approach, Watched',
+		description:
+			'Cameras at the gate and driveway recognize familiar vehicles and flag the unfamiliar, well before anyone reaches the door.',
+		imageId: 'solutions/security-driveway-gate',
+		imageAlt: 'Modern sliding driveway gate and intercom post, softly lit at night',
+	},
+	{
+		title: 'Remote Monitoring',
+		description: 'Secure access to every camera on the property, from anywhere, at any hour.',
+		image: withBase('/images/solutions/surveillance-systems/feature-3.webp'),
+		imageAlt: 'Wall-mounted security panel showing live camera views and access status',
+	},
+];
+
+const scenes = [
+	{ title: 'Arrival', description: 'A familiar face at the gate is recognized, and the system stands down without a single alert.' },
+	{ title: 'Away', description: 'Every camera feed, viewed securely from anywhere, at any hour of the day.' },
+	{ title: 'The Unexpected', description: 'An unfamiliar vehicle is identified by its plate, and a notification reaches you at once.' },
+	{ title: 'Overnight', description: 'High-definition footage records continuously, ready the moment it is needed.' },
+];
+---
+
+<ServiceLayout
+	title="Estate Surveillance Cameras, Los Angeles"
+	description="Discreet surveillance for Los Angeles estates: high-resolution cameras, intelligent alerts and secure remote viewing, integrated with gates and lighting."
+	heroImageId="solutions/security-camera"
+	serviceName="Estate Surveillance Systems"
+	serviceType="Residential surveillance camera design and installation"
+	eyebrow="Surveillance Systems"
+	heroTitle="Security That Stays Quiet, Until It Matters"
+	heroSubtitle="Discreet cameras and advanced analytics that watch over the whole property, and speak up only when something deserves your attention."
+	intro="Cameras should see everything and be noticed by no one. Each one is placed with the architecture and landscape in mind, then tuned so that you hear only about what matters."
+	related={['security-systems', 'access-control-and-intercom', 'intrusion-detection-systems']}
+	relatedEyebrow="The Security Suite"
+	relatedTitle="Part of one quiet system."
+>
+	<CapabilityList eyebrow="Advanced Features" title="Intelligent surveillance, scaled to any property." items={capabilities} />
+
+	<DailyExperience
+		eyebrow="Daily Experience"
+		title="Watchful, and never intrusive."
+		scenes={scenes}
+		imageId="solutions/security-estate-gate"
+		imageAlt="Grand estate gates lit at night, with a palm-lined drive leading to the residence"
+	/>
+
+	<CtaBanner slot="closing" />
+</ServiceLayout>

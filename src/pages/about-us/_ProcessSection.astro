@@ -1,0 +1,263 @@
+---
+// The same four steps as the homepage stepper (_ProcessSteps), told here as a
+// still editorial spread: the homepage already spends its pinned scene on it.
+import { withBase } from '../../lib/paths.ts';
+import Picture from '../../components/ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
+
+const steps: { num: string; title: string; description: string; image: LibraryImageId; alt: string }[] = [
+	{
+		num: '01',
+		title: 'Understand',
+		description:
+			'We begin with how you live: the rooms you gather in, the moments that matter, and what should simply disappear.',
+		image: 'process/understand',
+		alt: 'Homeowners and a designer reviewing material samples at a kitchen table',
+	},
+	{
+		num: '02',
+		title: 'Design',
+		description:
+			'Every system is planned around the architecture and interiors, in step with your architect and designer, down to each keypad and sightline.',
+		image: 'process/design',
+		alt: 'White architectural model of a residence on a design desk',
+	},
+	{
+		num: '03',
+		title: 'Integrate',
+		description: 'Installed, connected and programmed with precision, and with minimal visual impact.',
+		image: 'process/integrate',
+		alt: 'Technician installing landscape lighting in a manicured garden',
+	},
+	{
+		num: '04',
+		title: 'Deliver',
+		description:
+			'We commission every scene, walk you through the home and hand over complete documentation. Our concierge team then stays on to care for it.',
+		image: 'process/deliver',
+		alt: 'Finished residence glowing at dusk at the end of a palm-lined drive',
+	},
+];
+---
+
+<section class="process" aria-labelledby="about-process-heading">
+	<div class="container">
+		<header class="process-head">
+			<div>
+				<span class="eyebrow">Our Process</span>
+				<h2 id="about-process-heading">From vision to effortless living.</h2>
+			</div>
+			<p>
+				Four considered steps and one team, from the first conversation to the day you move in,
+				and beyond.
+			</p>
+		</header>
+
+		<ol class="steps" data-process-steps>
+			{steps.map((step) => (
+				<li class="step">
+					<figure class="step-media">
+						<Picture id={step.image} alt={step.alt} sizes="(max-width: 700px) 100vw, (max-width: 1280px) 46vw, 600px" />
+					</figure>
+					<div class="step-text">
+						<span class="step-number" aria-hidden="true">{step.num}</span>
+						<h3>{step.title}</h3>
+						<p>{step.description}</p>
+					</div>
+				</li>
+			))}
+		</ol>
+
+		<a class="care-link" href={withBase('/technology-support-membership/')}>
+			About concierge care
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+				<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</a>
+	</div>
+</section>
+
+<script>
+	// Each step settles into place once as it enters; nothing replays.
+	document.querySelectorAll<HTMLElement>('[data-process-steps]').forEach((list) => {
+		const steps = list.querySelectorAll<HTMLElement>('.step');
+		if (!('IntersectionObserver' in window)) {
+			steps.forEach((step) => step.classList.add('is-revealed'));
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
+		);
+		steps.forEach((step) => io.observe(step));
+	});
+</script>
+
+<style>
+	.process {
+		padding-block: clamp(4.5rem, 10vw, 8.5rem);
+	}
+
+	.process-head {
+		display: grid;
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		gap: var(--space-6) clamp(2rem, 6vw, 6rem);
+		align-items: end;
+		margin-bottom: clamp(3rem, 7vw, 5.5rem);
+	}
+
+	.process-head h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.12;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.process-head p {
+		margin: 0;
+		max-width: 30rem;
+		font-size: var(--text-body-lg);
+		line-height: 1.65;
+	}
+
+	/* Two columns, the right one set lower: reads as a spread, not a spec table. */
+	.steps {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(3rem, 6vw, 5rem) clamp(2rem, 5vw, 5rem);
+	}
+
+	.step:nth-child(even) {
+		margin-top: clamp(4rem, 10vw, 9rem);
+	}
+
+	.step-media {
+		margin: 0 0 var(--space-8);
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		aspect-ratio: 3 / 2;
+		background: var(--color-surface);
+	}
+
+	.step-media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.step-text {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		column-gap: var(--space-6);
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.step-number {
+		grid-row: span 2;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		color: var(--color-accent);
+		padding-top: 0.45em;
+	}
+
+	.step h3 {
+		margin: 0 0 var(--space-3);
+		font-size: var(--text-step);
+		font-weight: var(--fw-medium);
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+	}
+
+	.step p {
+		margin: 0;
+		max-width: 32rem;
+		font-size: var(--text-base);
+		line-height: 1.7;
+	}
+
+	.care-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-3);
+		margin-top: clamp(3rem, 6vw, 5rem);
+		padding-bottom: var(--space-1);
+		border-bottom: 1px solid currentColor;
+		font-size: var(--text-base);
+		font-weight: var(--fw-medium);
+		color: var(--color-accent);
+		transition: color var(--dur-fast) ease;
+	}
+
+	.care-link svg {
+		width: 18px;
+		height: 18px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.care-link:hover,
+	.care-link:focus-visible {
+		color: var(--color-accent-hover);
+	}
+
+	.care-link:hover svg,
+	.care-link:focus-visible svg {
+		transform: translateX(5px);
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.step {
+			opacity: 0;
+			transform: translateY(28px);
+			transition:
+				opacity 1100ms var(--ease-out-expo),
+				transform 1100ms var(--ease-out-expo);
+		}
+		.step-media :global(img) {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+		.step.is-revealed {
+			opacity: 1;
+			transform: none;
+		}
+		.step.is-revealed .step-media :global(img) {
+			transform: none;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.process-head {
+			grid-template-columns: minmax(0, 1fr);
+			align-items: start;
+		}
+	}
+
+	@media (max-width: 700px) {
+		.steps {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.step:nth-child(even) {
+			margin-top: 0;
+		}
+		.step-media {
+			margin-bottom: var(--space-6);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.care-link svg {
+			transition: none;
+		}
+	}
+</style>

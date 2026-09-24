@@ -1,0 +1,30 @@
+---
+import { ogImageUrl } from '../../lib/images.ts';
+import PageLayout from '../../layouts/PageLayout.astro';
+import IntroSection from './_IntroSection.astro';
+import CalculatorSection from './_CalculatorSection.astro';
+import WhyMattersSection from './_WhyMattersSection.astro';
+import HtaConsidersSection from './_HtaConsidersSection.astro';
+import ClosingCtaSection from './_ClosingCtaSection.astro';
+
+// The slug and the nav label ("HTA Budget Calculator") are the client's
+// wording; the title and description speak of investment instead, which suits
+// the audience better in search results.
+---
+
+<PageLayout
+	title="HTA Smart Home Investment Calculator"
+	description="Estimate a considered investment range for your home technology by property size, rooms and systems, framed by HTA planning guidance, before a consultation."
+	image={ogImageUrl('process/design-plans')}
+	breadcrumbTitle="HTA Investment Calculator"
+>
+	<IntroSection />
+
+	<CalculatorSection />
+
+	<WhyMattersSection />
+
+	<HtaConsidersSection />
+
+	<ClosingCtaSection />
+</PageLayout>

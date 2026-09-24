@@ -1,0 +1,761 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import Button from '../ui/Button.astro';
+import { primaryNav, coreServices, megaMenuDefaultImage } from '../../data/nav.ts';
+import { siteInfo } from '../../data/site.ts';
+
+const phone = siteInfo.phones[0];
+const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
+---
+
+<header class="site-header" data-header>
+	<div class="container header-inner">
+		<a href={withBase('/')} class="logo-hover" aria-label="Go to PROJECT: automate home">
+			<img class="logo-static" src={withBase('/images/logo/logo-static.webp')} alt="PROJECT: automate logo" width="150" height="84" />
+			{/* 1.46MB and only seen on hover/focus — src is set on first intent, see script. */}
+			<img class="logo-gif" data-src={withBase('/images/logo/logo-animated.webp')} alt="" aria-hidden="true" width="150" height="84" decoding="async" />
+		</a>
+
+		<nav class="primary-nav" aria-label="Primary">
+			<div class="nav-item" data-mega-menu>
+				<button class="nav-link mega-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+					Core services
+					<svg class="nav-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+						<path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				</button>
+				<div class="mega-panel" role="menu">
+					<ul class="mega-links" role="none">
+						{coreServices.map((service, i) => (
+							<li role="none">
+								<a
+									role="menuitem"
+									href={service.href}
+									data-preview={service.image}
+									class:list={['mega-link', { 'is-active': i === 0 }]}
+								>
+									{service.label}
+								</a>
+							</li>
+						))}
+					</ul>
+					<div class="mega-preview">
+						{/* No src until the menu first opens — the desktop nav is display:none on phones. */}
+						<img data-mega-preview data-src={megaMenuDefaultImage} alt="" width="4" height="3" decoding="async" />
+					</div>
+				</div>
+			</div>
+			{primaryNav.map((item) => (
+				<a class="nav-link" href={item.href}>{item.label}</a>
+			))}
+		</nav>
+
+		<div class="header-actions">
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" class="cta-schedule" aria-label="Schedule Consultation"><span class="cta-schedule-verb">Schedule</span>Consultation</Button>
+			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
+				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
+					<path d="M1.41602 5.66666H32.5827V8.62318H1.41602V5.66666ZM1.41602 25.3768H32.5827V28.3333H1.41602V25.3768ZM1.41602 15.5217H32.5827V18.4783H1.41602V15.5217Z" fill="currentColor"></path>
+				</svg>
+			</button>
+		</div>
+	</div>
+	<div class="scroll-progress" data-scroll-progress aria-hidden="true"></div>
+</header>
+
+<div class="offcanvas" id="site-offcanvas" role="dialog" aria-modal="true" aria-label="Site menu" data-offcanvas data-lenis-prevent>
+	<div class="offcanvas-overlay" data-menu-close></div>
+	<nav class="offcanvas-panel">
+		<button class="offcanvas-close" data-menu-close aria-label="Close menu">&times;</button>
+		<ul class="offcanvas-nav">
+			<li class="has-submenu" style="--i: 0">
+				<button class="submenu-trigger" data-submenu-trigger aria-expanded="false">
+					Core services <span class="chevron">+</span>
+				</button>
+				<div class="submenu" data-submenu>
+					<ul class="submenu-list">
+						{coreServices.map((item) => (
+							<li><a href={item.href}>{item.label}</a></li>
+						))}
+					</ul>
+				</div>
+			</li>
+			{primaryNav.map((item, i) => (
+				<li style={`--i: ${i + 1}`}><a href={item.href}>{item.label}</a></li>
+			))}
+		</ul>
+
+		<div class="offcanvas-concierge">
+			<a class="concierge-phone" href={phoneHref}>{phone}</a>
+			{/* Badges and clip sit in a hidden panel on every page — their sources are
+			    attached the first time the menu opens (see setOpen), not on page load.
+			    The clip renders ≤ ~372px wide, so the mobile encodes are plenty. */}
+			<div class="concierge-badges">
+				<img data-src={withBase('/images/badges/cedia-certified.webp')} alt="CEDIA Certified" width="96" height="48" decoding="async" />
+				<img data-src={withBase('/images/badges/cert-level-luxury.webp')} alt="Certified Luxury Level" width="96" height="48" decoding="async" />
+			</div>
+			<video class="concierge-clip" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+				<source data-src={withBase('/videos/hero-mobile.mp4')} type="video/mp4" />
+				<source data-src={withBase('/videos/hero-mobile.webm')} type="video/webm" />
+			</video>
+		</div>
+
+		<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">Schedule Consultation</Button>
+	</nav>
+</div>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 40;
+		background: rgba(22, 22, 22, 0.85);
+		backdrop-filter: blur(12px);
+		border-bottom: 1px solid var(--color-border-on-dark);
+		transition:
+			background-color var(--dur-base) var(--ease-in-out-soft),
+			backdrop-filter var(--dur-base) var(--ease-in-out-soft),
+			border-color var(--dur-base) var(--ease-in-out-soft);
+	}
+
+	.site-header[data-transparent='true'] {
+		background: transparent;
+		backdrop-filter: none;
+		border-bottom-color: transparent;
+	}
+
+	.header-inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-6);
+		padding-block: var(--space-3);
+	}
+
+	.logo-hover {
+		position: relative;
+		display: inline-flex;
+		flex-shrink: 0;
+		width: clamp(84px, 9vw, 130px);
+		height: clamp(48px, 5.2vw, 74px);
+	}
+
+	.logo-hover img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		transition: opacity var(--transition-base);
+	}
+
+	.logo-static {
+		opacity: 1;
+		z-index: 2;
+	}
+	.logo-gif {
+		opacity: 0;
+		z-index: 1;
+	}
+	/* Gated on [data-gif-ready] (set once the lazily fetched animation has
+	   decoded) so the first hover never fades the static mark out to nothing. */
+	.logo-hover[data-gif-ready]:hover .logo-static,
+	.logo-hover[data-gif-ready]:focus-visible .logo-static {
+		opacity: 0;
+	}
+	.logo-hover[data-gif-ready]:hover .logo-gif,
+	.logo-hover[data-gif-ready]:focus-visible .logo-gif {
+		opacity: 1;
+	}
+
+	/* Desktop category nav — hidden until there's room for it, see SHELL-01 */
+	.primary-nav {
+		display: none;
+		align-items: center;
+		gap: var(--space-6);
+		flex: 1;
+		justify-content: center;
+	}
+
+	@media (min-width: 1100px) {
+		.primary-nav {
+			display: flex;
+		}
+	}
+
+	.nav-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-1);
+		background: none;
+		border: none;
+		color: var(--color-text-on-dark);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		white-space: nowrap;
+		padding: var(--space-2) 0;
+		transition: color var(--dur-fast) ease;
+	}
+	.nav-link:hover,
+	.nav-link:focus-visible {
+		color: var(--color-accent);
+	}
+
+	.nav-item {
+		position: relative;
+	}
+
+	.nav-caret {
+		width: 9px;
+		height: 9px;
+		transition: transform var(--dur-fast) ease;
+	}
+	.nav-item[data-open='true'] .nav-caret {
+		transform: rotate(180deg);
+	}
+
+	.mega-panel {
+		position: absolute;
+		/* Zero gap to the trigger — any space here is a dead zone the cursor
+		   falls through, which closes the menu before it reaches the panel. */
+		top: 100%;
+		left: 50%;
+		width: min(680px, 90vw);
+		background: var(--color-charcoal);
+		border: 1px solid var(--color-border-on-dark);
+		border-radius: var(--radius-md);
+		box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+		padding: var(--space-6);
+		display: grid;
+		grid-template-columns: 1fr 1.1fr;
+		gap: var(--space-6);
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transform: translate(-50%, 8px);
+		transition:
+			opacity var(--dur-base) var(--ease-out-expo),
+			transform var(--dur-base) var(--ease-out-expo),
+			visibility var(--dur-base) var(--ease-out-expo);
+	}
+
+	.nav-item[data-open='true'] .mega-panel {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transform: translate(-50%, 0);
+	}
+
+	.mega-links {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.mega-link {
+		display: block;
+		padding: var(--space-2) var(--space-3);
+		border-radius: var(--radius-sm);
+		color: var(--color-text-on-dark-muted);
+		font-size: var(--text-sm);
+		transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+	}
+	.mega-link:hover,
+	.mega-link:focus-visible,
+	.mega-link.is-active {
+		background: rgba(255, 255, 255, 0.06);
+		color: var(--color-white);
+	}
+
+	.mega-preview {
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		aspect-ratio: 4 / 3;
+		background: var(--color-black);
+	}
+	.mega-preview img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-4);
+		flex-shrink: 0;
+	}
+
+	.header-actions :global(.cta-schedule) {
+		gap: 0;
+		white-space: nowrap;
+	}
+
+	.header-actions :global(.cta-schedule-verb) {
+		margin-right: 0.3em;
+	}
+
+	/* The verb carries its own trailing space (margin), so it can drop out on
+	   narrow phones without leaving a stray one.
+	   Scoped through .header-actions so it outranks Button's own size classes,
+	   which otherwise keep the desktop padding and push the bar past 375px. */
+	@media (max-width: 480px) {
+		.header-inner {
+			gap: var(--space-3);
+		}
+		.header-actions {
+			gap: var(--space-2);
+		}
+		.header-actions :global(.cta-schedule) {
+			padding: 0.6rem 1rem;
+			font-size: var(--text-xs);
+		}
+	}
+
+	@media (max-width: 400px) {
+		.header-actions :global(.cta-schedule-verb) {
+			display: none;
+		}
+	}
+
+	.menu-trigger {
+		background: none;
+		border: none;
+		color: var(--color-white);
+		display: inline-flex;
+		padding: var(--space-2);
+	}
+
+	@media (min-width: 1100px) {
+		.menu-trigger {
+			display: none;
+		}
+	}
+
+	/* Progress hairline — opted into per-page via [data-progress-track], see script below */
+	.scroll-progress {
+		position: absolute;
+		left: 0;
+		bottom: -1px;
+		height: 1px;
+		width: 100%;
+		background: var(--color-accent);
+		transform: scaleX(0);
+		transform-origin: left;
+	}
+
+	.offcanvas {
+		position: fixed;
+		inset: 0;
+		z-index: 50;
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	.offcanvas[data-open='true'] {
+		visibility: visible;
+		pointer-events: auto;
+	}
+
+	.offcanvas-overlay {
+		position: absolute;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.6);
+		opacity: 0;
+		transition: opacity var(--transition-base);
+	}
+
+	.offcanvas[data-open='true'] .offcanvas-overlay {
+		opacity: 1;
+	}
+
+	.offcanvas-panel {
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 100%;
+		width: min(420px, 100%);
+		background: var(--color-charcoal);
+		padding: var(--space-8) var(--space-6);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+		overflow-y: auto;
+		transform: translateX(100%);
+		transition: transform 0.5s var(--ease-out-expo);
+	}
+
+	.offcanvas[data-open='true'] .offcanvas-panel {
+		transform: translateX(0);
+	}
+
+	.offcanvas-close {
+		align-self: flex-end;
+		background: none;
+		border: none;
+		color: var(--color-white);
+		font-size: var(--text-3xl);
+		line-height: 1;
+		padding: var(--space-2);
+	}
+
+	.offcanvas-nav {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.offcanvas-nav > li {
+		opacity: 0;
+		transform: translateY(12px);
+		transition: opacity var(--dur-base) var(--ease-out-expo), transform var(--dur-base) var(--ease-out-expo);
+		transition-delay: calc(0.5s + var(--i, 0) * var(--stagger));
+	}
+
+	.offcanvas[data-open='true'] .offcanvas-nav > li {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.offcanvas-nav > li > a,
+	.submenu-trigger {
+		display: block;
+		width: 100%;
+		text-align: left;
+		background: none;
+		border: none;
+		color: var(--color-white);
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		padding: var(--space-3) 0;
+		border-bottom: 1px solid var(--color-border-on-dark);
+	}
+
+	.submenu-trigger {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.chevron {
+		color: var(--color-accent);
+	}
+
+	/* grid-template-rows 0fr → 1fr is the only pure-CSS way to animate to auto height.
+	   Collapsed, it's also visibility: hidden so its links leave the tab order —
+	   flipped only after the collapse has played out, and instantly on open. */
+	.submenu {
+		display: grid;
+		grid-template-rows: 0fr;
+		overflow: hidden;
+		opacity: 0;
+		visibility: hidden;
+		transition:
+			grid-template-rows var(--dur-base) var(--ease-in-out-soft),
+			opacity var(--dur-fast) ease,
+			visibility 0s linear var(--dur-base);
+	}
+
+	.submenu[data-open='true'] {
+		grid-template-rows: 1fr;
+		opacity: 1;
+		visibility: visible;
+		margin: var(--space-2) 0;
+		transition:
+			grid-template-rows var(--dur-base) var(--ease-in-out-soft),
+			opacity var(--dur-fast) ease,
+			visibility 0s linear 0s;
+	}
+
+	.submenu-list {
+		overflow: hidden;
+		min-height: 0;
+	}
+
+	.submenu-list a {
+		display: block;
+		padding: var(--space-2) 0 var(--space-2) var(--space-4);
+		color: var(--color-text-on-dark-muted);
+		font-size: var(--text-base);
+	}
+	.submenu-list a:hover {
+		color: var(--color-accent);
+	}
+
+	.offcanvas-concierge {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	.concierge-phone {
+		color: var(--color-white);
+		font-size: var(--text-lg);
+		font-weight: var(--fw-semibold);
+	}
+	.concierge-phone:hover {
+		color: var(--color-accent);
+	}
+
+	.concierge-badges {
+		display: flex;
+		gap: var(--space-4);
+	}
+	.concierge-badges img {
+		height: 40px;
+		width: auto;
+		object-fit: contain;
+	}
+
+	.concierge-clip {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius-md);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.site-header,
+		.mega-panel,
+		.nav-caret,
+		.offcanvas-panel,
+		.offcanvas-nav > li,
+		.submenu {
+			transition: none !important;
+		}
+		.offcanvas-nav > li {
+			opacity: 1;
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	// Animated logo: fetched on the first sign of intent rather than on every
+	// page load. Hover only counts on devices that really hover — a tap on a
+	// phone is a navigation, not a request to preview the animation.
+	const logoLink = document.querySelector<HTMLElement>('.logo-hover');
+	const logoGif = logoLink?.querySelector<HTMLImageElement>('.logo-gif[data-src]');
+	if (logoLink && logoGif) {
+		const loadGif = () => {
+			if (logoGif.getAttribute('src')) return;
+			logoGif.addEventListener('load', () => logoLink.setAttribute('data-gif-ready', ''), { once: true });
+			logoGif.src = logoGif.dataset.src!;
+		};
+		logoLink.addEventListener('pointerenter', () => {
+			if (matchMedia('(hover: hover)').matches) loadGif();
+		});
+		// The crossfade only runs on :focus-visible, so skip the pointer-focus a tap causes.
+		logoLink.addEventListener('focusin', () => {
+			if (logoLink.matches(':focus-visible')) loadGif();
+		});
+	}
+
+	const offcanvas = document.querySelector<HTMLElement>('[data-offcanvas]');
+	const offcanvasPanel = offcanvas?.querySelector<HTMLElement>('.offcanvas-panel');
+	const offcanvasClose = offcanvas?.querySelector<HTMLElement>('.offcanvas-close');
+	const openBtn = document.querySelector<HTMLElement>('[data-menu-open]');
+	const closeEls = document.querySelectorAll('[data-menu-close]');
+	const conciergeClip = offcanvas?.querySelector<HTMLVideoElement>('.concierge-clip');
+	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+	const isMenuOpen = () => offcanvas?.getAttribute('data-open') === 'true';
+
+	// The concierge badges + clip only ever show inside the menu, so their
+	// sources are attached on its first open instead of downloading on every page.
+	let conciergeLoaded = false;
+	function loadConciergeMedia() {
+		if (conciergeLoaded || !offcanvas) return;
+		conciergeLoaded = true;
+		offcanvas.querySelectorAll<HTMLImageElement | HTMLSourceElement>('.offcanvas-concierge [data-src]').forEach((el) => {
+			el.src = el.dataset.src!;
+			el.removeAttribute('data-src');
+		});
+		if (conciergeClip) {
+			// Under reduced motion it's shown as a still: fetch just enough for the first frame.
+			if (reducedMotion.matches) conciergeClip.preload = 'metadata';
+			conciergeClip.load();
+		}
+	}
+
+	// Everything behind the dialog goes inert while it's open: the offcanvas is a
+	// sibling of main/footer and of .header-inner (it sits after the header, not
+	// inside it), so this takes the page out of the tab order and the a11y tree.
+	// The cookie notice is a body-level sibling too, so it joins them.
+	const inertTargets = () =>
+		document.querySelectorAll<HTMLElement>('main, .site-footer, .header-inner, [data-cookie-notice]');
+
+	function setOpen(open: boolean) {
+		if (!offcanvas) return;
+		const wasOpen = isMenuOpen();
+		offcanvas.setAttribute('data-open', String(open));
+		openBtn?.setAttribute('aria-expanded', String(open));
+		// SmoothScroll.astro watches this to stop/start Lenis — keep it.
+		document.body.style.overflow = open ? 'hidden' : '';
+		inertTargets().forEach((el) => el.toggleAttribute('inert', open));
+
+		if (open) {
+			loadConciergeMedia();
+			if (conciergeClip && !reducedMotion.matches) {
+				// Muted + playsinline, so autoplay policy allows it; a rejection
+				// (e.g. closed again before it started) is harmless.
+				conciergeClip.play().catch(() => {});
+			}
+			offcanvasClose?.focus({ preventScroll: true });
+		} else {
+			conciergeClip?.pause();
+			// Only hand focus back when this actually closed the menu — the GHL
+			// CTA handler and stray Escapes call this while it's already shut.
+			if (wasOpen) openBtn?.focus({ preventScroll: true });
+		}
+	}
+
+	openBtn?.addEventListener('click', () => setOpen(true));
+	closeEls.forEach((el) => el.addEventListener('click', () => setOpen(false)));
+
+	// inert covers the page, but Tab past the last control would still leave for
+	// the browser chrome — wrap it so focus cycles within the panel.
+	function trapTab(e: KeyboardEvent) {
+		if (!offcanvasPanel) return;
+		const focusables = offcanvasPanel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+		if (!focusables.length) return;
+		const first = focusables[0];
+		const last = focusables[focusables.length - 1];
+		const active = document.activeElement;
+		if (!offcanvasPanel.contains(active)) {
+			e.preventDefault();
+			(e.shiftKey ? last : first).focus();
+		} else if (e.shiftKey && active === first) {
+			e.preventDefault();
+			last.focus();
+		} else if (!e.shiftKey && active === last) {
+			e.preventDefault();
+			first.focus();
+		}
+	}
+
+	const submenuTrigger = document.querySelector('[data-submenu-trigger]');
+	const submenu = document.querySelector('[data-submenu]');
+	submenuTrigger?.addEventListener('click', () => {
+		const isOpen = submenu?.getAttribute('data-open') === 'true';
+		submenu?.setAttribute('data-open', String(!isOpen));
+		submenuTrigger.setAttribute('aria-expanded', String(!isOpen));
+	});
+
+	// Desktop mega menu — hover-driven, with click/keyboard support for touch + a11y.
+	const megaMenu = document.querySelector<HTMLElement>('[data-mega-menu]');
+	const megaTrigger = megaMenu?.querySelector<HTMLElement>('.mega-trigger');
+	const megaLinks = megaMenu?.querySelectorAll<HTMLAnchorElement>('.mega-link');
+	const megaPreviewImg = megaMenu?.querySelector<HTMLImageElement>('[data-mega-preview]');
+	const defaultPreview = megaPreviewImg?.getAttribute('data-src') ?? '';
+
+	const isMegaOpen = () => megaMenu?.getAttribute('data-open') === 'true';
+
+	// Fetch the seven 800w previews — and the default one, which has no src in
+	// the markup so phones (where this nav is display:none) never download it —
+	// the first time the menu opens, so hovering down the list swaps images
+	// without a blank frame.
+	let previewsWarmed = false;
+	function warmPreviews() {
+		if (previewsWarmed) return;
+		previewsWarmed = true;
+		if (megaPreviewImg && defaultPreview) megaPreviewImg.src = defaultPreview;
+		megaLinks?.forEach((link) => {
+			const src = link.getAttribute('data-preview');
+			if (src) new Image().src = src;
+		});
+	}
+
+	function setMegaOpen(open: boolean) {
+		if (!megaMenu) return;
+		if (open) warmPreviews();
+		megaMenu.setAttribute('data-open', String(open));
+		megaTrigger?.setAttribute('aria-expanded', String(open));
+		// Reset to the default only once it's been loaded — a focusout that never
+		// opened the menu shouldn't start the download.
+		if (!open && previewsWarmed && megaPreviewImg) megaPreviewImg.setAttribute('src', defaultPreview);
+	}
+
+	// A short close delay absorbs fast/diagonal mouse movement between the
+	// trigger and the panel so the menu doesn't snap shut mid-transit.
+	let megaCloseTimer: ReturnType<typeof setTimeout> | undefined;
+	megaMenu?.addEventListener('mouseenter', () => {
+		clearTimeout(megaCloseTimer);
+		setMegaOpen(true);
+	});
+	megaMenu?.addEventListener('mouseleave', () => {
+		megaCloseTimer = setTimeout(() => setMegaOpen(false), 200);
+	});
+	megaTrigger?.addEventListener('click', () => {
+		setMegaOpen(megaMenu?.getAttribute('data-open') !== 'true');
+	});
+	megaMenu?.addEventListener('focusout', (e) => {
+		if (!megaMenu.contains(e.relatedTarget as Node)) setMegaOpen(false);
+	});
+
+	// One Escape/Tab handler for both menus. Escape also dismisses a hover-opened
+	// mega menu (WCAG 1.4.13); focus only moves back to its trigger when it was
+	// inside the menu, so a hover-dismiss doesn't yank focus from elsewhere.
+	document.addEventListener('keydown', (e) => {
+		if (isMenuOpen()) {
+			if (e.key === 'Escape') setOpen(false);
+			else if (e.key === 'Tab') trapTab(e);
+			return;
+		}
+		if (e.key === 'Escape' && isMegaOpen()) {
+			const hadFocus = megaMenu?.contains(document.activeElement) ?? false;
+			setMegaOpen(false);
+			if (hadFocus) megaTrigger?.focus();
+		}
+	});
+
+	megaLinks?.forEach((link) => {
+		const preview = link.getAttribute('data-preview');
+		const activate = () => {
+			if (preview && megaPreviewImg) megaPreviewImg.setAttribute('src', preview);
+			megaLinks.forEach((l) => l.classList.toggle('is-active', l === link));
+		};
+		link.addEventListener('mouseenter', activate);
+		link.addEventListener('focus', activate);
+	});
+
+	// Header goes transparent over a dark hero, then settles to the blurred
+	// charcoal bar ~80px into the scroll. Opt-in per page via [data-hero-sentinel],
+	// an 80px-tall marker pinned to the top of the hero — once it scrolls fully
+	// out of view, the page has scrolled past that threshold.
+	const header = document.querySelector<HTMLElement>('[data-header]');
+	const heroSentinel = document.querySelector('[data-hero-sentinel]');
+	if (header && heroSentinel) {
+		// The hero tucks in behind the sticky header (see its own negative
+		// margin-top) only when this page has one, so measure and expose the
+		// header's real rendered height for that overlap to line up exactly.
+		if ('ResizeObserver' in window) {
+			const setHeaderHeightVar = () => {
+				document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+			};
+			setHeaderHeightVar();
+			new ResizeObserver(setHeaderHeightVar).observe(header);
+		}
+
+		if ('IntersectionObserver' in window) {
+			header.setAttribute('data-transparent', 'true');
+			const observer = new IntersectionObserver(
+				([entry]) => header.setAttribute('data-transparent', String(entry.isIntersecting)),
+				{ threshold: 0 }
+			);
+			observer.observe(heroSentinel);
+		}
+	}
+
+	// Bronze progress hairline for long-form pages, opt-in via [data-progress-track].
+	const progressEl = document.querySelector<HTMLElement>('[data-scroll-progress]');
+	const progressTrack = document.querySelector('[data-progress-track]');
+	if (progressEl && progressTrack) {
+		const updateProgress = () => {
+			const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+			const pct = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+			progressEl.style.transform = `scaleX(${pct})`;
+		};
+		window.addEventListener('scroll', updateProgress, { passive: true });
+		updateProgress();
+	}
+</script>

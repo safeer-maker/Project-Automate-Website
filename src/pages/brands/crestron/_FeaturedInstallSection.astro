@@ -1,0 +1,24 @@
+---
+import { withBase } from '../../../lib/paths.ts';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+---
+
+<section class="section featured-install">
+	<div class="container">
+		<SectionHeading
+			eyebrow="Featured Crestron Project"
+			title="Intelligent luxury from every room."
+			align="center"
+		/>
+		<img src={withBase('/images/brands/crestron/os3-feature.webp')} alt="Crestron OS3 platform powering a luxury residence" loading="lazy" />
+	</div>
+</section>
+
+<style>
+	.featured-install img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>

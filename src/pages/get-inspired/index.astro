@@ -1,0 +1,20 @@
+---
+import { ogImageUrl } from '../../lib/images.ts';
+import PageLayout from '../../layouts/PageLayout.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+import HeroSection from './_HeroSection.astro';
+import StoriesSection from './_StoriesSection.astro';
+import GallerySection from './_GallerySection.astro';
+---
+
+<PageLayout
+	title="Luxury Home Technology Inspiration"
+	description="A visual journal of Los Angeles interiors where architectural lighting, concealed audio, motorized shades and refined keypads complement the design."
+	image={ogImageUrl('residences/palm-drive-estate')}
+	breadcrumbTitle="Inspiration"
+>
+	<HeroSection />
+	<StoriesSection />
+	<GallerySection />
+	<CtaBanner />
+</PageLayout>

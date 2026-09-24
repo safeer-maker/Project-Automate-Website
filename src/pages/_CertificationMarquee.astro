@@ -1,0 +1,97 @@
+---
+// Standalone certification strip, scrolling right→left. Split out of
+// _LogoMarquee.astro so it can be dropped anywhere on the page independently
+// of the vendor band. Not currently placed in index.astro.
+import { withBase } from '../lib/paths.ts';
+
+const certifications = [
+	{ name: 'CEDIA Certified', logo: '/images/badges/cedia-certified.webp' },
+	{ name: 'HTA Design Partner', logo: '/images/badges/hta-design-partner.webp' },
+	{ name: 'Cert Level Luxury', logo: '/images/badges/cert-level-luxury.webp' },
+];
+
+// A marquee half has to be wider than the viewport or the loop shows a gap.
+// Three certifications aren't enough, so the set is repeated up to a floor.
+const repeatToFill = <T,>(items: T[], minimum: number): T[] =>
+	Array.from({ length: Math.ceil(minimum / items.length) }, () => items).flat();
+
+const row = repeatToFill(certifications, 10);
+---
+
+<section class="cert-section">
+	<div class="cert-row">
+		<div class="cert-track">
+			{[...row, ...row].map((item) => (
+				<span class="cert-item">
+					<img src={withBase(item.logo)} alt={item.name} decoding="async" loading="lazy" />
+				</span>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.cert-section {
+		background: var(--color-bg);
+		border-block: 1px solid var(--color-border);
+		padding-block: clamp(1.25rem, 2.5vw, 2rem);
+	}
+
+	.cert-row {
+		overflow: hidden;
+		mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+		-webkit-mask-image: linear-gradient(
+			90deg,
+			transparent 0%,
+			black 8%,
+			black 92%,
+			transparent 100%
+		);
+	}
+
+	/* Spacing lives on the items as margin, never as `gap` on the track. A track
+	   of 2N items has 2N-1 gaps, so its midpoint falls half a gap short of where
+	   the duplicate half actually starts, and the -50% loop jumps by that half
+	   gap every cycle. Equal margins make every item advance the same distance,
+	   so 50% is exactly one half. */
+	.cert-track {
+		display: flex;
+		align-items: center;
+		width: max-content;
+		will-change: transform;
+		animation: scroll-rtl 30s linear infinite;
+	}
+
+	.cert-item {
+		flex: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: clamp(110px, 11vw, 160px);
+		height: clamp(56px, 6vw, 84px);
+		margin-inline: clamp(1.5rem, 3vw, 2.75rem);
+	}
+
+	.cert-item img {
+		max-width: 100%;
+		max-height: 100%;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+	}
+
+	@keyframes scroll-rtl {
+		from {
+			transform: translateX(0%);
+		}
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cert-track {
+			animation: none;
+		}
+	}
+</style>

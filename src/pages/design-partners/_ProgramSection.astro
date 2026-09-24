@@ -1,0 +1,81 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import Button from '../../components/ui/Button.astro';
+---
+
+<section class="program" aria-labelledby="program-heading">
+	<div class="container program-grid">
+		<div class="program-head">
+			<span class="eyebrow">The Design Partner Program</span>
+			<h2 id="program-heading">Technology, planned alongside the architecture.</h2>
+		</div>
+		<div class="program-copy">
+			<p class="lede">
+				PROJECT: automate is built to support design-build teams (architects, interior designers,
+				general contractors and other construction partners) by making technology planning,
+				coordination and execution seamless from concept through completion.
+			</p>
+			<p>
+				As CEDIA-certified Design Build Partners, we proudly offer CEU credits for qualified
+				professionals who attend our PROJECT: automate–sponsored Lunch &amp; Learn sessions,
+				helping you meet continuing education requirements while staying current on best
+				practices in luxury residential technology integration.
+			</p>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">Schedule a Lunch &amp; Learn Event</Button>
+		</div>
+	</div>
+</section>
+
+<style>
+	.program {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+		background: var(--color-surface);
+		border-block: 1px solid var(--color-border);
+	}
+
+	.program-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(2rem, 6vw, 6rem);
+		align-items: start;
+	}
+
+	.program-head h2 {
+		margin: 0;
+		font-size: var(--text-display-sm);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.program-copy p {
+		max-width: 38rem;
+		line-height: 1.75;
+	}
+
+	.program-copy .lede {
+		font-size: var(--text-body-lg);
+		line-height: 1.65;
+		color: var(--color-text);
+	}
+
+	.program-copy :global(.btn) {
+		margin-top: var(--space-4);
+	}
+
+	@media (max-width: 900px) {
+		.program-grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	@media (max-width: 600px) {
+		.program-copy :global(.btn) {
+			width: 100%;
+			white-space: normal;
+			text-align: center;
+		}
+	}
+</style>

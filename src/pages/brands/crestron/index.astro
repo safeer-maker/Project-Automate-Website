@@ -1,0 +1,69 @@
+---
+import { withBase } from '../../../lib/paths.ts';
+import BrandLayout from '../../../layouts/BrandLayout.astro';
+import FeatureList from '../../../components/brands/FeatureList.astro';
+import DailyExperience from '../../../components/brands/DailyExperience.astro';
+import CtaBanner from '../../../components/ui/CtaBanner.astro';
+import FeaturedInstallSection from './_FeaturedInstallSection.astro';
+
+const features = [
+	{
+		title: 'Unified Control',
+		description:
+			'Manage lighting, shades, entertainment, climate, and security from one elegant interface.',
+	},
+	{
+		title: 'Intelligent Automation',
+		description:
+			'Personalized scenes automatically adapt your home to different moments throughout the day.',
+	},
+	{
+		title: 'Premium Performance',
+		description:
+			'Enterprise-grade reliability ensures your smart home performs consistently every day.',
+	},
+	{
+		title: 'Future Ready',
+		description:
+			'A scalable platform designed to evolve with your home and new technologies.',
+	},
+];
+
+const scenes = [
+	{
+		title: 'Morning',
+		description: 'Lights gradually brighten, shades rise, and your preferred room temperature is ready before your day begins.',
+	},
+	{
+		title: 'Working',
+		description: 'Create the ideal environment with lighting, climate, and privacy optimized for productivity.',
+	},
+	{
+		title: 'Entertaining',
+		description: 'One tap activates lighting, music, video, and climate to create the perfect atmosphere for guests.',
+	},
+	{
+		title: 'Goodnight',
+		description: 'Secure the property, switch off unnecessary systems, and activate your evening scene with a single command.',
+	},
+];
+---
+
+<BrandLayout
+	brandName="Crestron"
+	seoTitle="Crestron Home Integrator, Los Angeles"
+	logo={withBase('/images/brands/logos/crestron.webp')}
+	logoOnWhite
+	heroImage={withBase('/images/brands/crestron/hero.webp')}
+	heroTitle="Crestron: Every System, One Experience"
+	heroSubtitle="Crestron unites lighting, shading, climate, entertainment and security in one platform, built for residences where every system must simply work."
+	description="Crestron Home design, programming and support for Los Angeles estates: enterprise-grade reliability for lighting, shading, climate, AV and security as one."
+>
+	<FeatureList eyebrow="Why Crestron" title="Complete home automation without compromise." features={features} />
+
+	<DailyExperience eyebrow="Daily Experience" title="A home that anticipates your routine." scenes={scenes} />
+
+	<FeaturedInstallSection />
+
+	<CtaBanner />
+</BrandLayout>

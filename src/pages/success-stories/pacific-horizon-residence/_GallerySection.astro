@@ -1,0 +1,233 @@
+---
+import { withBase } from '../../../lib/paths.ts';
+
+const gallery = [
+	{
+		title: 'Technology Designed Around the View',
+		text: 'The architecture of Pacific Horizon Residence was created to maintain a constant connection with the surrounding coastline. Expansive glass, open living spaces, and carefully selected natural materials shaped the character of the home. The technology needed to support that vision without competing with it — every control, speaker, sensor, and wire was planned to remain discreet and visually unobtrusive.',
+		image: withBase('/images/project-single/gallery-view.webp'),
+		width: 1920,
+		height: 1047,
+		alt: 'Modern luxury residence with pool and coastal view at sunset',
+	},
+	{
+		title: 'Effortless Whole-Home Control',
+		text: 'Lighting, shades, climate, entertainment, security, and selected exterior systems are brought together through one intuitive control experience. Instead of managing multiple applications or interfaces, the homeowners can adjust individual rooms or activate complete scenes with a single command — Welcome, Entertain, Evening, and Away — that allow the residence to respond naturally throughout the day.',
+		image: withBase('/images/project-single/gallery-control.webp'),
+		width: 1280,
+		height: 853,
+		alt: 'Smart home automation interface controlling household devices from a smartphone',
+	},
+	{
+		title: 'Lighting That Complements the Architecture',
+		text: 'A centralized lighting system provides precise control throughout the interior and exterior spaces. Carefully programmed scenes adjust the atmosphere for everyday living, entertaining, dining, and relaxation. Exterior and landscape lighting also highlight the architecture after sunset while maintaining a warm, understated appearance.',
+		image: withBase('/images/project-single/gallery-lighting.webp'),
+		width: 1920,
+		height: 1080,
+		alt: 'Luxury estate courtyard glowing with warm architectural landscape lighting at night',
+	},
+	{
+		title: 'Comfort, Privacy and Natural Light',
+		text: 'Automated shading helps manage the home’s expansive glass without compromising its ocean views. The shades can respond to the time of day, sunlight, temperature, or personalized scenes — reducing glare, protecting interior finishes, improving comfort, and providing privacy when required.',
+		image: withBase('/images/project-single/gallery-shading.webp'),
+		width: 1920,
+		height: 1280,
+		alt: 'Luxury living room with motorized roller shades and floor-to-ceiling glass',
+	},
+	{
+		title: 'Entertainment Without Visual Clutter',
+		text: 'Audio and video systems were integrated into the residence with minimal visual impact. Architectural speakers deliver balanced sound across the primary living areas, while discreet displays and centralized equipment preserve the clean interior design. Entertainment can follow the homeowners seamlessly from indoor spaces to the exterior living areas.',
+		image: withBase('/images/project-single/gallery-entertainment.webp'),
+		width: 1737,
+		height: 1338,
+		alt: 'Dedicated home theater with immersive sound and precise lighting',
+	},
+	{
+		title: 'A Network Built for the Entire Home',
+		text: 'A reliable network forms the foundation of every connected experience within the residence. The system was engineered to provide consistent wired and wireless coverage across the home, outdoor entertaining areas, security devices, automation systems, and high-bandwidth entertainment equipment.',
+		image: withBase('/images/project-single/gallery-network.webp'),
+		width: 1920,
+		height: 1278,
+		alt: 'Poolside outdoor dining and entertaining area extending the connected home outdoors',
+	},
+	{
+		title: 'Quiet, Connected Protection',
+		text: 'Integrated surveillance, access control, and remote monitoring provide greater awareness without making the residence feel dominated by security equipment. Homeowners can view cameras, receive alerts, verify visitors, and manage entry points whether they are at home or away.',
+		image: withBase('/images/project-single/gallery-security.webp'),
+		width: 1375,
+		height: 1375,
+		alt: 'Integrated access control and surveillance system installed discreetly in the residence',
+	},
+	{
+		title: 'The Result',
+		text: 'Pacific Horizon Residence demonstrates how thoughtful technology can support exceptional architecture without becoming the focus. Every system works quietly in the background, leaving the homeowners with an experience defined by comfort, simplicity, security, and control.',
+		image: withBase('/images/project-single/gallery-result.webp'),
+		width: 1920,
+		height: 1080,
+		alt: 'Luxury estate exterior representing the completed Pacific Horizon Residence project',
+	},
+];
+---
+
+<section class="gallery" aria-labelledby="cs-gallery-heading">
+	<div class="container">
+		<header class="gallery-head">
+			<span class="eyebrow">Project Gallery</span>
+			<h2 id="cs-gallery-heading">Every System, Working Together</h2>
+		</header>
+
+		<div class="rows" data-cs-gallery>
+			{gallery.map((item, i) => (
+				<article class:list={['gallery-row', { reverse: i % 2 === 1 }]}>
+					<figure class="gallery-image">
+						<img src={item.image} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" />
+					</figure>
+					<div class="gallery-copy">
+						<span class="row-number" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+						<h3>{item.title}</h3>
+						<p>{item.text}</p>
+					</div>
+				</article>
+			))}
+		</div>
+	</div>
+</section>
+
+<script>
+	// Each row settles once as it enters; nothing replays.
+	document.querySelectorAll<HTMLElement>('[data-cs-gallery]').forEach((list) => {
+		const rows = list.querySelectorAll<HTMLElement>('.gallery-row');
+		if (!('IntersectionObserver' in window)) {
+			rows.forEach((row) => row.classList.add('is-revealed'));
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		rows.forEach((row) => io.observe(row));
+	});
+</script>
+
+<style>
+	.gallery {
+		padding-block: clamp(4.5rem, 10vw, 8.5rem);
+	}
+
+	.gallery-head {
+		max-width: 40rem;
+		margin: 0 auto clamp(3.5rem, 8vw, 6rem);
+		text-align: center;
+	}
+
+	.gallery-head h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.12;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.rows {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(4rem, 9vw, 7rem);
+	}
+
+	.gallery-row {
+		display: grid;
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		gap: clamp(2rem, 6vw, 6rem);
+		align-items: center;
+	}
+
+	.gallery-row.reverse {
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+	}
+
+	.gallery-row.reverse .gallery-image {
+		order: 2;
+	}
+
+	.gallery-image {
+		margin: 0;
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		aspect-ratio: 4 / 3;
+		background: var(--color-surface);
+	}
+
+	.gallery-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.row-number {
+		display: block;
+		margin-bottom: var(--space-4);
+		padding-bottom: var(--space-4);
+		border-bottom: 1px solid var(--color-border);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		color: var(--color-accent);
+	}
+
+	.gallery-copy h3 {
+		margin: 0 0 var(--space-4);
+		font-size: var(--text-tile);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.gallery-copy p {
+		margin: 0;
+		max-width: 32rem;
+		line-height: 1.75;
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.gallery-image img {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+		.gallery-copy {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 1100ms var(--ease-out-expo) 120ms,
+				transform 1100ms var(--ease-out-expo) 120ms;
+		}
+		.gallery-row.is-revealed .gallery-image img {
+			transform: none;
+		}
+		.gallery-row.is-revealed .gallery-copy {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.gallery-row,
+		.gallery-row.reverse {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-8);
+		}
+
+		.gallery-row.reverse .gallery-image {
+			order: 0;
+		}
+	}
+</style>

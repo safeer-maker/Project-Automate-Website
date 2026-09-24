@@ -1,0 +1,25 @@
+---
+import { withBase } from '../../../lib/paths.ts';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+---
+
+<section class="section featured-install">
+	<div class="container">
+		<SectionHeading
+			eyebrow="Featured Basalte Installation"
+			title="Refined control for a contemporary residence."
+			subtitle="Basalte design controls were integrated throughout this luxury residence to manage lighting, shading, climate, entertainment and security — with premium finishes selected to complement the interior materials."
+			align="center"
+		/>
+		<img src={withBase('/images/brands/basalte/featured-install.webp')} alt="Basalte keypad in a contemporary luxury residence" loading="lazy" />
+	</div>
+</section>
+
+<style>
+	.featured-install img {
+		width: 100%;
+		border-radius: var(--radius-lg);
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+	}
+</style>

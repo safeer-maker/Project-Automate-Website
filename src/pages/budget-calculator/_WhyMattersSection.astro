@@ -1,0 +1,98 @@
+---
+const reasons = [
+	{
+		title: 'Define the scope',
+		description: 'Property size, room count and goals set the boundaries every later decision is measured against.',
+	},
+	{
+		title: 'Set clear expectations',
+		description: 'A considered range, early, keeps design, investment and timeline aligned before commitments are made.',
+	},
+	{
+		title: 'Invest with confidence',
+		description: 'Knowing the likely investment up front lets you prioritize the systems that matter most to the way you live.',
+	},
+];
+---
+
+<section class="why-matters" aria-labelledby="why-heading">
+	<div class="container">
+		<div class="why-head">
+			<span class="eyebrow">Why It Matters</span>
+			<h2 id="why-heading">Technology decisions shape how the whole home performs.</h2>
+		</div>
+		<ol class="why-grid">
+			{reasons.map((reason, i) => (
+				<li>
+					<span class="why-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+					<h3>{reason.title}</h3>
+					<p>{reason.description}</p>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.why-matters {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+	}
+
+	.why-head {
+		max-width: 44rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.why-head h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.why-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-8) clamp(1.5rem, 3vw, 3rem);
+	}
+
+	.why-grid li {
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.why-num {
+		display: block;
+		margin-bottom: var(--space-6);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		color: var(--color-accent);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.why-grid h3 {
+		margin-bottom: var(--space-3);
+		font-size: var(--text-2xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.25;
+		letter-spacing: -0.005em;
+	}
+
+	.why-grid p {
+		margin: 0;
+		line-height: 1.65;
+	}
+
+	@media (max-width: 900px) {
+		.why-grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.why-num {
+			margin-bottom: var(--space-3);
+		}
+	}
+</style>

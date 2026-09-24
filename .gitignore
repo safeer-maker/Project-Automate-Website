@@ -141,3 +141,13 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Astro
+.astro/
+dist/
+
+# Cloudflare
+.wrangler/
+
+# Raw scraped source data (reference only, not part of the deployed site)
+extracted_projectautomate/

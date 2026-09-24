@@ -1,0 +1,30 @@
+# Permanent redirects from the old WordPress URLs (Cloudflare Workers static assets).
+# Cloudflare applies these before serving any file, so visitors and crawlers get a
+# real 301 here; GitHub Pages falls back to the meta-refresh copies generated from
+# the `redirects` map in astro.config.mjs — keep the two lists in step.
+# Each rule is listed with and without the trailing slash. Keep them for at least a year.
+
+/home-cinama/                        /home-theater/                        301
+/home-cinama                         /home-theater/                        301
+/technology-support-memebership/     /technology-support-membership/       301
+/technology-support-memebership      /technology-support-membership/       301
+/energy-moment/                      /energy-management/                   301
+/energy-moment                       /energy-management/                   301
+/brands/savant-2/                    /brands/savant/                       301
+/brands/savant-2                     /brands/savant/                       301
+/brands/lutron-2/                    /brands/lutron/                       301
+/brands/lutron-2                     /brands/lutron/                       301
+/brands/josh-ai-2/                   /brands/josh-ai/                      301
+/brands/josh-ai-2                    /brands/josh-ai/                      301
+/partner/                            /design-partners/                     301
+/partner                             /design-partners/                     301
+/project-single/                     /success-stories/pacific-horizon-residence/ 301
+/project-single                      /success-stories/pacific-horizon-residence/ 301
+/top-reasons-you-need-a-contr014-system-at-home/ /top-reasons-you-need-a-control4-system-at-home/ 301
+/top-reasons-you-need-a-contr014-system-at-home  /top-reasons-you-need-a-control4-system-at-home/ 301
+/3-unique-security-solutions-that-will-make-your-home-a-safer-place-copy/ /3-unique-security-solutions-that-will-make-your-home-a-safer-place/ 301
+/3-unique-security-solutions-that-will-make-your-home-a-safer-place-copy  /3-unique-security-solutions-that-will-make-your-home-a-safer-place/ 301
+
+# Old WordPress category archives all fold into the journal.
+/category/*                          /blog/                                301
+/category                            /blog/                                301

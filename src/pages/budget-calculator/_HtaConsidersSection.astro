@@ -1,0 +1,132 @@
+---
+import { withBase } from '../../lib/paths.ts';
+
+const pillars = [
+	{ title: 'Infrastructure', description: 'Networking, wiring, racks and power: the hidden foundation of every system.' },
+	{ title: 'Experience', description: 'Control, lighting, entertainment, comfort and everyday ease of use.' },
+	{ title: 'Protection', description: 'Security, surveillance, resilience, serviceability and long-term support.' },
+];
+---
+
+<section class="hta-considers" aria-labelledby="hta-heading">
+	<div class="container">
+		<div class="hta-head">
+			<span class="eyebrow">What HTA Considers</span>
+			<h2 id="hta-heading">One home. Many systems. Designed to work as one.</h2>
+		</div>
+		<ul class="pillars">
+			{pillars.map((pillar) => (
+				<li>
+					<h3>{pillar.title}</h3>
+					<p>{pillar.description}</p>
+				</li>
+			))}
+		</ul>
+		<div class="hta-attribution">
+			{/* The luxury-level certification mark reads on the cream page; the
+			    white HTA wordmark used in the dark footer would not. */}
+			<img
+				src={withBase('/images/badges/cert-level-luxury.webp')}
+				alt="HTA Certified, Luxury level"
+				width="128"
+				height="60"
+				loading="lazy"
+				decoding="async"
+			/>
+			<p>
+				The Home Technology Association (HTA) sets trusted standards for home automation, entertainment, security and
+				system design, helping homeowners plan technology with confidence. PROJECT: automate is HTA certified.
+			</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hta-considers {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+		background: var(--color-surface);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.hta-head {
+		max-width: 44rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.hta-head h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.pillars {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-8) clamp(1.5rem, 3vw, 3rem);
+		margin-bottom: clamp(3rem, 6vw, 4.5rem);
+	}
+
+	.pillars li {
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--color-text);
+	}
+
+	.pillars h3 {
+		margin-bottom: var(--space-3);
+		font-size: var(--text-2xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.25;
+		letter-spacing: -0.005em;
+	}
+
+	.pillars p {
+		margin: 0;
+		max-width: 32ch;
+		line-height: 1.65;
+	}
+
+	.hta-attribution {
+		display: flex;
+		align-items: center;
+		gap: var(--space-8);
+		max-width: 46rem;
+		padding-top: var(--space-8);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.hta-attribution img {
+		flex-shrink: 0;
+		width: 128px;
+		height: auto;
+	}
+
+	.hta-attribution p {
+		margin: 0;
+		line-height: 1.65;
+	}
+
+	@media (max-width: 900px) {
+		.pillars {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.pillars p {
+			max-width: none;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.hta-attribution {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--space-4);
+		}
+
+		.hta-attribution img {
+			width: 112px;
+		}
+	}
+</style>

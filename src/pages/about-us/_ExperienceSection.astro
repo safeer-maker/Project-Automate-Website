@@ -1,0 +1,105 @@
+---
+import { withBase } from '../../lib/paths.ts';
+
+// The HTA Design Partner mark is white-on-transparent, so it sits on a dark
+// chip; the others carry their own light artwork.
+const badges = [
+	{ src: withBase('/images/badges/17-years-badge.webp'), alt: '17+ years in business', width: 785, height: 932 },
+	{ src: withBase('/images/badges/cedia-certified.webp'), alt: 'CEDIA Smart Home Certified Expert Provider', width: 1182, height: 1182 },
+	{ src: withBase('/images/badges/cert-level-luxury.webp'), alt: 'HTA Certified, Luxury level', width: 1853, height: 870 },
+	{ src: withBase('/images/badges/hta-design-partner.webp'), alt: 'HTA Design Partner', width: 280, height: 40, dark: true },
+];
+---
+
+<section class="credentials" aria-labelledby="about-credentials-heading">
+	<div class="container credentials-inner">
+		<div class="credentials-text">
+			<span class="eyebrow">Credentials</span>
+			<h2 id="about-credentials-heading">Certified to the highest standard.</h2>
+			<p>
+				For over 17 years we have shaped intelligent spaces where technology and everyday living
+				work as one: CEDIA certified, HTA certified and an HTA Design Partner.
+			</p>
+		</div>
+		<ul class="badges">
+			{badges.map((badge) => (
+				<li class:list={['badge', { 'badge--dark': badge.dark }]}>
+					<img src={badge.src} alt={badge.alt} width={badge.width} height={badge.height} loading="lazy" decoding="async" />
+				</li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.credentials {
+		border-top: 1px solid var(--color-border);
+		padding-block: clamp(3.5rem, 8vw, 6rem);
+	}
+
+	.credentials-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(2rem, 6vw, 6rem);
+		align-items: center;
+	}
+
+	.credentials-text h2 {
+		margin: 0 0 var(--space-4);
+		font-size: var(--text-display-sm);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.credentials-text p {
+		margin: 0;
+		max-width: 30rem;
+		line-height: 1.7;
+	}
+
+	/* Fixed-height chips, each as wide as its badge needs: the HTA Design
+	   Partner mark is a wide strip, the others are near-square. */
+	.badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+	}
+
+	.badge {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: clamp(72px, 7vw, 96px);
+		padding: var(--space-3) var(--space-4);
+		background: var(--color-white);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+	}
+
+	.badge--dark {
+		padding-inline: var(--space-6);
+		background: var(--color-charcoal);
+		border-color: var(--color-charcoal);
+	}
+
+	.badge img {
+		width: auto;
+		height: 100%;
+		max-width: 160px;
+		object-fit: contain;
+	}
+
+	.badge--dark img {
+		width: clamp(120px, 12vw, 160px);
+		height: auto;
+	}
+
+	@media (max-width: 900px) {
+		.credentials-inner {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>

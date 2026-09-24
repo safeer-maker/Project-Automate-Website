@@ -1,0 +1,427 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import { siteInfo } from '../../data/site.ts';
+
+interface Props {
+	/**
+	 * `feature`: the homepage coda, a full-height film with its own copy.
+	 * `compact` (default): the short closing band used across the inner pages.
+	 */
+	variant?: 'feature' | 'compact';
+}
+
+const { variant = 'compact' } = Astro.props;
+const isFeature = variant === 'feature';
+
+const phone = siteInfo.phones[0];
+const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
+---
+
+<section class:list={['cta', `cta-${variant}`]} data-cta={variant}>
+	{isFeature && (
+		<div class="cta-media">
+			<!-- The closing film is the site's previous hero: evening interiors,
+			     a different world from the aerial above, so the page doesn't end on
+			     the clip it opened with. Encoded from media-src/videos/
+			     closing-original-hero.mp4 with its fade-from/to-black trimmed
+			     (-ss 1.0 -to 28.2); the posters are each encode's exact first frame,
+			     so the fade from still to film never shows a different picture. -->
+			<picture class="cta-poster">
+				<source media="(max-width: 700px)" srcset={withBase('/images/home/closing/poster-mobile.webp')} width="960" height="540" />
+				<img src={withBase('/images/home/closing/poster.webp')} alt="" width="1600" height="900" loading="lazy" decoding="async" />
+			</picture>
+			<video class="cta-video" data-cta-video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+				<source media="(max-width: 700px)" src={withBase('/videos/closing-mobile.mp4')} type="video/mp4" />
+				<source media="(max-width: 700px)" src={withBase('/videos/closing-mobile.webm')} type="video/webm" />
+				<source src={withBase('/videos/closing.mp4')} type="video/mp4" />
+				<source src={withBase('/videos/closing.webm')} type="video/webm" />
+			</video>
+			<span class="cta-scrim"></span>
+		</div>
+		<button class="cta-toggle" type="button" data-cta-toggle aria-label="Pause background video" hidden>
+			<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+			<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.8v8.4l6.6-4.2z" fill="currentColor" /></svg>
+		</button>
+	)}
+
+	{isFeature ? (
+		<div class="page cta-inner" data-cta-copy>
+			<h2>Your home, composed.</h2>
+			<p class="cta-body">Intelligent technology, designed around the way you live.</p>
+			<div class="cta-actions">
+				<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Schedule a Consultation</a>
+				<a class="cta-phone" href={phoneHref}>
+					or call the studio <span>{phone}</span>
+				</a>
+			</div>
+			<p class="cta-note">
+				Already a client? Our concierge team is here:{' '}
+				<a href={withBase('/technology-support-membership/')}>Technology Support<span aria-hidden="true"> →</span></a>
+			</p>
+		</div>
+	) : (
+		<div class="page cta-inner">
+			<h2>Design your<br />Living Experience</h2>
+			<p class="cta-body">Intelligent technology, designed around your lifestyle.</p>
+			<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Schedule a Consultation</a>
+		</div>
+	)}
+</section>
+
+<script>
+	// preload="none" keeps the clip off the initial load. It starts fetching a
+	// screen or so before the section arrives, plays once a few seconds are
+	// buffered (so it never starts, stalls and restarts), fades in over its
+	// first-frame poster, and pauses whenever it's off screen.
+	const video = document.querySelector<HTMLVideoElement>('[data-cta-video]');
+	const toggle = document.querySelector<HTMLButtonElement>('[data-cta-toggle]');
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (video && toggle) {
+		video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+
+		let userPaused = reduceMotion;
+		let onScreen = false;
+		let ready = false;
+
+		const syncToggle = () => {
+			toggle.classList.toggle('is-paused', video.paused);
+			toggle.setAttribute('aria-label', video.paused ? 'Play background video' : 'Pause background video');
+		};
+		video.addEventListener('play', syncToggle);
+		video.addEventListener('pause', syncToggle);
+
+		const play = () => {
+			if (userPaused || !onScreen || !ready) return;
+			video.play().catch(syncToggle);
+		};
+
+		const bufferedAhead = () => {
+			const ranges = video.buffered;
+			for (let i = 0; i < ranges.length; i++) {
+				if (ranges.start(i) <= video.currentTime + 0.1) return ranges.end(i) - video.currentTime;
+			}
+			return 0;
+		};
+		const checkReady = () => {
+			if (ready) return;
+			const whole = Number.isFinite(video.duration) && bufferedAhead() >= video.duration - 0.5;
+			if (bufferedAhead() >= 3 || whole) {
+				ready = true;
+				play();
+			}
+		};
+		video.addEventListener('progress', checkReady);
+		video.addEventListener('canplaythrough', checkReady);
+
+		// Start downloading ahead of arrival (unless motion is reduced, where
+		// the still is the experience and the film only loads on request).
+		if (!reduceMotion) {
+			const warm = new IntersectionObserver(
+				([entry]) => {
+					if (!entry.isIntersecting) return;
+					video.preload = 'auto';
+					video.load();
+					window.setTimeout(() => {
+						ready = true;
+						play();
+					}, 6000);
+					warm.disconnect();
+				},
+				{ rootMargin: '100% 0px' }
+			);
+			warm.observe(video);
+		}
+
+		new IntersectionObserver(
+			([entry]) => {
+				onScreen = entry.isIntersecting;
+				if (!onScreen) video.pause();
+				else play();
+			},
+			{ threshold: 0.2 }
+		).observe(video);
+
+		toggle.addEventListener('click', () => {
+			if (video.paused) {
+				userPaused = false;
+				if (video.preload !== 'auto') {
+					video.preload = 'auto';
+					video.load();
+				}
+				ready = true;
+				play();
+			} else {
+				userPaused = true;
+				video.pause();
+			}
+		});
+
+		syncToggle();
+		toggle.hidden = false;
+	}
+
+	// The coda's copy fades up once. Armed from here, so it is never hidden
+	// when the script doesn't run or motion is reduced.
+	const copy = document.querySelector<HTMLElement>('[data-cta-copy]');
+	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (copy && !reduce && 'IntersectionObserver' in window) {
+		copy.setAttribute('data-armed', '');
+		const reveal = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					copy.classList.add('is-visible');
+					reveal.disconnect();
+				});
+			},
+			{ threshold: 0.35 }
+		);
+		reveal.observe(copy);
+	}
+</script>
+
+<style>
+	.cta {
+		position: relative;
+		overflow: hidden;
+		background: var(--color-charcoal);
+		color: var(--color-text-on-dark);
+	}
+
+	.cta-compact {
+		padding-block: clamp(3.5rem, 8vw, 6rem);
+	}
+
+	.cta-feature {
+		min-height: 100vh;
+		min-height: 100svh;
+		display: flex;
+		align-items: center;
+		background: var(--color-black);
+		padding-block: clamp(5rem, 12vw, 8rem);
+	}
+
+	.cta-media {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+
+	/* Holds the first frame while the video is still faded out. */
+	.cta-poster img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.cta-toggle {
+		position: absolute;
+		z-index: 2;
+		right: var(--page-gutter);
+		bottom: clamp(1.25rem, 3vh, 2rem);
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		border-radius: 50%;
+		background: rgba(10, 10, 10, 0.25);
+		color: var(--color-white);
+		cursor: pointer;
+		opacity: 0.7;
+		transition:
+			opacity var(--dur-fast) ease,
+			border-color var(--dur-fast) ease,
+			background-color var(--dur-fast) ease;
+	}
+
+	.cta-toggle:hover,
+	.cta-toggle:focus-visible {
+		opacity: 1;
+		border-color: var(--color-accent-hover);
+		background: rgba(10, 10, 10, 0.45);
+	}
+
+	.cta-toggle:focus-visible {
+		outline: 2px solid var(--color-accent-hover);
+		outline-offset: 3px;
+	}
+
+	.cta-toggle svg {
+		width: 14px;
+		height: 14px;
+	}
+
+	.cta-toggle .icon-play,
+	.cta-toggle.is-paused .icon-pause {
+		display: none;
+	}
+
+	.cta-toggle.is-paused .icon-play {
+		display: block;
+	}
+
+	.cta-video {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 600ms var(--ease-in-out-soft);
+	}
+
+	.cta-video.is-playing {
+		opacity: 1;
+	}
+
+	.cta-scrim {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(90deg, rgba(10, 10, 10, 0.82) 0%, rgba(10, 10, 10, 0.45) 60%, rgba(10, 10, 10, 0.3) 100%);
+	}
+
+	.cta-inner {
+		position: relative;
+		z-index: 1;
+	}
+
+	.cta h2 {
+		margin: 0 0 var(--space-4);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.4;
+		letter-spacing: -0.01em;
+		color: var(--color-text-on-dark);
+	}
+
+	.cta-body {
+		margin: 0 0 var(--space-6);
+		max-width: 34rem;
+		font-size: var(--text-body-lg);
+		line-height: 1.6;
+		color: var(--color-text-on-dark-muted);
+	}
+
+	.cta-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		/* White on the lighter gold is only 3.25:1; the fill bronze clears 4.5. */
+		background: var(--color-bronze-fill);
+		color: var(--color-white);
+		font-size: var(--text-base);
+		font-weight: var(--fw-medium);
+		padding: 0.7rem 1.6rem;
+		border-radius: var(--radius-sm);
+		transition: background-color var(--transition-base);
+	}
+
+	.cta-btn:hover {
+		background: var(--color-bronze-fill-hover);
+	}
+
+	/* ---------- Feature (homepage coda) ---------- */
+
+	/* The last line of the page: larger and tighter than a section heading. */
+	.cta-feature h2 {
+		margin-bottom: var(--space-6);
+		font-size: clamp(2.5rem, 5.2vw, 4.75rem);
+		line-height: 1.04;
+		letter-spacing: -0.02em;
+		text-shadow: 0 2px 40px rgba(0, 0, 0, 0.35);
+	}
+
+	.cta-feature .cta-body {
+		margin-bottom: clamp(2rem, 4vw, 2.75rem);
+		font-size: clamp(1.125rem, 1.4vw, 1.3rem);
+	}
+
+	.cta-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-4) var(--space-8);
+	}
+
+	.cta-feature .cta-btn {
+		padding: 0.85rem 1.9rem;
+	}
+
+	.cta-phone {
+		font-size: var(--text-base);
+		color: var(--color-text-on-dark-muted);
+		transition: color var(--dur-fast) var(--ease-in-out-soft);
+	}
+
+	.cta-phone span {
+		color: var(--color-text-on-dark);
+		font-weight: var(--fw-medium);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+		padding-bottom: 2px;
+		transition: border-color var(--dur-fast) var(--ease-in-out-soft);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.cta-phone:hover span {
+		border-color: var(--color-accent-hover);
+	}
+
+	.cta-note {
+		margin: clamp(3rem, 7vw, 4.5rem) 0 0;
+		padding-top: var(--space-6);
+		max-width: 34rem;
+		border-top: 1px solid var(--color-border-on-dark);
+		font-size: var(--text-sm);
+		line-height: 1.6;
+		color: var(--color-text-on-dark-muted);
+	}
+
+	.cta-note a {
+		color: var(--color-text-on-dark);
+		font-weight: var(--fw-medium);
+		white-space: nowrap;
+		transition: color var(--dur-fast) var(--ease-in-out-soft);
+	}
+
+	.cta-note a:hover {
+		color: var(--color-accent-hover);
+	}
+
+	.cta-inner[data-armed] > * {
+		opacity: 0;
+		transform: translateY(1rem);
+		transition:
+			opacity 1100ms var(--ease-out-expo),
+			transform 1100ms var(--ease-out-expo);
+	}
+
+	.cta-inner[data-armed] > :nth-child(2) {
+		transition-delay: 120ms;
+	}
+
+	.cta-inner[data-armed] > :nth-child(3) {
+		transition-delay: 240ms;
+	}
+
+	.cta-inner[data-armed] > :nth-child(4) {
+		transition-delay: 380ms;
+	}
+
+	.cta-inner[data-armed].is-visible > * {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (max-width: 599px) {
+		.cta-scrim {
+			background: linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.72) 100%);
+		}
+	}
+</style>

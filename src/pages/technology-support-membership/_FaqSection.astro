@@ -1,0 +1,139 @@
+---
+import { faqs } from './_data.ts';
+---
+
+<section class="faq" aria-labelledby="faq-heading">
+	<div class="container faq-inner">
+		<div class="faq-head">
+			<span class="eyebrow">Frequently Asked Questions</span>
+			<h2 id="faq-heading">Membership questions, answered.</h2>
+		</div>
+		<div class="faq-list">
+			{faqs.map((item) => (
+				<details>
+					<summary>
+						<span class="faq-q">{item.q}</span>
+						<span class="faq-icon" aria-hidden="true"></span>
+					</summary>
+					<p>{item.a}</p>
+				</details>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.faq {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+		border-top: 1px solid var(--color-border);
+	}
+
+	/* Heading holds on the left while the questions run on the right. */
+	.faq-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(2.5rem, 7vw, 7rem);
+		align-items: start;
+	}
+
+	.faq-head h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.faq-list {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	details {
+		border-top: 1px solid var(--color-border);
+	}
+
+	summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-6);
+		padding-block: var(--space-6);
+		cursor: pointer;
+		list-style: none;
+	}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
+	summary:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 4px;
+	}
+
+	.faq-q {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.35;
+		color: var(--color-text);
+		transition: color var(--dur-fast) ease;
+	}
+
+	summary:hover .faq-q {
+		color: var(--color-accent);
+	}
+
+	/* Plus drawn from two hairlines; the vertical one folds away when open. */
+	.faq-icon {
+		position: relative;
+		flex-shrink: 0;
+		width: 16px;
+		height: 16px;
+	}
+
+	.faq-icon::before,
+	.faq-icon::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 0;
+		width: 100%;
+		height: 1.5px;
+		margin-top: -0.75px;
+		background: var(--color-accent);
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.faq-icon::after {
+		transform: rotate(90deg);
+	}
+
+	details[open] .faq-icon::after {
+		transform: rotate(0deg);
+	}
+
+	details p {
+		max-width: 38rem;
+		margin: 0;
+		padding-bottom: var(--space-6);
+		line-height: 1.7;
+	}
+
+	@media (max-width: 900px) {
+		.faq-inner {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.faq-q {
+			font-size: var(--text-lg);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.faq-icon::before,
+		.faq-icon::after {
+			transition: none;
+		}
+	}
+</style>

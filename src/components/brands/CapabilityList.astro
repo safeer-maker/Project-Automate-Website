@@ -1,0 +1,216 @@
+---
+// Alternating image / text rows. Items take either a plain image URL (brand
+// pages' product shots) or a library `imageId`, which renders responsively
+// through <Picture>. `imageId` wins when both are given.
+import Picture from '../ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
+
+interface Item {
+	title: string;
+	description: string;
+	image?: string;
+	imageId?: LibraryImageId;
+	/** Describe the photo; left empty it is treated as decorative. */
+	imageAlt?: string;
+}
+
+interface Props {
+	eyebrow: string;
+	title: string;
+	items: readonly Item[];
+}
+
+const { eyebrow, title, items } = Astro.props;
+// The media column is ~58% of a 1280px container on desktop.
+const sizes = '(max-width: 800px) 100vw, (min-width: 1280px) 720px, 56vw';
+---
+
+<section class="section capability-list" data-capability-list>
+	<div class="container">
+		<div class="heading">
+			<span class="eyebrow">{eyebrow}</span>
+			<h2>{title}</h2>
+		</div>
+		<div class="items">
+			{items.map((item, i) => {
+				const hasMedia = Boolean(item.imageId || item.image);
+				return (
+					<article class:list={['item', { 'is-flipped': i % 2 === 1, 'no-media': !hasMedia }]} data-reveal-item>
+						{hasMedia && (
+							<div class="item-media">
+								{item.imageId ? (
+									<Picture id={item.imageId} alt={item.imageAlt ?? ''} sizes={sizes} />
+								) : (
+									<img src={item.image} alt={item.imageAlt ?? ''} loading="lazy" decoding="async" />
+								)}
+							</div>
+						)}
+						<div class="item-text">
+							<span class="item-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+							<h3>{item.title}</h3>
+							<p>{item.description}</p>
+						</div>
+					</article>
+				);
+			})}
+		</div>
+	</div>
+</section>
+
+<script>
+	// One-time reveal per row as it enters; never replayed.
+	document.querySelectorAll<HTMLElement>('[data-capability-list]').forEach((list) => {
+		const rows = list.querySelectorAll<HTMLElement>('[data-reveal-item]');
+		if (!('IntersectionObserver' in window)) {
+			rows.forEach((row) => row.classList.add('is-revealed'));
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		rows.forEach((row) => io.observe(row));
+	});
+</script>
+
+<style>
+	.heading {
+		max-width: 48rem;
+		margin-bottom: clamp(3rem, 7vw, 6rem);
+	}
+
+	.heading h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.items {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(4rem, 9vw, 8rem);
+	}
+
+	.item {
+		display: grid;
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		gap: clamp(2rem, 6vw, 6rem);
+		align-items: center;
+	}
+
+	/* Media swaps sides on alternate rows, so the page reads like a spread. */
+	.item.is-flipped {
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+	}
+
+	.item.is-flipped .item-media {
+		order: 2;
+	}
+
+	.item.no-media {
+		grid-template-columns: minmax(0, 1fr);
+		padding-top: var(--space-8);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.item-media {
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		background: var(--color-surface);
+	}
+
+	.item-media img,
+	.item-media :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+	}
+
+	.item-text {
+		max-width: 30rem;
+	}
+
+	.item-index {
+		display: block;
+		margin-bottom: var(--space-6);
+		padding-bottom: var(--space-4);
+		border-bottom: 1px solid var(--color-border);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		color: var(--color-accent);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.item-text h3 {
+		margin-bottom: var(--space-4);
+		font-size: var(--text-tile);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+	}
+
+	.item-text p {
+		margin: 0;
+		font-size: var(--text-body-lg);
+		line-height: 1.7;
+	}
+
+	/* Hidden only when scripting can reveal it again, so content never
+	   disappears without JS or for reduced-motion visitors. */
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.item-media img,
+		.item-media :global(img) {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+
+		.item-media {
+			opacity: 0;
+			transition: opacity 1000ms var(--ease-out-expo);
+		}
+
+		.item-text {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 1000ms var(--ease-out-expo) 120ms,
+				transform 1000ms var(--ease-out-expo) 120ms;
+		}
+
+		.item.is-revealed .item-media,
+		.item.is-revealed .item-text {
+			opacity: 1;
+			transform: none;
+		}
+
+		.item.is-revealed .item-media img,
+		.item.is-revealed .item-media :global(img) {
+			transform: scale(1);
+		}
+	}
+
+	@media (max-width: 800px) {
+		.item,
+		.item.is-flipped {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-8);
+		}
+		.item.is-flipped .item-media {
+			order: 0;
+		}
+		.item-index {
+			margin-bottom: var(--space-4);
+		}
+	}
+</style>

@@ -1,0 +1,239 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import Picture from '../../components/ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
+
+// Names, places and years are the client's own copy (also on the homepage's
+// Selected Residences); only the photography comes from the library.
+const gallery: { place: string; year: string; name: string; image: LibraryImageId; alt: string }[] = [
+	{
+		place: 'Malibu',
+		year: '2025',
+		name: 'Oceanfront Villa',
+		image: 'residences/malibu-cliffside',
+		alt: 'Cliff-top infinity pool overlooking the ocean at sunset',
+	},
+	{
+		place: 'Hidden Hills',
+		year: '2024',
+		name: 'Marazul Estate',
+		image: 'residences/hidden-hills-pool',
+		alt: 'Glass pavilion beside a still pool, warmly lit at dusk',
+	},
+	{
+		place: 'Manhattan Beach',
+		year: '2023',
+		name: 'Alpine Retreat',
+		image: 'residences/manhattan-beach',
+		alt: 'Beach house and garden path in the evening sun',
+	},
+];
+---
+
+<section class="gallery" aria-labelledby="gallery-heading">
+	<div class="container">
+		<header class="gallery-head">
+			<div>
+				<span class="eyebrow">Gallery</span>
+				<h2 id="gallery-heading">More Projects, More Inspiration</h2>
+			</div>
+			<p>A closer look at homes where technology feels effortless.</p>
+		</header>
+
+		<div class="grid" data-gallery>
+			{gallery.map((project, i) => (
+				<figure class:list={['project', { 'is-feature': i === 0 }]}>
+					<div class="project-media">
+						<Picture
+							id={project.image}
+							alt={project.alt}
+							sizes={i === 0 ? '(max-width: 1280px) 100vw, 1232px' : '(max-width: 700px) 100vw, (max-width: 1280px) 50vw, 600px'}
+						/>
+					</div>
+					<figcaption>
+						<span class="name">{project.name}</span>
+						<span class="place">{project.place} · {project.year}</span>
+					</figcaption>
+				</figure>
+			))}
+		</div>
+
+		<a class="portfolio-link" href={withBase('/success-stories/')}>
+			View the portfolio
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+				<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</a>
+	</div>
+</section>
+
+<script>
+	// Each photograph settles once (scale 1.06 → 1) as it enters.
+	document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((grid) => {
+		const items = grid.querySelectorAll<HTMLElement>('.project');
+		if (!('IntersectionObserver' in window)) {
+			items.forEach((item) => item.classList.add('is-revealed'));
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
+		);
+		items.forEach((item) => io.observe(item));
+	});
+</script>
+
+<style>
+	.gallery {
+		padding-block: clamp(4.5rem, 10vw, 8.5rem);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.gallery-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-4) var(--space-12);
+		margin-bottom: clamp(2.5rem, 6vw, 4rem);
+	}
+
+	.gallery-head h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.12;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.gallery-head p {
+		margin: 0;
+		max-width: 24rem;
+		font-size: var(--text-body-lg);
+		line-height: 1.6;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 3vw, 2.5rem);
+	}
+
+	.project {
+		margin: 0;
+	}
+
+	.project.is-feature {
+		grid-column: 1 / -1;
+	}
+
+	.project-media {
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		aspect-ratio: 4 / 3;
+		background: var(--color-charcoal);
+	}
+
+	.is-feature .project-media {
+		aspect-ratio: 21 / 9;
+	}
+
+	.project-media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.project figcaption {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-1) var(--space-6);
+		padding-top: var(--space-4);
+		margin-top: var(--space-4);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.name {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		color: var(--color-text);
+	}
+
+	.place {
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.portfolio-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-3);
+		margin-top: clamp(2.5rem, 5vw, 4rem);
+		padding-bottom: var(--space-1);
+		border-bottom: 1px solid currentColor;
+		font-weight: var(--fw-medium);
+		color: var(--color-accent);
+		transition: color var(--dur-fast) ease;
+	}
+
+	.portfolio-link svg {
+		width: 18px;
+		height: 18px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.portfolio-link:hover,
+	.portfolio-link:focus-visible {
+		color: var(--color-accent-hover);
+	}
+
+	.portfolio-link:hover svg,
+	.portfolio-link:focus-visible svg {
+		transform: translateX(5px);
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.project-media :global(img) {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+		.project figcaption {
+			opacity: 0;
+			transition: opacity 1000ms var(--ease-out-expo) 200ms;
+		}
+		.project.is-revealed .project-media :global(img) {
+			transform: none;
+		}
+		.project.is-revealed figcaption {
+			opacity: 1;
+		}
+	}
+
+	@media (max-width: 700px) {
+		.grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.is-feature .project-media {
+			aspect-ratio: 4 / 3;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.portfolio-link svg {
+			transition: none;
+		}
+	}
+</style>

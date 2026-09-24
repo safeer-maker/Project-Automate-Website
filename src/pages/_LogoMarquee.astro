@@ -1,0 +1,282 @@
+---
+// The platforms we integrate, as a slow, quiet strip that closes the trust
+// chapter directly under _WhyProjectAutomate (same background, no rule
+// between them). Logos are desaturated and softened so they read as a
+// credential line rather than advertising, the row drifts slowly, and it
+// stops under the pointer so a logo can be read, or for good with the small
+// pause toggle beside the label. The certification strip
+// lives separately in _CertificationMarquee.astro.
+import { withBase } from '../lib/paths.ts';
+
+const vendors = [
+	{ name: 'Savant', logo: '/images/vendors/savant.png' },
+	{ name: 'Control4', logo: '/images/vendors/control4.png' },
+	{ name: 'Lutron', logo: '/images/vendors/lutron.png' },
+	{ name: 'Crestron', logo: '/images/vendors/crestron.png' },
+	{ name: 'Josh.ai', logo: '/images/vendors/josh-ai.webp' },
+	{ name: 'Alarm.com', logo: '/images/vendors/alarm-com.png' },
+	{ name: 'Qolsys', logo: '/images/vendors/qolsys.png' },
+	{ name: 'Ruckus', logo: '/images/vendors/ruckus.png' },
+	{ name: 'Sophos', logo: '/images/vendors/sophos.png' },
+	{ name: 'eero', logo: '/images/vendors/eero.webp' },
+	{ name: 'Rega', logo: '/images/vendors/rega.webp' },
+	{ name: 'Coastal Source', logo: '/images/vendors/coastal-source.png' },
+];
+
+// A marquee half has to be wider than the viewport or the loop shows a gap.
+const repeatToFill = <T,>(items: T[], minimum: number): T[] =>
+	Array.from({ length: Math.ceil(minimum / items.length) }, () => items).flat();
+
+const vendorRow = repeatToFill(vendors, 10);
+---
+
+<section class="marquee-section" aria-labelledby="platforms-title" data-marquee>
+	<div class="page">
+		<p class="marquee-eyebrow" id="platforms-title">Integrated with the world’s finest platforms</p>
+		<!-- Hover alone can't stop the drift for keyboard or touch visitors
+		     (WCAG 2.2.2). Hidden until the script below can make it work. -->
+		<button
+			type="button"
+			class="marquee-toggle"
+			aria-pressed="false"
+			aria-label="Pause the logo animation"
+			data-marquee-toggle
+			hidden
+		>
+			<svg class="icon-pause" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+				<path d="M6 4v8M10 4v8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+			</svg>
+			<svg class="icon-play" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+				<path d="M6 4.25v7.5L12 8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+			</svg>
+		</button>
+	</div>
+
+	<div class="marquee-row">
+		<ul class="marquee-track">
+			{vendorRow.map((item) => (
+				<li class="marquee-item">
+					<img src={withBase(item.logo)} alt={item.name} loading="lazy" decoding="async" />
+				</li>
+			))}
+			{/* The duplicate half exists only to close the loop, so it is hidden
+			    from assistive tech and every brand is announced once. */}
+			{vendorRow.map((item) => (
+				<li class="marquee-item is-clone" aria-hidden="true">
+					<img src={withBase(item.logo)} alt="" loading="lazy" decoding="async" />
+				</li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.marquee-section {
+		background: var(--color-surface);
+		border-bottom: 1px solid var(--color-border);
+		padding-block: 0 clamp(3rem, 6vw, 4.5rem);
+	}
+
+	/* Hairline, then a small centred label: the strip is a footnote to the
+	   Why section above, not a new chapter. */
+	.marquee-section > .page {
+		display: flex;
+		align-items: center;
+		gap: var(--space-6);
+		margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
+	}
+
+	.marquee-section > .page::before,
+	.marquee-section > .page::after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: var(--color-border);
+	}
+
+	.marquee-eyebrow {
+		flex: none;
+		max-width: calc(100% - 4rem);
+		margin: 0;
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.16em;
+		line-height: 1.6;
+		text-transform: uppercase;
+		text-align: center;
+		color: var(--color-text-muted);
+	}
+
+	.marquee-row {
+		overflow: hidden;
+		mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+		-webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+	}
+
+	/* Spacing lives on the items as margin, never as `gap` on the track. A
+	   track of 2N items has 2N-1 gaps, so its midpoint falls half a gap short
+	   of where the duplicate half actually starts, and the -50% loop jumps by
+	   that half gap every cycle. Equal margins make every item advance the
+	   same distance, so 50% is exactly one half. */
+	.marquee-track {
+		display: flex;
+		align-items: center;
+		width: max-content;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		will-change: transform;
+		/* ~35px/s at 1440 — slow enough to read as drift, not motion. */
+		animation: marquee-drift 95s linear infinite;
+	}
+
+	/* Hover to read a logo, the toggle to stop it outright, and focus inside
+	   the row (should the logos ever become links) holds it still too. */
+	.marquee-row:hover .marquee-track,
+	.marquee-row:focus-within .marquee-track,
+	.marquee-section[data-paused] .marquee-track {
+		animation-play-state: paused;
+	}
+
+	/* Quiet by design: a hairline ring in the colour of the flanking rules,
+	   sitting just off the label. It warms to bronze on hover. */
+	.marquee-toggle {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		margin-left: calc(var(--space-3) - var(--space-6));
+		padding: 0;
+		border: 1px solid var(--color-border);
+		border-radius: 50%;
+		background: none;
+		color: var(--color-text-muted);
+		transition:
+			color var(--dur-fast) ease,
+			border-color var(--dur-fast) ease;
+	}
+
+	.marquee-toggle[hidden] {
+		display: none;
+	}
+
+	.marquee-toggle svg {
+		width: 12px;
+		height: 12px;
+	}
+
+	.marquee-toggle .icon-play,
+	.marquee-toggle[aria-pressed='true'] .icon-pause {
+		display: none;
+	}
+
+	.marquee-toggle[aria-pressed='true'] .icon-play {
+		display: block;
+	}
+
+	.marquee-toggle:hover {
+		color: var(--color-bronze-text);
+		border-color: currentColor;
+	}
+
+	.marquee-toggle:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 2px;
+	}
+
+	/* Logo aspect ratios run from 1.6 to 8.2, so each sits in a fixed box and
+	   contains within it — wide wordmarks cap on width, squat marks on height,
+	   which keeps them optically the same size rather than mathematically. */
+	.marquee-item {
+		flex: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: clamp(104px, 10vw, 148px);
+		height: clamp(36px, 3.6vw, 52px);
+		margin-inline: clamp(1.5rem, 3vw, 2.75rem);
+	}
+
+	.marquee-item img {
+		max-width: 100%;
+		max-height: 100%;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		filter: grayscale(1) contrast(0.9);
+		opacity: 0.5;
+		transition:
+			opacity var(--dur-base) var(--ease-in-out-soft),
+			filter var(--dur-base) var(--ease-in-out-soft);
+	}
+
+	.marquee-item:hover img {
+		opacity: 0.9;
+		filter: grayscale(0.2);
+	}
+
+	/* The label wraps on a phone, where flanking rules would shrink to stubs. */
+	@media (max-width: 599px) {
+		.marquee-section > .page::before,
+		.marquee-section > .page::after {
+			display: none;
+		}
+		.marquee-section > .page {
+			justify-content: center;
+		}
+		/* Allowed to shrink so the label wraps beside the toggle instead of
+		   pushing it off the edge of a narrow phone. */
+		.marquee-eyebrow {
+			flex-shrink: 1;
+			max-width: 22rem;
+		}
+	}
+
+	@keyframes marquee-drift {
+		from {
+			transform: translateX(-50%);
+		}
+		to {
+			transform: translateX(0%);
+		}
+	}
+
+	/* No drift: one set, wrapped and centred, so every logo is still shown. */
+	@media (prefers-reduced-motion: reduce) {
+		.marquee-row {
+			mask-image: none;
+			-webkit-mask-image: none;
+		}
+		.marquee-track {
+			animation: none;
+			width: auto;
+			flex-wrap: wrap;
+			justify-content: center;
+			row-gap: var(--space-6);
+			padding-inline: var(--page-gutter);
+		}
+		.marquee-item.is-clone {
+			display: none;
+		}
+		/* Nothing moves, so there is nothing to pause. */
+		.marquee-toggle {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	const section = document.querySelector<HTMLElement>('[data-marquee]');
+	const toggle = section?.querySelector<HTMLButtonElement>('[data-marquee-toggle]');
+
+	if (section && toggle) {
+		toggle.hidden = false;
+		toggle.addEventListener('click', () => {
+			const paused = toggle.getAttribute('aria-pressed') !== 'true';
+			toggle.setAttribute('aria-pressed', String(paused));
+			section.toggleAttribute('data-paused', paused);
+		});
+	}
+</script>

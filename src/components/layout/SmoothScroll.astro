@@ -1,0 +1,51 @@
+---
+// Site-wide inertial scrolling (Lenis). It still drives the page's native
+// scroll position, so position: sticky, the frame scrub in _TechnicalSilence
+// and every existing window 'scroll' listener keep working unchanged; it only
+// eases wheel/trackpad input so pinned scenes glide instead of stepping.
+//
+// Touch stays native (syncTouch off) — iOS/Android momentum is already right,
+// and emulating it is where smooth-scroll libraries feel wrong. Lenis also
+// disables itself under prefers-reduced-motion (lerp 1, instant scrollTo).
+---
+
+<script>
+	import Lenis from 'lenis';
+	import 'lenis/dist/lenis.css';
+
+	const lenis = new Lenis({
+		autoRaf: true,
+		// Default is 0.1. Slightly lower reads as a calmer, heavier glide —
+		// deliberate rather than floaty.
+		lerp: 0.085,
+		smoothWheel: true,
+		syncTouch: false,
+		// In-page anchors (e.g. /#process) glide too, honouring scroll-margin-top.
+		anchors: true,
+		stopInertiaOnNavigate: true,
+		// Off on purpose. With autoToggle, stop()/start() only flip an inline
+		// overflow and wait for a 1ms `transition-behavior: allow-discrete`
+		// transitionend to update their state — which never fires in Safari
+		// < 17.4 / Firefox < 129, and a fast open→close races it everywhere, so
+		// scrolling stayed frozen after closing the popup or menu. The explicit
+		// stop()/start() below are synchronous and cover both lock sources.
+		autoToggle: false,
+	});
+
+	(window as Window & { lenis?: Lenis }).lenis = lenis;
+
+	// Locks Lenis can't see on its own: the mobile menu sets body overflow,
+	// and any open <dialog> must own the wheel rather than the page behind it.
+	const sync = () => {
+		const locked =
+			document.body.style.overflow === 'hidden' || document.querySelector('dialog[open]') !== null;
+		if (locked) lenis.stop();
+		else lenis.start();
+	};
+	const watcher = new MutationObserver(sync);
+	watcher.observe(document.body, { attributes: true, attributeFilter: ['style'] });
+	document.querySelectorAll('dialog').forEach((dialog) => {
+		dialog.setAttribute('data-lenis-prevent', '');
+		watcher.observe(dialog, { attributes: true, attributeFilter: ['open'] });
+	});
+</script>

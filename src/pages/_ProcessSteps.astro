@@ -1,0 +1,611 @@
+---
+// How we work: a scroll-linked stepper, the page's second (and last) pinned
+// scene after Technical Silence. On a desktop-sized screen the stage pins and
+// the active step, its photograph and the bronze rail all follow the scroll;
+// the last step then holds on screen before the page moves on. Anywhere
+// smaller, or before the script runs, it is a plain stacked list with every
+// step and photograph visible.
+import Picture from '../components/ui/Picture.astro';
+import { withBase } from '../lib/paths.ts';
+import type { LibraryImageId } from '../lib/images.ts';
+
+// Pinned track = one screen for the stage + STEP_VH per step + HOLD_VH on the
+// last one (research: track = stage + play + hold). 100 + 4×55 + 40 = 360vh.
+// The script reads the same numbers from data attributes, so the CSS height
+// and the progress maths cannot drift apart.
+const STEP_VH = 55;
+const HOLD_VH = 40;
+
+const steps: { title: string; description: string; image: LibraryImageId; alt: string }[] = [
+	{
+		title: 'Understand',
+		description:
+			'We begin with how you live: the rooms you gather in, the moments that matter, and what should simply disappear.',
+		image: 'process/understand',
+		alt: 'Homeowners and a designer reviewing material samples and plans at a kitchen table',
+	},
+	{
+		title: 'Design',
+		description:
+			'Every system is planned around the architecture and interiors, in step with your architect and designer, down to each keypad and sightline.',
+		image: 'process/design',
+		alt: 'White architectural model of a modern house on a desk beside drawings',
+	},
+	{
+		title: 'Integrate',
+		description: 'Installed, connected and programmed with precision, and with minimal visual impact.',
+		image: 'process/integrate',
+		alt: 'A technician at work in a landscaped garden at dusk, path lights glowing',
+	},
+	{
+		title: 'Deliver',
+		description:
+			'We commission every scene, walk you through the home and hand over complete documentation. Our concierge team then stays on to care for it.',
+		image: 'process/deliver',
+		alt: 'A finished residence glowing at dusk at the end of a palm-lined drive',
+	},
+];
+
+const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 45vw, (min-width: 1440px) 740px, 52vw';
+---
+
+<section
+	class="process"
+	id="process"
+	data-process
+	data-step-vh={STEP_VH}
+	data-hold-vh={HOLD_VH}
+	style={`--steps:${steps.length};--step-vh:${STEP_VH}vh;--hold-vh:${HOLD_VH}vh`}
+	aria-labelledby="process-title"
+>
+	<div class="process-stage">
+		<div class="page">
+			<div class="process-inner">
+				<header class="process-intro">
+					<div>
+						<span class="eyebrow">How We Work</span>
+						<h2 id="process-title">From vision to<br />effortless living.</h2>
+					</div>
+					<p>
+						Four considered steps and one team, from first conversation to the day you move in and
+						beyond.
+					</p>
+				</header>
+
+				<div class="process-body">
+					<div class="process-list">
+						<ol class="steps">
+							{steps.map((step, i) => (
+								<li class:list={['step', { 'is-active': i === 0 }]} data-step={i}>
+									<div class="step-head">
+										<h3 class="step-title">
+											<button type="button" class="step-btn">
+												<span class="num">{String(i + 1).padStart(2, '0')}</span>
+												<span class="title">{step.title}</span>
+											</button>
+										</h3>
+										<p class="desc"><span>{step.description}</span></p>
+									</div>
+									<figure class="step-media">
+										<Picture id={step.image} alt={step.alt} sizes={mediaSizes} />
+									</figure>
+								</li>
+							))}
+						</ol>
+
+						<a class="text-link" href={withBase('/technology-support-membership/')}>
+							About concierge care
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+								<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	type LenisLike = { scrollTo: (target: number, options?: Record<string, unknown>) => void };
+
+	const section = document.querySelector<HTMLElement>('[data-process]');
+
+	if (section) {
+		const steps = [...section.querySelectorAll<HTMLElement>('[data-step]')];
+		const buttons = steps.map((step) => step.querySelector<HTMLButtonElement>('.step-btn')!);
+		const holdVh = Number(section.dataset.holdVh) || 40;
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+		// Pin only where the whole stage fits on one screen. Below this the
+		// stacked layout is shown instead of a squeezed or clipped stage.
+		const pinQuery = window.matchMedia('(min-width: 900px) and (min-height: 700px)');
+
+		const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+
+		let pinned = false;
+		let active = -1;
+		let queued = false;
+
+		const setActive = (index: number) => {
+			if (index === active) return;
+			active = index;
+			steps.forEach((step, i) => {
+				step.classList.toggle('is-active', i === index);
+				if (i === index) buttons[i].setAttribute('aria-current', 'step');
+				else buttons[i].removeAttribute('aria-current');
+			});
+		};
+
+		// Pinned travel minus the hold is where the steps play out; the rest
+		// keeps the last step on screen. Same idea as SCRUB_END in
+		// _TechnicalSilence, expressed in vh so it matches the CSS height.
+		const playDistance = () => {
+			const vh = window.innerHeight;
+			const travel = section.offsetHeight - vh;
+			return Math.max(1, travel - (holdVh / 100) * vh);
+		};
+
+		const render = () => {
+			queued = false;
+			if (!pinned) return;
+			const progress = clamp01(-section.getBoundingClientRect().top / playDistance());
+			const position = progress * steps.length;
+			setActive(Math.min(steps.length - 1, Math.floor(position)));
+			// Each step's rail fills across its own stretch of the scroll, so the
+			// bronze line always shows how far there is to the next step.
+			steps.forEach((step, i) => step.style.setProperty('--fill', String(clamp01(position - i))));
+		};
+
+		const onScroll = () => {
+			if (queued) return;
+			queued = true;
+			requestAnimationFrame(render);
+		};
+
+		const applyMode = () => {
+			pinned = pinQuery.matches;
+			section.classList.toggle('is-pinned', pinned);
+			if (pinned) {
+				active = -1;
+				render();
+			} else {
+				steps.forEach((step) => step.style.removeProperty('--fill'));
+				buttons.forEach((button) => button.removeAttribute('aria-current'));
+			}
+		};
+
+		const scrollToY = (y: number) => {
+			const lenis = (window as Window & { lenis?: LenisLike }).lenis;
+			if (lenis) lenis.scrollTo(y);
+			else window.scrollTo({ top: y, behavior: reduce.matches ? 'auto' : 'smooth' });
+		};
+
+		const headerHeight = () =>
+			parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 96;
+
+		buttons.forEach((button, i) => {
+			button.addEventListener('click', () => {
+				const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+				if (!pinned) {
+					// Stacked: bring that step to the top, clear of the header.
+					// offsetTop (against .process) ignores the reveal's translate,
+					// so a step that hasn't faded up yet still lands exactly.
+					scrollToY(Math.round(sectionTop + steps[i].offsetTop - headerHeight() - 24));
+					return;
+				}
+				// Land just inside the step's stretch so it is unambiguously active
+				// and its rail has barely begun to fill.
+				scrollToY(Math.round(sectionTop + ((i + 0.04) / steps.length) * playDistance()));
+			});
+		});
+
+		pinQuery.addEventListener('change', applyMode);
+		window.addEventListener('resize', onScroll);
+
+		// Only listen while the section is near the viewport.
+		const io = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) {
+					window.addEventListener('scroll', onScroll, { passive: true });
+					render();
+				} else {
+					window.removeEventListener('scroll', onScroll);
+				}
+			},
+			{ rootMargin: '100% 0px' }
+		);
+		io.observe(section);
+
+		// Stacked mode: each step fades up once as it arrives.
+		if (!reduce.matches) {
+			section.setAttribute('data-armed', '');
+			const reveal = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (!entry.isIntersecting) return;
+						entry.target.classList.add('is-visible');
+						reveal.unobserve(entry.target);
+					});
+				},
+				{ threshold: 0.2 }
+			);
+			steps.forEach((step) => reveal.observe(step));
+		}
+
+		applyMode();
+	}
+</script>
+
+<style>
+	/* ---------- Stacked (default: mobile, short screens, no script) ---------- */
+
+	.process {
+		position: relative;
+		background: var(--color-bg);
+		padding-block: clamp(4.5rem, 10vw, 8.5rem);
+		/* /#process lands with the eyebrow clear of the sticky header. */
+		scroll-margin-top: var(--header-height, 96px);
+		--gap: clamp(2rem, 5vw, 4.5rem);
+	}
+
+	.process-intro {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		column-gap: var(--gap);
+		row-gap: var(--space-6);
+		align-items: end;
+		margin-bottom: clamp(3rem, 7vw, 5rem);
+	}
+
+	.process-intro h2 {
+		margin: 0;
+		font-size: var(--text-display-lg);
+		font-weight: var(--fw-medium);
+		line-height: 1.1;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+	}
+
+	.process-intro p {
+		margin: 0;
+		max-width: 30rem;
+		font-size: var(--text-body-lg);
+		line-height: 1.65;
+		color: var(--color-charcoal-2);
+	}
+
+	.steps {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(3rem, 6vw, 4rem) clamp(1.25rem, 3vw, 2.5rem);
+	}
+
+	.step {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.step-head {
+		position: relative;
+	}
+
+	.step-title {
+		margin: 0;
+	}
+
+	.step-btn {
+		display: flex;
+		align-items: baseline;
+		gap: clamp(0.75rem, 1.5vw, 1.25rem);
+		width: 100%;
+		padding: var(--space-4) 0 var(--space-3);
+		background: none;
+		border: 0;
+		text-align: left;
+		color: inherit;
+		font: inherit;
+		cursor: pointer;
+	}
+
+	.step-btn:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 4px;
+		border-radius: 2px;
+	}
+
+	.num {
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.14em;
+		font-variant-numeric: tabular-nums;
+		color: var(--color-bronze-text);
+	}
+
+	.title {
+		font-size: var(--text-step);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.005em;
+		color: var(--color-text);
+	}
+
+	.desc {
+		display: grid;
+		grid-template-rows: 1fr;
+		margin: 0;
+		max-width: 32rem;
+		font-size: var(--text-base);
+		line-height: 1.65;
+		color: var(--color-charcoal-2);
+	}
+
+	.desc > span {
+		overflow: hidden;
+		min-height: 0;
+	}
+
+	/* Photograph above its step when stacked; it carries more than the words. */
+	.step-media {
+		order: -1;
+		position: relative;
+		margin: 0;
+		aspect-ratio: 3 / 2;
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		background: var(--color-surface-2);
+	}
+
+	.step-media :global(img) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.text-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-3);
+		margin-top: clamp(2.5rem, 6vw, 3.5rem);
+		font-size: var(--text-base);
+		font-weight: var(--fw-medium);
+		letter-spacing: 0.01em;
+		color: var(--color-text);
+		transition: color var(--dur-fast) var(--ease-in-out-soft);
+	}
+
+	.text-link svg {
+		width: 18px;
+		height: 18px;
+		color: var(--color-accent);
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	/* Text bronze: the brand bronze is 4.2:1 on cream at this size. */
+	.text-link:hover {
+		color: var(--color-bronze-text);
+	}
+
+	.text-link:hover svg {
+		transform: translateX(4px);
+	}
+
+	.process[data-armed]:not(.is-pinned) .step {
+		opacity: 0;
+		transform: translateY(1.25rem);
+		transition:
+			opacity 1000ms var(--ease-out-expo),
+			transform 1000ms var(--ease-out-expo);
+	}
+
+	.process[data-armed]:not(.is-pinned) .step.is-visible {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (max-width: 599px) {
+		.process-intro {
+			grid-template-columns: 1fr;
+		}
+		.steps {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (min-width: 600px) and (max-width: 899px) {
+		.process-intro {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* ---------- Pinned stepper (script adds .is-pinned on ≥900×700) ---------- */
+
+	.process.is-pinned {
+		/* One screen for the stage, one stretch per step, then the hold. */
+		height: calc(100vh + var(--steps) * var(--step-vh) + var(--hold-vh));
+		padding-block: 0;
+		/* The stage pads itself for the header, so the anchor lands flush:
+		   that is the exact point where the stage pins. */
+		scroll-margin-top: 0;
+		--stage-pad: clamp(1.5rem, 4.5vh, 3rem);
+	}
+
+	.process.is-pinned .process-stage {
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		padding-top: var(--header-height, 96px);
+		overflow: hidden;
+		background: var(--color-bg);
+	}
+
+	.process.is-pinned .process-stage > .page {
+		padding-block: var(--stage-pad);
+	}
+
+	.process.is-pinned .process-inner {
+		display: flex;
+		flex-direction: column;
+		height: min(calc(100vh - var(--header-height, 96px) - 2 * var(--stage-pad)), 52rem);
+	}
+
+	.process.is-pinned .process-intro {
+		flex: none;
+		margin-bottom: clamp(1.5rem, 5vh, 3rem);
+	}
+
+	/* Headings scale with the screen's height too, so a 1280×720 laptop still
+	   fits the whole stage without clipping. */
+	.process.is-pinned .process-intro h2 {
+		font-size: min(var(--text-display-lg), 6.2vh);
+	}
+
+	.process.is-pinned .process-body {
+		position: relative;
+		flex: 1;
+		min-height: 0;
+		display: grid;
+		grid-template-columns: minmax(0, var(--col-a)) minmax(0, var(--col-b));
+		column-gap: var(--gap);
+		--col-a: 1fr;
+		--col-b: 1fr;
+		--share: 0.5;
+	}
+
+	.process.is-pinned .process-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.process.is-pinned .steps {
+		display: block;
+	}
+
+	.process.is-pinned .step-head {
+		padding-left: clamp(1.25rem, 2vw, 1.75rem);
+	}
+
+	/* The rail: a hairline behind each step and a bronze fill that follows
+	   the scroll through it (--fill is set by the script, 0 → 1). */
+	.process.is-pinned .step-head::before,
+	.process.is-pinned .step-head::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+	}
+
+	.process.is-pinned .step-head::before {
+		background: var(--color-border);
+	}
+
+	.process.is-pinned .step-head::after {
+		background: var(--color-accent);
+		transform: scaleY(var(--fill, 0));
+		transform-origin: top;
+	}
+
+	.process.is-pinned .step-btn {
+		padding-block: clamp(0.6rem, 1.5vh, 1.05rem);
+	}
+
+	/* Inactive steps recede by colour, not opacity: fading the title to
+	   0.38 left it at 2.4:1. The muted brown still reads (6:1) while the
+	   bronze rail and the opened description carry the active step. */
+	.process.is-pinned .title {
+		font-size: min(var(--text-step), 3.4vh);
+		color: var(--color-text-muted);
+		transition: color var(--dur-base) var(--ease-in-out-soft);
+	}
+
+	.process.is-pinned .step-btn:hover .title,
+	.process.is-pinned .step.is-active .title {
+		color: var(--color-text);
+	}
+
+	/* Collapsed until active; 0fr → 1fr animates a wrapping paragraph without
+	   hard-coding its height. */
+	.process.is-pinned .desc {
+		grid-template-rows: 0fr;
+		opacity: 0;
+		font-size: var(--text-body-lg);
+		max-width: 30rem;
+		transition:
+			grid-template-rows 700ms var(--ease-out-expo),
+			opacity 700ms var(--ease-out-expo),
+			padding-bottom 700ms var(--ease-out-expo);
+	}
+
+	.process.is-pinned .step.is-active .desc {
+		grid-template-rows: 1fr;
+		opacity: 1;
+		padding-bottom: clamp(0.6rem, 1.5vh, 1.05rem);
+	}
+
+	.process.is-pinned .text-link {
+		align-self: flex-start;
+		margin-top: clamp(1.25rem, 4vh, 2.5rem);
+		margin-left: clamp(1.25rem, 2vw, 1.75rem);
+	}
+
+	/* Every photograph sits in the right-hand column of .process-body, one
+	   on top of the other; the active one fades up and settles. Positioned
+	   against .process-body (the <li> and list stay unpositioned) so each
+	   image can live beside its own step in the markup. */
+	.process.is-pinned .step-media {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		width: calc((100% - var(--gap)) * var(--share));
+		aspect-ratio: auto;
+		opacity: 0;
+		transition: opacity 900ms var(--ease-in-out-soft);
+	}
+
+	.process.is-pinned .step-media :global(img) {
+		transform: scale(1.05);
+		transition: transform 1600ms var(--ease-out-expo);
+	}
+
+	.process.is-pinned .step.is-active .step-media {
+		opacity: 1;
+		z-index: 1;
+	}
+
+	.process.is-pinned .step.is-active .step-media :global(img) {
+		transform: scale(1);
+	}
+
+	@media (min-width: 1200px) {
+		.process.is-pinned .process-body {
+			--col-a: 5fr;
+			--col-b: 7fr;
+			--share: calc(7 / 12);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		/* The scroll mapping stays (the visitor drives it); only the
+		   decorative movement goes. */
+		.process.is-pinned .desc,
+		.process.is-pinned .title {
+			transition: none;
+		}
+		.process.is-pinned .step-media {
+			transition: opacity 200ms linear;
+		}
+		.process.is-pinned .step-media :global(img),
+		.process.is-pinned .step.is-active .step-media :global(img) {
+			transform: none;
+			transition: none;
+		}
+	}
+</style>

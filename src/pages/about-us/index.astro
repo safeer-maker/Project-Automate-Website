@@ -1,0 +1,30 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+import PhilosophySection from './_PhilosophySection.astro';
+import ExperienceSection from './_ExperienceSection.astro';
+import FounderSection from './_FounderSection.astro';
+import ProcessSection from './_ProcessSection.astro';
+---
+
+<ServiceLayout
+	title="About Our Los Angeles Smart Home Studio"
+	description="Meet the Manhattan Beach team behind 400+ Los Angeles residences: CEDIA and HTA certified, led by founder Joshua Trevithick, devoted to quiet technology."
+	breadcrumbTitle="About Us"
+	heroImageId="residences/stone-estate-wide"
+	heroPosition="50% 60%"
+	eyebrow="About PROJECT: automate"
+	heroTitle="Intelligent Living, Designed With Purpose."
+	heroSubtitle="We create intelligent environments where every detail works in harmony: quietly, beautifully, completely."
+	intro="From our studio in Manhattan Beach, we design and integrate the technology inside some of Los Angeles’ most considered residences, then stay on to care for it."
+>
+	<PhilosophySection />
+
+	<FounderSection />
+
+	<ProcessSection />
+
+	<ExperienceSection />
+
+	<CtaBanner slot="closing" />
+</ServiceLayout>

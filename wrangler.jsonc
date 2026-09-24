@@ -1,0 +1,13 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "projectautomate-website",
+	"compatibility_date": "2026-09-07",
+	"assets": {
+		"directory": "./dist",
+		// Serve Astro's branded dist/404.html (with a 404 status) instead of an empty 404.
+		"not_found_handling": "404-page"
+	},
+	"observability": {
+		"enabled": true
+	}
+}

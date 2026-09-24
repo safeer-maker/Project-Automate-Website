@@ -1,0 +1,190 @@
+---
+// The two disciplines this landing page sells, side by side: they are
+// designed together, so they are read together.
+import Picture from '../../components/ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
+
+const disciplines: {
+	id: string;
+	eyebrow: string;
+	title: string;
+	body: string;
+	points: string[];
+	imageId: LibraryImageId;
+	imageAlt: string;
+}[] = [
+	{
+		id: 'landscape-lighting',
+		eyebrow: 'Landscape Lighting',
+		title: 'Light for the evening.',
+		body: 'The architecture, the planting and the water, each drawn gently out of the dark, with scenes that change as the evening does.',
+		points: [
+			'Uplighting for facades, trees and stonework',
+			'Path, step and pool lighting for moving safely after dark',
+			'Scenes for dining, entertaining and late evening',
+			'Set on a schedule, or with a single touch',
+		],
+		imageId: 'solutions/landscape-cascade',
+		imageAlt: 'A lit cascade of water falling from a stone wall into a pool, surrounded by planting at night',
+	},
+	{
+		id: 'outdoor-audio',
+		eyebrow: 'Outdoor Audio',
+		title: 'Sound for the garden.',
+		body: 'Even, balanced music across lawns, terraces and pool decks, from speakers designed to disappear into the planting.',
+		points: [
+			'Landscape speakers and subwoofers placed for even coverage',
+			'Weather-resistant equipment made for outdoor living',
+			'Music by area, at the right level for each space',
+			'Played from your phone, a keypad or your voice',
+		],
+		imageId: 'solutions/audio-garden-speaker',
+		imageAlt: 'A sculptural landscape speaker among low planting in a modern garden at golden hour',
+	},
+];
+---
+
+<section class="light-sound" aria-labelledby="light-sound-heading" data-light-sound>
+	<div class="container">
+		<div class="heading">
+			<span class="eyebrow">Designed Together</span>
+			<h2 id="light-sound-heading">Two disciplines, one quiet design.</h2>
+		</div>
+
+		<div class="panels">
+			{disciplines.map((d, i) => (
+				<article class="panel" aria-labelledby={`${d.id}-title`} style={`--i:${i}`}>
+					<div class="panel-media">
+						<Picture id={d.imageId} alt={d.imageAlt} sizes="(max-width: 860px) 100vw, 44vw" />
+					</div>
+					<span class="eyebrow">{d.eyebrow}</span>
+					<h3 id={`${d.id}-title`}>{d.title}</h3>
+					<p>{d.body}</p>
+					<ul class="points">
+						{d.points.map((point) => <li>{point}</li>)}
+					</ul>
+				</article>
+			))}
+		</div>
+	</div>
+</section>
+
+<script>
+	// Each panel fades up once as it enters.
+	const panels = document.querySelectorAll<HTMLElement>('[data-light-sound] .panel');
+	if (!('IntersectionObserver' in window)) {
+		panels.forEach((panel) => panel.classList.add('is-revealed'));
+	} else {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		panels.forEach((panel) => io.observe(panel));
+	}
+</script>
+
+<style>
+	.light-sound {
+		padding-block: clamp(3rem, 7vw, 6rem) clamp(4.5rem, 10vw, 8rem);
+	}
+
+	.heading {
+		max-width: 40rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+	}
+
+	.heading h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.panels {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(3rem, 6vw, 6rem) clamp(2rem, 5vw, 5rem);
+	}
+
+	.panel-media {
+		overflow: hidden;
+		margin-bottom: var(--space-8);
+		border-radius: var(--radius-md);
+		background: var(--color-surface);
+	}
+
+	.panel-media :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+	}
+
+	.panel h3 {
+		margin-bottom: var(--space-4);
+		font-size: var(--text-tile);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+	}
+
+	.panel p {
+		max-width: 32rem;
+		margin-bottom: var(--space-8);
+		font-size: var(--text-body-lg);
+		line-height: 1.7;
+	}
+
+	.points li {
+		padding-block: var(--space-3);
+		border-top: 1px solid var(--color-border);
+		font-size: var(--text-base);
+		color: var(--color-text);
+	}
+
+	.points li:last-child {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.panel {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 1000ms var(--ease-out-expo),
+				transform 1000ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 140ms);
+		}
+
+		.panel-media :global(img) {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+
+		.panel.is-revealed {
+			opacity: 1;
+			transform: none;
+		}
+
+		.panel.is-revealed .panel-media :global(img) {
+			transform: scale(1);
+		}
+	}
+
+	@media (max-width: 860px) {
+		.panels {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.panel {
+			transition-delay: 0ms;
+		}
+	}
+</style>

@@ -1,0 +1,152 @@
+---
+// Two-column list of short features. Each feature may carry a photo, either a
+// plain `image` URL or a library `imageId` (rendered through <Picture>).
+import Picture from '../ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
+
+interface Feature {
+	title: string;
+	description: string;
+	image?: string;
+	imageId?: LibraryImageId;
+	imageAlt?: string;
+}
+
+interface Props {
+	eyebrow: string;
+	title: string;
+	features: readonly Feature[];
+}
+
+const { eyebrow, title, features } = Astro.props;
+---
+
+<section class="section feature-list" data-feature-list>
+	<div class="container">
+		<div class="heading">
+			<span class="eyebrow">{eyebrow}</span>
+			<h2>{title}</h2>
+		</div>
+		<ul class="features">
+			{features.map((feature, i) => (
+				<li style={`--i:${i % 2}`}>
+					{(feature.imageId || feature.image) && (
+						<div class="feature-media">
+							{feature.imageId ? (
+								<Picture id={feature.imageId} alt={feature.imageAlt ?? ''} sizes="(max-width: 700px) 100vw, 44vw" />
+							) : (
+								<img src={feature.image} alt={feature.imageAlt ?? ''} loading="lazy" decoding="async" />
+							)}
+						</div>
+					)}
+					<h3>{feature.title}</h3>
+					<p>{feature.description}</p>
+				</li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<script>
+	// Each feature fades up once as it enters.
+	document.querySelectorAll<HTMLElement>('[data-feature-list]').forEach((section) => {
+		const items = section.querySelectorAll<HTMLElement>('.features > li');
+		if (!('IntersectionObserver' in window)) {
+			items.forEach((item) => item.classList.add('is-revealed'));
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
+		);
+		items.forEach((item) => io.observe(item));
+	});
+</script>
+
+<style>
+	.heading {
+		max-width: 48rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.heading h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.features {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(2.5rem, 5vw, 4rem) clamp(2rem, 5vw, 5rem);
+	}
+
+	.features li {
+		border-top: 1px solid var(--color-border);
+		padding-top: var(--space-6);
+	}
+
+	.feature-media {
+		overflow: hidden;
+		margin-bottom: var(--space-6);
+		border-radius: var(--radius-md);
+		background: var(--color-surface);
+	}
+
+	.feature-media img,
+	.feature-media :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+	}
+
+	.features h3 {
+		margin-bottom: var(--space-3);
+		font-size: var(--text-2xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.25;
+		letter-spacing: -0.005em;
+	}
+
+	.features p {
+		margin: 0;
+		max-width: 34rem;
+		font-size: var(--text-body-lg);
+		line-height: 1.7;
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.features li {
+			opacity: 0;
+			transform: translateY(20px);
+			transition:
+				opacity 900ms var(--ease-out-expo),
+				transform 900ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 110ms);
+		}
+
+		.features li.is-revealed {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 700px) {
+		.features {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.features li {
+			transition-delay: 0ms;
+		}
+	}
+</style>
