@@ -4,12 +4,15 @@ import { ogImageUrl } from '../../lib/images.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import FeatureList from '../../components/brands/FeatureList.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
+import PillarNav from '../../components/services/PillarNav.astro';
+import ServiceIntegrations from '../../components/services/ServiceIntegrations.astro';
+import ServiceFaq from '../../components/services/ServiceFaq.astro';
+import { faqPageSchema } from '../../data/faqs/index.ts';
 import HeroSection from './_HeroSection.astro';
 import IntroSection from './_IntroSection.astro';
 import PlansSection from './_PlansSection.astro';
 import HowItWorksSection from './_HowItWorksSection.astro';
-import FaqSection from './_FaqSection.astro';
-import { faqs, plans } from './_data.ts';
+import { plans } from './_data.ts';
 
 const title = 'Concierge Smart Home Support, LA';
 const description =
@@ -24,10 +27,11 @@ const benefits = [
 ];
 
 // Service + FAQPage nodes for the page's @graph (BaseLayout merges them).
-// FAQPage no longer earns a rich result, but still describes the page cleanly.
+// The FAQPage covers exactly the questions ServiceFaq renders below (the
+// published ones in src/data/faqs), so ServiceFaq's own JSON-LD is switched off.
 const site = Astro.site ?? new URL(siteInfo.url);
 const pageUrl = new URL(Astro.url.pathname, site).toString();
-const schema = [
+const schema: Record<string, unknown>[] = [
 	{
 		'@type': 'Service',
 		'@id': `${pageUrl}#service`,
@@ -51,16 +55,9 @@ const schema = [
 			},
 		})),
 	},
-	{
-		'@type': 'FAQPage',
-		'@id': `${pageUrl}#faq`,
-		mainEntity: faqs.map((item) => ({
-			'@type': 'Question',
-			name: item.q,
-			acceptedAnswer: { '@type': 'Answer', text: item.a },
-		})),
-	},
 ];
+const faqNode = faqPageSchema('technology-support-membership', pageUrl);
+if (faqNode) schema.push(faqNode);
 ---
 
 <PageLayout
@@ -72,6 +69,8 @@ const schema = [
 >
 	<HeroSection />
 
+	<PillarNav current="technology-support-membership" />
+
 	<IntroSection />
 
 	<FeatureList eyebrow="Why Become a Member" title="Care that goes beyond a service call." features={benefits} />
@@ -80,7 +79,12 @@ const schema = [
 
 	<HowItWorksSection />
 
-	<FaqSection />
+	<ServiceIntegrations
+		current="technology-support-membership"
+		title="Care, wherever the systems meet."
+	/>
+
+	<ServiceFaq key="technology-support-membership" title="Membership questions, answered." schema={false} />
 
 	<CtaBanner />
 </PageLayout>

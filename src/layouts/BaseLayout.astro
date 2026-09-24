@@ -56,6 +56,7 @@ const {
 const ORIGIN = siteInfo.url.replace(/\/$/, '');
 const BUSINESS_ID = `${ORIGIN}/#business`;
 const WEBSITE_ID = `${ORIGIN}/#website`;
+const FOUNDER_ID = `${ORIGIN}/#founder`;
 const absolute = (path: string) => new URL(withBase(path), Astro.site).toString();
 
 const phoneDigits = siteInfo.phones[0].replace(/\D/g, '');
@@ -93,7 +94,7 @@ const business = {
 		postalCode: '90266',
 		addressCountry: 'US',
 	},
-	founder: { '@type': 'Person', '@id': `${ORIGIN}/#founder`, name: 'Joshua Trevithick', jobTitle: 'Founder' },
+	founder: { '@id': FOUNDER_ID },
 	// One shared list (src/data/site.ts), also used by every Service node
 	// (ServiceLayout / BrandLayout), so the two never drift.
 	areaServed,
@@ -128,6 +129,18 @@ const business = {
 		},
 	],
 	sameAs: siteInfo.social.map((s) => s.href),
+};
+
+// The founder as an entity of his own, as the homepage and About page present
+// him (name, title, portrait), so the business and any page can point at him.
+const founder = {
+	'@type': 'Person',
+	'@id': FOUNDER_ID,
+	name: 'Joshua Trevithick',
+	jobTitle: 'Founder & CEO',
+	worksFor: { '@id': BUSINESS_ID },
+	url: absolute('/about-us/'),
+	image: absolute('/images/about-us/founder-joshua-trevithick.webp'),
 };
 
 // Google reads the site name shown in results from this node.
@@ -197,7 +210,7 @@ const extraNodes = schema.map(({ '@context': _context, ...node }) => node);
 
 const structuredData = {
 	'@context': 'https://schema.org',
-	'@graph': [business, website, ...(breadcrumbList ? [breadcrumbList] : []), ...extraNodes],
+	'@graph': [business, founder, website, ...(breadcrumbList ? [breadcrumbList] : []), ...extraNodes],
 };
 // Escape "<" so no string in the graph can close the script element early.
 const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');

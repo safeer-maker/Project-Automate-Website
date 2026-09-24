@@ -80,7 +80,8 @@ const hasImage = Boolean(integration.image);
 	.card-media {
 		overflow: hidden;
 		border-radius: var(--radius-md);
-		background: var(--color-surface-2);
+		/* Shown only while the photo loads. */
+		background: rgba(22, 16, 8, 0.05);
 	}
 
 	.card-media :global(img) {
@@ -185,7 +186,11 @@ const hasImage = Boolean(integration.image);
 		min-height: 22rem;
 		padding: clamp(1.75rem, 3vw, 2.75rem);
 		border-radius: var(--radius-md);
-		background: var(--color-charcoal);
+		/* A low warm glow, like light spilling from a screen, keeps the empty
+		   space in the tile atmospheric rather than blank. */
+		background:
+			radial-gradient(90% 70% at 88% 0%, rgba(175, 136, 80, 0.2), rgba(175, 136, 80, 0) 70%),
+			var(--color-charcoal);
 		color: var(--color-text-on-dark);
 	}
 

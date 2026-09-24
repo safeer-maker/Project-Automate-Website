@@ -1,7 +1,7 @@
 ---
 import { withBase } from '../../lib/paths.ts';
 import { siteInfo, footerQuickLinks, footerMenu, legalLinks } from '../../data/site.ts';
-import { coreServices } from '../../data/nav.ts';
+import { serviceGroups, solutionsHub } from '../../data/nav.ts';
 import Button from '../ui/Button.astro';
 
 const year = new Date().getFullYear();
@@ -48,10 +48,14 @@ const badges = [
 
 		<div class="footer-col">
 			<h3>Services</h3>
+			{/* One line per pillar, each opening its lead service; the hub holds the rest. */}
 			<ul>
-				{coreServices.map((item) => (
-					<li><a href={item.href}>{item.label}</a></li>
+				{serviceGroups.map((group) => (
+					<li><a href={group.leadHref}>{group.title}</a></li>
 				))}
+				<li>
+					<a class="footer-all" href={solutionsHub}>All services <span aria-hidden="true">&rarr;</span></a>
+				</li>
 			</ul>
 		</div>
 
@@ -235,6 +239,16 @@ const badges = [
 	}
 	.footer-col a:hover {
 		color: var(--color-white);
+	}
+
+	.footer-col .footer-all {
+		display: inline-block;
+		margin-top: var(--space-2);
+		color: var(--color-text-on-dark);
+		font-weight: var(--fw-semibold);
+	}
+	.footer-col .footer-all:hover {
+		color: var(--color-accent-hover);
 	}
 
 	.contact-list li {

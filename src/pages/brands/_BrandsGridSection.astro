@@ -273,7 +273,8 @@ const brands: { name: string; logo?: string; square?: boolean; href: string; lin
 
 	.brand-card:hover .brand-name,
 	.brand-card:focus-visible .brand-name {
-		color: var(--color-accent);
+		/* 20px on cream is small type: the text bronze keeps it above 4.5:1. */
+		color: var(--color-bronze-text);
 	}
 
 	.brand-card:hover .arrow,

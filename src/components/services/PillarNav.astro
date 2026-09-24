@@ -14,6 +14,9 @@ const { current } = Astro.props;
 const service = services[current];
 const pillar = pillarOf(current);
 const siblings = pillar.services.map((key) => services[key]);
+// A pillar of one (Concierge Care) would repeat its own name as the only link,
+// so its service goes by its full title there.
+const linkLabel = (s: (typeof siblings)[number]) => (siblings.length === 1 ? s.title : s.shortTitle);
 const alsoIn = (service.alsoIn ?? []).map((key) => pillars.find((p) => p.key === key)!).filter(Boolean);
 const hubHref = (key: string) => withBase(`/solutions/#${key}`);
 ---
@@ -34,7 +37,7 @@ const hubHref = (key: string) => withBase(`/solutions/#${key}`);
 								class="pillar-link"
 								aria-current={s.key === current ? 'page' : undefined}
 							>
-								{s.shortTitle}
+								{linkLabel(s)}
 							</a>
 						</li>
 					))}

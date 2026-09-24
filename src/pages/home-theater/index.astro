@@ -4,11 +4,13 @@ import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 
+// What's included. Acoustics sit with the sound: the intro and meta promise
+// acoustic design, and the two are designed together.
 const capabilities = [
 	{
-		title: 'Immersive Audio',
+		title: 'Immersive Sound & Acoustics',
 		description:
-			'Sound that places you inside the scene. Custom-calibrated Dolby Atmos and DTS:X systems, with high-fidelity speakers that disappear into the architecture while filling the room with clear, effortless sound.',
+			'Sound that places you inside the scene. Dolby Atmos and DTS:X systems are calibrated to a room whose acoustics are designed with them, and the speakers disappear into the architecture while filling every seat with clear, effortless sound.',
 		imageId: 'solutions/cinema-midnight',
 		imageAlt: 'A deep blue private cinema with leather recliners facing a wide mountain scene on screen',
 	},
@@ -31,8 +33,8 @@ const capabilities = [
 const scenes = [
 	{ title: 'Movie Night', description: 'One preset dims the lights, lowers the screen and wakes the room in calibrated Dolby Atmos.' },
 	{ title: 'The Big Game', description: 'Every seat gets room-filling sound and a vivid, large-format picture.' },
-	{ title: 'Family Matinee', description: 'Ambient light and motorized shades set the mood on their own, no remotes required.' },
-	{ title: 'Late Night', description: 'One touch brings it all down, screen up and lights restored, as easily as it began.' },
+	{ title: 'Family Matinee', description: 'Motorized shades close and ambient light settles on its own, with no remotes to find.' },
+	{ title: 'Late Night', description: 'One touch ends the evening: the screen rises and the lights return, as easily as it began.' },
 ];
 ---
 
@@ -45,12 +47,12 @@ const scenes = [
 	eyebrow="Private Cinema"
 	heroTitle="A Private Cinema Worthy of the Film"
 	heroSubtitle="Reference picture, immersive sound and one-touch control, designed and installed for Los Angeles residences."
-	intro="A great film deserves a room that matches it. We design private cinemas and media rooms where picture, sound, acoustics, seating and light are considered together, and the technology disappears the moment the lights go down."
+	intro="A private cinema is a theater or media room built around film, for homeowners who want the full experience of the cinema without leaving home. Picture, sound, acoustics, seating and light are planned together, and the technology disappears the moment the lights go down."
 	serviceName="Private Home Theater Design"
 	serviceType="Home theater design and installation"
-	related={['audio-video-solutions', 'lighting-control-systems', 'control-systems']}
+	serviceKey="home-theater"
 >
-	<CapabilityList eyebrow="The Experience" title="Picture, sound and light, composed as one." items={capabilities} />
+	<CapabilityList eyebrow="What's Included" title="Picture, sound and light, composed as one." items={capabilities} />
 
 	<DailyExperience
 		eyebrow="Daily Experience"

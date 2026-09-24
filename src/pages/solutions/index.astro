@@ -1,0 +1,77 @@
+---
+// /solutions/: the hub for every core service. Hero → index of the six
+// pillars → intro → the pillars and their services → where systems meet (every
+// integration scenario, filterable by service) → Concierge Care → questions →
+// the closing invitation.
+import PageLayout from '../../layouts/PageLayout.astro';
+import ServiceFaq from '../../components/services/ServiceFaq.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+import { withBase } from '../../lib/paths.ts';
+import { ogImageUrl } from '../../lib/images.ts';
+import { siteInfo } from '../../data/site.ts';
+import { pillars, services } from '../../data/services.ts';
+import { faqPageSchema } from '../../data/faqs/index.ts';
+import HeroSection from './_HeroSection.astro';
+import PillarIndex from './_PillarIndex.astro';
+import IntroSection from './_IntroSection.astro';
+import PillarsSection from './_PillarsSection.astro';
+import MomentsSection from './_MomentsSection.astro';
+import CareSection from './_CareSection.astro';
+
+const title = 'Luxury Home Technology Services in Los Angeles';
+const description =
+	'Lighting, shades, climate, private cinema, audio, outdoor living and security for Los Angeles residences, designed as one system and cared for after handover.';
+
+// Structured data: the page as a collection of the service pages it lists
+// (real pages only, in pillar order), plus the FAQPage for exactly the
+// questions ServiceFaq renders, in the page's one @graph.
+const site = Astro.site ?? new URL(siteInfo.url);
+const pageUrl = new URL(Astro.url.pathname, site).toString();
+const ORIGIN = siteInfo.url.replace(/\/$/, '');
+const listed = pillars.flatMap((pillar) => pillar.services).map((key) => services[key]);
+
+const collection = {
+	'@type': 'CollectionPage',
+	'@id': `${pageUrl}#webpage`,
+	url: pageUrl,
+	name: title,
+	description,
+	isPartOf: { '@id': `${ORIGIN}/#website` },
+	about: { '@id': `${ORIGIN}/#business` },
+	mainEntity: { '@id': `${pageUrl}#services` },
+};
+
+const itemList = {
+	'@type': 'ItemList',
+	'@id': `${pageUrl}#services`,
+	name: 'Luxury home technology services',
+	numberOfItems: listed.length,
+	itemListElement: listed.map((service, i) => ({
+		'@type': 'ListItem',
+		position: i + 1,
+		name: service.title,
+		url: new URL(withBase(service.href), site).toString(),
+	})),
+};
+
+const faqNode = faqPageSchema('solutions', pageUrl);
+const schema = [collection, itemList, ...(faqNode ? [faqNode] : [])];
+---
+
+<PageLayout
+	title={title}
+	description={description}
+	image={ogImageUrl('residences/stone-estate-wide')}
+	schema={schema}
+	breadcrumbTitle="Services"
+	progress
+>
+	<HeroSection />
+	<PillarIndex />
+	<IntroSection />
+	<PillarsSection />
+	<MomentsSection />
+	<CareSection />
+	<ServiceFaq key="solutions" title="Questions, answered." schema={false} />
+	<CtaBanner />
+</PageLayout>

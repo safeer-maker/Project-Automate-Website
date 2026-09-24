@@ -18,6 +18,8 @@ const MAX_CARDS = 4;
 const { current, eyebrow = 'Where Systems Meet', title = 'How it works with the rest of the home.' } = Astro.props;
 const items = integrationsFor(current).slice(0, MAX_CARDS);
 const count = items.length;
+// The hub opens with this service's filter already chosen (it accepts only real service keys).
+const hubHref = withBase(`/solutions/?service=${current}#where-systems-meet`);
 
 // Two or four cards run two to a row, three run three across (from 1024px).
 // `sizes` follows the column: the container caps at 1280px less its padding.
@@ -46,7 +48,7 @@ const sizes =
 							Every system in the home is designed with the others in mind. These are a few of the everyday
 							moments where they meet.
 						</p>
-						<a class="hub-link" href={withBase('/solutions/')}>
+						<a class="hub-link" href={hubHref}>
 							See how every system connects
 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
 								<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
@@ -163,7 +165,7 @@ const sizes =
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 3vw, 3rem);
 		/* Wide frames when two share a row; squarer ones when three do. */
-		--card-ratio: 16 / 10;
+		--card-ratio: 16 / 9;
 	}
 
 	@media (min-width: 1024px) {
@@ -185,6 +187,13 @@ const sizes =
 
 		.integrations-grid.count-3 > :global(:first-child .card-body) {
 			padding-top: 0;
+		}
+
+		/* The photo fills its half, however tall the text beside it runs. */
+		.integrations-grid.count-3 > :global(:first-child .card-media img) {
+			height: 100%;
+			min-height: 16rem;
+			aspect-ratio: auto;
 		}
 
 		.integrations-grid.count-3 > :global(:first-child.is-plain) {

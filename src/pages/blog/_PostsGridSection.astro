@@ -133,7 +133,8 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', { year: 'num
 		font-weight: var(--fw-semibold);
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--color-accent);
+		/* Small type on cream: the text bronze clears 4.5:1, the brand bronze doesn't. */
+		color: var(--color-bronze-text);
 	}
 
 	.meta time {
@@ -196,7 +197,7 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', { year: 'num
 		padding-bottom: var(--space-1);
 		border-bottom: 1px solid currentColor;
 		font-weight: var(--fw-medium);
-		color: var(--color-accent);
+		color: var(--color-bronze-text);
 	}
 
 	.read-link svg {
@@ -209,7 +210,7 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', { year: 'num
 	.latest-card:focus-visible h2,
 	.post:hover h3,
 	.post:focus-visible h3 {
-		color: var(--color-accent);
+		color: var(--color-bronze-text);
 	}
 
 	.latest-card:hover img,

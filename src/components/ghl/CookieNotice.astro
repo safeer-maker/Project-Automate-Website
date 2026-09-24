@@ -91,7 +91,9 @@ import { withBase } from '../../lib/paths.ts';
 		padding: 0.6rem 1.25rem;
 		border: none;
 		border-radius: var(--radius-sm);
-		background: var(--color-accent);
+		/* The brand bronze gives a white label only 4.34:1; the fill bronze
+		   is the lightest that reaches 4.5:1, and hover goes darker, not lighter. */
+		background: var(--color-bronze-fill);
 		color: var(--color-white);
 		font-size: var(--text-sm);
 		font-weight: var(--fw-semibold);
@@ -99,7 +101,7 @@ import { withBase } from '../../lib/paths.ts';
 	}
 
 	.cookie-notice button:hover {
-		background: var(--color-accent-hover);
+		background: var(--color-bronze-fill-hover);
 	}
 
 	@media (max-width: 520px) {

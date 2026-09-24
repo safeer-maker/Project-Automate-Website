@@ -98,7 +98,13 @@ export const integrations: Integration[] = [
 		title: 'Goodnight',
 		story:
 			'One touch at the bedside, and the lights settle through the house, the shades and drapery close, and the property is secured for the night.',
-		services: ['control-systems', 'lighting-control-systems', 'security-systems', 'motorized-shades-and-drapery'],
+		services: [
+			'control-systems',
+			'lighting-control-systems',
+			'security-systems',
+			'intrusion-detection-systems',
+			'motorized-shades-and-drapery',
+		],
 		image: 'residences/manhattan-beach',
 		imageAlt: 'A coastal residence at sunset, its windows and garden path glowing warmly',
 	},
@@ -123,18 +129,21 @@ export const integrations: Integration[] = [
 			'motorized-shades-and-drapery',
 			'hvac-and-climate-integration',
 		],
-		image: 'residences/palm-drive-estate',
-		imageAlt: 'A modern residence glowing at the end of a palm-lined drive at dusk',
+		// Not palm-drive-estate: it is the same photograph as process/deliver,
+		// the Concierge Care band on the hub.
+		image: 'residences/malibu-stone-court',
+		imageAlt: 'A modern residence at blue hour, its stone garden wall washed in warm light',
 	},
 	// The two care scenarios restate the homepage ("Our concierge team then stays
 	// on to care for it") and the membership page ("kept performing as it did on
 	// the day it was handed over", priority service, requests "resolved
-	// remotely, without waiting for a visit").
+	// remotely, without waiting for a visit"), in their own words: both cards
+	// sit on the membership page, right below the benefits they paraphrase.
 	{
 		id: 'cared-for',
 		title: 'Cared for',
 		story:
-			'After the final walkthrough, our concierge team stays on to care for the system, keeping it performing as it did on the day it was handed over.',
+			'After the final walkthrough, our concierge team stays on to look after the system, so it keeps working just as it did on the first day.',
 		services: ['technology-support-membership', 'control-systems'],
 		image: 'solutions/landscape-installation',
 		imageAlt: 'A technician tending the landscape lighting in a manicured garden',
@@ -143,7 +152,7 @@ export const integrations: Integration[] = [
 		id: 'remote-assistance',
 		title: 'Remote assistance',
 		story:
-			'If a camera, the gate or the intercom ever needs attention, members move to the front of the queue, and many requests are resolved remotely, without waiting for a visit.',
+			'If a camera, the gate or the intercom ever needs attention, members are looked after first, and many requests are put right remotely, with no need to wait for a visit.',
 		services: ['technology-support-membership', 'surveillance-systems', 'access-control-and-intercom'],
 		image: 'solutions/control-touch',
 		imageAlt: 'Hands on a home control touchscreen mounted on a wall',

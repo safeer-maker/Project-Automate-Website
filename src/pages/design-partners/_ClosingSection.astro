@@ -51,7 +51,8 @@ import { withBase } from '../../lib/paths.ts';
 		padding-bottom: var(--space-1);
 		border-bottom: 1px solid currentColor;
 		font-weight: var(--fw-medium);
-		color: var(--color-accent);
+		/* Small type on cream: the text bronze clears 4.5:1, the brand bronze doesn't. */
+		color: var(--color-bronze-text);
 		transition: color var(--dur-fast) ease;
 	}
 
@@ -63,7 +64,8 @@ import { withBase } from '../../lib/paths.ts';
 
 	.closing-link:hover,
 	.closing-link:focus-visible {
-		color: var(--color-accent-hover);
+		/* Hover darkens rather than lightens, so the link stays legible. */
+		color: var(--color-bronze-fill-hover);
 	}
 
 	.closing-link:hover svg,

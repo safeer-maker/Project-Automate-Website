@@ -1,4 +1,8 @@
 ---
+// Outdoor Living pillar, home service. Order follows the service-page story:
+// what it is (intro) → what's included → day to day → then, from
+// ServiceLayout via serviceKey: how we deliver it, where it meets the rest of
+// the home, questions (src/data/faqs/outdoor-living.ts), closing CTA.
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
@@ -15,7 +19,7 @@ const capabilities = [
 	{
 		title: 'Entertainment Beyond the Living Room',
 		description:
-			'Films, sport and television, brought outside on displays made for exterior living. Weather-resistant screens, audio, networking and intuitive control arrive as one complete experience.',
+			'Films, sport and television, brought outside on displays made for exterior living. Weather-resistant screens, audio, networking and control are designed and installed as one.',
 		imageId: 'solutions/cinema-outdoor',
 		imageAlt: 'Guests gathered around a large outdoor screen on a lit poolside terrace at dusk',
 	},
@@ -38,19 +42,19 @@ const scenes = [
 
 <ServiceLayout
 	title="Luxury Outdoor Living Technology, LA"
-	description="Weatherproof audio, outdoor displays, landscape lighting and poolside control for Los Angeles estates, so terraces and gardens feel as connected as the home."
+	description="Weather-ready audio, outdoor displays, landscape lighting and poolside control for Los Angeles estates, so terraces and gardens feel as connected as the home."
 	heroImageId="residences/malibu-coastal"
 	heroAlt="An ocean-view residence at dusk, its pool deck and terraces glowing with warm light"
 	heroPosition="55% 50%"
 	eyebrow="Outdoor Living"
 	heroTitle="Outdoor Living, as Connected as Your Home"
 	heroSubtitle="Music, film, light and control, extended to the terraces, pools and gardens beyond your walls."
-	intro="In Los Angeles, so much of life happens outside. We carry the comfort of the interior out to the terrace, the pool and the garden, with technology that is weather-ready, balanced and quietly concealed in the landscape."
+	intro="Outdoor living technology carries the music, film, lighting and control of the home out to its terraces, pools and gardens, for Los Angeles residences where so much of life happens outside. All of it is weather-ready, balanced across the property and quietly concealed in the landscape."
 	serviceName="Luxury Outdoor Living Technology"
 	serviceType="Outdoor audio, video and lighting integration"
-	related={['outdoor-lighting-audio', 'audio-video-solutions', 'security-systems']}
+	serviceKey="outdoor-living"
 >
-	<CapabilityList eyebrow="Landscape Audio & Video" title="Technology woven into the landscape, never in the way of it." items={capabilities} />
+	<CapabilityList eyebrow="What's Included" title="Technology woven into the landscape, never in the way of it." items={capabilities} />
 
 	<DailyExperience eyebrow="Daily Experience" title="An outdoor setting that adapts to every moment." scenes={scenes} />
 

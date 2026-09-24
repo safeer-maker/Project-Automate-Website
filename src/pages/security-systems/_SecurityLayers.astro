@@ -1,0 +1,392 @@
+---
+// What Estate Security includes: the intelligent alarm at the centre, then
+// each layer around it with one clear role and its own page. This is what
+// makes /security-systems/ the hub of the Security & Access family, so the
+// three specialist pages can go deep without repeating one another.
+//
+// Landscape lighting lives in Outdoor Living but also serves security
+// (services.ts `alsoIn`), so it is listed here as a shared layer.
+// The underscore keeps this file out of Astro's routing.
+import Picture from '../../components/ui/Picture.astro';
+import { withBase } from '../../lib/paths.ts';
+import { libraryEntry, type LibraryImageId } from '../../lib/images.ts';
+import { pillars, services, type ServiceKey } from '../../data/services.ts';
+
+interface Layer {
+	key: ServiceKey;
+	/** One word for what the layer does, set as a small label. */
+	role: string;
+	title: string;
+	description: string;
+	imageId: LibraryImageId;
+	imageAlt: string;
+	/** Keeps the subject in frame when the photo is cropped to a portrait card. */
+	focus?: string;
+}
+
+const layers: Layer[] = [
+	{
+		key: 'surveillance-systems',
+		role: 'See',
+		title: 'Surveillance',
+		description:
+			'Discreet cameras watch every approach, tell familiar faces and vehicles from the unexpected, and let you look in from anywhere.',
+		imageId: 'solutions/security-camera',
+		imageAlt: 'Security camera mounted discreetly on a modern residence at dusk',
+		focus: '30% 50%',
+	},
+	{
+		key: 'access-control-and-intercom',
+		role: 'Admit',
+		title: 'Access Control & Intercom',
+		description:
+			'Gates, doors and visitors on your terms: a video intercom you can answer anywhere, mobile entry for the family and scheduled access for staff.',
+		imageId: 'solutions/security-estate-gate',
+		imageAlt: 'Estate gates lit at night, opening onto a palm-lined drive',
+	},
+	{
+		key: 'intrusion-detection-systems',
+		role: 'Detect',
+		title: 'Intrusion Detection',
+		description:
+			'Motion, glass-break and perimeter sensors that stay out of sight, and raise an instant alert the moment something is wrong.',
+		imageId: 'solutions/security-smart-lock',
+		imageAlt: 'Smart lock set into a timber front door, with a sunset terrace beyond',
+		focus: '40% 50%',
+	},
+	{
+		key: 'outdoor-lighting-audio',
+		role: 'Illuminate',
+		title: 'Landscape Lighting',
+		description:
+			'Paths and facades come on at dusk, a quiet deterrent, and rise the moment a camera notices movement after dark.',
+		imageId: 'solutions/landscape-path',
+		imageAlt: 'A lit stepping-stone path leading through a desert garden to a glowing entry at dusk',
+	},
+];
+
+// Cards crop each photo to 4:5 (3:2 on phones), so the rendered image is wider
+// than its card by the photo's aspect over the card's. `sizes` carries that
+// factor, so the browser picks a rendition that stays sharp after the crop.
+// Column widths: four across from 1100px (about 290px inside the 1280px
+// container), two across from 600px, one below.
+function cardSizes(id: LibraryImageId): string {
+	const { width, height } = libraryEntry(id);
+	const aspect = width / height;
+	const wide = Math.max(1, aspect / 0.8);
+	const phone = Math.max(1, aspect / 1.5);
+	return [
+		`(max-width: 599px) ${Math.ceil(100 * phone)}vw`,
+		`(max-width: 1099px) ${Math.ceil(47 * wide)}vw`,
+		`(min-width: 1280px) ${Math.ceil(290 * wide)}px`,
+		`${Math.ceil(23 * wide)}vw`,
+	].join(', ');
+}
+
+// A layer from another pillar is marked as shared, e.g. "Also part of Outdoor Living".
+const sharedFrom = (key: ServiceKey) => {
+	const home = services[key].pillar;
+	return home === 'security' ? undefined : pillars.find((p) => p.key === home)?.title;
+};
+---
+
+<section class="layers" aria-labelledby="layers-title" data-layers>
+	<div class="container">
+		<header class="layers-head">
+			<div>
+				<span class="eyebrow">The Security Suite</span>
+				<h2 id="layers-title">Every layer, designed together.</h2>
+			</div>
+			<p class="layers-lede">
+				At the centre sits an intelligent alarm that detects, alerts and responds the moment something changes, with
+				the whole property on a single screen. Around it, each layer has one clear role.
+			</p>
+		</header>
+
+		<ul class="layers-grid">
+			{
+				layers.map((layer, i) => {
+					const shared = sharedFrom(layer.key);
+					return (
+						<li class="layer" style={`--i:${i}`}>
+							<div class="layer-media">
+								<Picture
+									id={layer.imageId}
+									alt={layer.imageAlt}
+									sizes={cardSizes(layer.imageId)}
+									style={layer.focus ? `object-position:${layer.focus}` : undefined}
+								/>
+							</div>
+							<p class="layer-role">
+								<span class="layer-index" aria-hidden="true">
+									{String(i + 1).padStart(2, '0')}
+								</span>
+								{layer.role}
+							</p>
+							<h3 class="layer-title">
+								<a class="layer-link" href={withBase(services[layer.key].href)}>
+									{layer.title}
+								</a>
+							</h3>
+							<p class="layer-text">{layer.description}</p>
+							{shared && <p class="layer-shared">Also part of {shared}</p>}
+							<p class="layer-foot">
+								<span class="layer-more" aria-hidden="true">
+									Explore
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</span>
+							</p>
+						</li>
+					);
+				})
+			}
+		</ul>
+	</div>
+</section>
+
+<script>
+	// Cards rise once, in sequence, as the grid first comes into view.
+	document.querySelectorAll<HTMLElement>('[data-layers]').forEach((section) => {
+		const grid = section.querySelector('.layers-grid');
+		if (!grid) return;
+		if (!('IntersectionObserver' in window)) {
+			section.classList.add('is-revealed');
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (!entries.some((entry) => entry.isIntersecting)) return;
+				section.classList.add('is-revealed');
+				io.disconnect();
+			},
+			{ rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
+		);
+		io.observe(grid);
+	});
+</script>
+
+<style>
+	.layers {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+	}
+
+	.layers-head {
+		display: grid;
+		grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+		gap: var(--space-8) clamp(2.5rem, 7vw, 7rem);
+		align-items: end;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.layers-head h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.layers-lede {
+		max-width: 34rem;
+		margin: 0;
+		font-size: var(--text-body-lg);
+		line-height: 1.7;
+		text-wrap: pretty;
+	}
+
+	.layers-grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: var(--space-12) clamp(1.25rem, 2vw, 2rem);
+	}
+
+	/* The whole card is one link target (the title's ::after covers it), so
+	   the tab order holds one stop per layer. */
+	.layer {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.layer-media {
+		overflow: hidden;
+		margin-bottom: var(--space-6);
+		border-radius: var(--radius-md);
+		/* Shown only while the photo loads. */
+		background: rgba(22, 16, 8, 0.05);
+	}
+
+	.layer-media :global(img) {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+		transition: transform 1200ms var(--ease-out-expo);
+	}
+
+	.layer-role {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-3);
+		margin: 0 0 var(--space-3);
+		padding-bottom: var(--space-3);
+		border-bottom: 1px solid var(--color-border);
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-bronze-text);
+	}
+
+	.layer-index {
+		font-variant-numeric: tabular-nums;
+		color: var(--color-text-muted);
+	}
+
+	.layer-title {
+		margin: 0 0 var(--space-3);
+		font-size: var(--text-2xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.25;
+		letter-spacing: -0.01em;
+	}
+
+	.layer-link {
+		color: var(--color-text);
+		transition: color var(--dur-fast) ease;
+	}
+
+	.layer-link::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: var(--radius-md);
+	}
+
+	.layer-link:focus-visible {
+		outline: none;
+	}
+
+	.layer-link:focus-visible::after {
+		outline: 2px solid var(--color-bronze);
+		outline-offset: 6px;
+	}
+
+	.layer-text {
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-base);
+		line-height: 1.65;
+		text-wrap: pretty;
+	}
+
+	/* The shared-pillar note, marked like the current-service chip elsewhere. */
+	.layer-shared {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+	}
+
+	.layer-shared::before {
+		content: '';
+		flex: none;
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--color-bronze);
+	}
+
+	/* Sits on the card's floor, so the links line up across a row. */
+	.layer-foot {
+		margin: auto 0 0;
+		font-size: var(--text-sm);
+	}
+
+	.layer-more {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		font-weight: var(--fw-medium);
+		color: var(--color-bronze-text);
+	}
+
+	.layer-more svg {
+		width: 18px;
+		height: 18px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.layer:hover .layer-link,
+	.layer:focus-within .layer-link {
+		color: var(--color-bronze-text);
+	}
+
+	.layer:hover .layer-more svg,
+	.layer:focus-within .layer-more svg {
+		transform: translateX(5px);
+	}
+
+	.layer:hover .layer-media :global(img) {
+		transform: scale(1.03);
+	}
+
+	/* Hidden only when scripting can reveal it again, so nothing disappears
+	   without JS or for reduced-motion visitors. */
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.layer {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 1000ms var(--ease-out-expo),
+				transform 1000ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 110ms);
+		}
+
+		.is-revealed .layer {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 1099px) {
+		.layers-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 900px) {
+		.layers-head {
+			grid-template-columns: minmax(0, 1fr);
+			align-items: start;
+		}
+	}
+
+	@media (max-width: 599px) {
+		.layers-grid {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-12);
+		}
+
+		.layer-media :global(img) {
+			aspect-ratio: 3 / 2;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.layer-media :global(img),
+		.layer-more svg {
+			transition: none;
+		}
+
+		.layer:hover .layer-media :global(img) {
+			transform: none;
+		}
+	}
+</style>

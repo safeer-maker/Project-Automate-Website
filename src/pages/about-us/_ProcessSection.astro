@@ -167,7 +167,8 @@ const steps: { num: string; title: string; description: string; image: LibraryIm
 		font-size: var(--text-sm);
 		font-weight: var(--fw-semibold);
 		letter-spacing: 0.12em;
-		color: var(--color-accent);
+		/* Small type on cream: the text bronze clears 4.5:1, the brand bronze doesn't. */
+		color: var(--color-bronze-text);
 		padding-top: 0.45em;
 	}
 
@@ -195,7 +196,7 @@ const steps: { num: string; title: string; description: string; image: LibraryIm
 		border-bottom: 1px solid currentColor;
 		font-size: var(--text-base);
 		font-weight: var(--fw-medium);
-		color: var(--color-accent);
+		color: var(--color-bronze-text);
 		transition: color var(--dur-fast) ease;
 	}
 
@@ -207,7 +208,8 @@ const steps: { num: string; title: string; description: string; image: LibraryIm
 
 	.care-link:hover,
 	.care-link:focus-visible {
-		color: var(--color-accent-hover);
+		/* Hover darkens rather than lightens, so the link stays legible. */
+		color: var(--color-bronze-fill-hover);
 	}
 
 	.care-link:hover svg,

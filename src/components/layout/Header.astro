@@ -1,7 +1,7 @@
 ---
 import { withBase } from '../../lib/paths.ts';
 import Button from '../ui/Button.astro';
-import { primaryNav, coreServices, megaMenuDefaultImage } from '../../data/nav.ts';
+import { primaryNav, serviceGroups, solutionsHub, megaMenuDefaultImage, megaMenuDefaultLine } from '../../data/nav.ts';
 import { siteInfo } from '../../data/site.ts';
 
 const phone = siteInfo.phones[0];
@@ -17,31 +17,45 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		</a>
 
 		<nav class="primary-nav" aria-label="Primary">
+			{/* A disclosure (button + panel of links), not an ARIA menu: this is site
+			    navigation, so Tab moves through the links and no arrow-key model is implied. */}
 			<div class="nav-item" data-mega-menu>
-				<button class="nav-link mega-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+				<button class="nav-link mega-trigger" type="button" aria-expanded="false" aria-controls="mega-panel">
 					Core services
 					<svg class="nav-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
 						<path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 					</svg>
 				</button>
-				<div class="mega-panel" role="menu">
-					<ul class="mega-links" role="none">
-						{coreServices.map((service, i) => (
-							<li role="none">
-								<a
-									role="menuitem"
-									href={service.href}
-									data-preview={service.image}
-									class:list={['mega-link', { 'is-active': i === 0 }]}
-								>
-									{service.label}
-								</a>
-							</li>
+				<div class="mega-panel" id="mega-panel">
+					<div class="mega-groups">
+						{serviceGroups.map((group) => (
+							<div class="mega-group">
+								<p class="mega-group-title" id={`mega-group-${group.key}`}>{group.title}</p>
+								<ul class="mega-links" aria-labelledby={`mega-group-${group.key}`}>
+									{group.services.map((service) => (
+										<li>
+											<a href={service.href} data-preview={service.image} data-line={service.line} class="mega-link">
+												{service.label}
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
 						))}
-					</ul>
+					</div>
+					<a class="mega-all" href={solutionsHub}>
+						View all services
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+							<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</a>
 					<div class="mega-preview">
-						{/* No src until the menu first opens — the desktop nav is display:none on phones. */}
-						<img data-mega-preview data-src={megaMenuDefaultImage} alt="" width="4" height="3" decoding="async" />
+						<div class="mega-preview-frame">
+							{/* No src until the menu first opens — the desktop nav is display:none on phones. */}
+							<img data-mega-preview data-src={megaMenuDefaultImage} alt="" width="4" height="3" decoding="async" />
+						</div>
+						{/* The link already names the service; this line only illustrates it. */}
+						<p class="mega-caption" data-mega-caption aria-hidden="true">{megaMenuDefaultLine}</p>
 					</div>
 				</div>
 			</div>
@@ -68,15 +82,25 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		<button class="offcanvas-close" data-menu-close aria-label="Close menu">&times;</button>
 		<ul class="offcanvas-nav">
 			<li class="has-submenu" style="--i: 0">
-				<button class="submenu-trigger" data-submenu-trigger aria-expanded="false">
-					Core services <span class="chevron">+</span>
+				<button class="submenu-trigger" data-submenu-trigger aria-expanded="false" aria-controls="offcanvas-services">
+					Core services <span class="chevron" aria-hidden="true">+</span>
 				</button>
-				<div class="submenu" data-submenu>
-					<ul class="submenu-list">
-						{coreServices.map((item) => (
-							<li><a href={item.href}>{item.label}</a></li>
+				<div class="submenu" id="offcanvas-services" data-submenu>
+					<div class="submenu-inner">
+						<a class="submenu-all" href={solutionsHub}>
+							View all services <span aria-hidden="true">&rarr;</span>
+						</a>
+						{serviceGroups.map((group) => (
+							<div class="submenu-group">
+								<p class="submenu-group-title" id={`offcanvas-group-${group.key}`}>{group.title}</p>
+								<ul class="submenu-list" aria-labelledby={`offcanvas-group-${group.key}`}>
+									{group.services.map((item) => (
+										<li><a href={item.href}>{item.label}</a></li>
+									))}
+								</ul>
+							</div>
 						))}
-					</ul>
+					</div>
 				</div>
 			</li>
 			{primaryNav.map((item, i) => (
@@ -200,8 +224,27 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		color: var(--color-accent);
 	}
 
+	/* Static, so the mega panel positions against the (sticky) header and can be
+	   centred on the page rather than on the trigger, which sits left of centre. */
 	.nav-item {
+		position: static;
+	}
+
+	.mega-trigger {
 		position: relative;
+	}
+
+	/* The panel hangs from the header's bottom edge, a little below the trigger.
+	   While open, this invisible strip bridges that gap so the cursor never
+	   falls through a dead zone on its way down (the 200ms close delay covers
+	   a diagonal path outside it). */
+	.nav-item[data-open='true'] .mega-trigger::after {
+		content: '';
+		position: absolute;
+		top: 100%;
+		left: -12px;
+		right: -12px;
+		height: 3rem;
 	}
 
 	.nav-caret {
@@ -215,19 +258,25 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 
 	.mega-panel {
 		position: absolute;
-		/* Zero gap to the trigger — any space here is a dead zone the cursor
-		   falls through, which closes the menu before it reaches the panel. */
+		/* Flush with the header's bottom edge — any space here is a dead zone
+		   the cursor falls through (see the bridge on .mega-trigger). */
 		top: 100%;
 		left: 50%;
-		width: min(680px, 90vw);
+		/* Above the scroll-progress hairline, which follows it in the DOM. */
+		z-index: 1;
+		width: min(1040px, calc(100vw - 2 * var(--container-padding)));
 		background: var(--color-charcoal);
 		border: 1px solid var(--color-border-on-dark);
 		border-radius: var(--radius-md);
 		box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
-		padding: var(--space-6);
+		padding: var(--space-8);
 		display: grid;
-		grid-template-columns: 1fr 1.1fr;
-		gap: var(--space-6);
+		grid-template-columns: minmax(0, 1fr) 280px;
+		grid-template-areas:
+			'groups preview'
+			'all preview';
+		grid-template-rows: 1fr auto;
+		gap: var(--space-6) var(--space-12);
 		opacity: 0;
 		visibility: hidden;
 		pointer-events: none;
@@ -245,18 +294,39 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		transform: translate(-50%, 0);
 	}
 
+	/* Six pillar groups, three across, two rows. */
+	.mega-groups {
+		grid-area: groups;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-8) var(--space-6);
+		align-content: start;
+	}
+
+	.mega-group-title {
+		margin: 0 0 var(--space-2);
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-gold-light);
+	}
+
 	.mega-links {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-1);
 	}
 
+	/* Negative inline margin keeps the label flush with its group title while
+	   the hover wash still has room to breathe. */
 	.mega-link {
 		display: block;
-		padding: var(--space-2) var(--space-3);
+		margin-inline: calc(-1 * var(--space-3));
+		padding: 0.4rem var(--space-3);
 		border-radius: var(--radius-sm);
 		color: var(--color-text-on-dark-muted);
 		font-size: var(--text-sm);
+		line-height: 1.4;
 		transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
 	}
 	.mega-link:hover,
@@ -266,7 +336,43 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		color: var(--color-white);
 	}
 
+	.mega-all {
+		grid-area: all;
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		justify-self: start;
+		padding-top: var(--space-4);
+		border-top: 1px solid var(--color-border-on-dark);
+		width: 100%;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.02em;
+		color: var(--color-white);
+		transition: color var(--dur-fast) ease;
+	}
+	.mega-all svg {
+		width: 16px;
+		height: 16px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+	.mega-all:hover,
+	.mega-all:focus-visible {
+		color: var(--color-gold-light);
+	}
+	.mega-all:hover svg,
+	.mega-all:focus-visible svg {
+		transform: translateX(4px);
+	}
+
 	.mega-preview {
+		grid-area: preview;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	.mega-preview-frame {
 		border-radius: var(--radius-md);
 		overflow: hidden;
 		aspect-ratio: 4 / 3;
@@ -276,6 +382,16 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+	}
+
+	/* Two lines reserved, so a longer line never nudges the panel's height. */
+	.mega-caption {
+		min-height: calc(2 * 1.55em);
+		margin: 0;
+		font-size: var(--text-sm);
+		line-height: 1.55;
+		color: var(--color-text-on-dark-muted);
+		text-wrap: pretty;
 	}
 
 	.header-actions {
@@ -437,7 +553,14 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	}
 
 	.chevron {
+		display: inline-block;
 		color: var(--color-accent);
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	/* The plus turns to a close mark while the services are open. */
+	.submenu-trigger[aria-expanded='true'] .chevron {
+		transform: rotate(45deg);
 	}
 
 	/* grid-template-rows 0fr → 1fr is the only pure-CSS way to animate to auto height.
@@ -466,14 +589,41 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			visibility 0s linear 0s;
 	}
 
-	.submenu-list {
+	/* The grid row's only child: min-height 0 lets it shrink to the 0fr row. */
+	.submenu-inner {
 		overflow: hidden;
 		min-height: 0;
+		padding-left: var(--space-4);
+	}
+
+	.submenu-all {
+		display: inline-flex;
+		gap: var(--space-2);
+		padding: var(--space-3) 0 var(--space-2);
+		color: var(--color-white);
+		font-size: var(--text-base);
+		font-weight: var(--fw-semibold);
+	}
+	.submenu-all:hover {
+		color: var(--color-accent);
+	}
+
+	.submenu-group {
+		padding-top: var(--space-4);
+	}
+
+	.submenu-group-title {
+		margin: 0 0 var(--space-1);
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-gold-light);
 	}
 
 	.submenu-list a {
 		display: block;
-		padding: var(--space-2) 0 var(--space-2) var(--space-4);
+		padding: 0.4rem 0;
 		color: var(--color-text-on-dark-muted);
 		font-size: var(--text-base);
 	}
@@ -516,6 +666,8 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	@media (prefers-reduced-motion: reduce) {
 		.site-header,
 		.mega-panel,
+		.mega-all svg,
+		.chevron,
 		.nav-caret,
 		.offcanvas-panel,
 		.offcanvas-nav > li,
@@ -646,11 +798,13 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	const megaTrigger = megaMenu?.querySelector<HTMLElement>('.mega-trigger');
 	const megaLinks = megaMenu?.querySelectorAll<HTMLAnchorElement>('.mega-link');
 	const megaPreviewImg = megaMenu?.querySelector<HTMLImageElement>('[data-mega-preview]');
+	const megaCaption = megaMenu?.querySelector<HTMLElement>('[data-mega-caption]');
 	const defaultPreview = megaPreviewImg?.getAttribute('data-src') ?? '';
+	const defaultCaption = megaCaption?.textContent ?? '';
 
 	const isMegaOpen = () => megaMenu?.getAttribute('data-open') === 'true';
 
-	// Fetch the seven 800w previews — and the default one, which has no src in
+	// Fetch the thirteen 640w previews — and the default one, which has no src in
 	// the markup so phones (where this nav is display:none) never download it —
 	// the first time the menu opens, so hovering down the list swaps images
 	// without a blank frame.
@@ -665,6 +819,24 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		});
 	}
 
+	// Swap image and caption together, and only once the image is ready: a
+	// preview that is still downloading keeps the previous one on screen
+	// instead of flashing an empty frame.
+	let wantedPreview = '';
+	function showPreview(src: string, caption: string) {
+		if (!megaPreviewImg) return;
+		wantedPreview = src;
+		const apply = () => {
+			if (wantedPreview !== src) return;
+			megaPreviewImg.setAttribute('src', src);
+			if (megaCaption) megaCaption.textContent = caption;
+		};
+		const probe = new Image();
+		probe.src = src;
+		if (probe.complete) apply();
+		else probe.addEventListener('load', apply, { once: true });
+	}
+
 	function setMegaOpen(open: boolean) {
 		if (!megaMenu) return;
 		if (open) warmPreviews();
@@ -672,7 +844,12 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		megaTrigger?.setAttribute('aria-expanded', String(open));
 		// Reset to the default only once it's been loaded — a focusout that never
 		// opened the menu shouldn't start the download.
-		if (!open && previewsWarmed && megaPreviewImg) megaPreviewImg.setAttribute('src', defaultPreview);
+		if (!open && previewsWarmed && megaPreviewImg) {
+			wantedPreview = defaultPreview;
+			megaPreviewImg.setAttribute('src', defaultPreview);
+			if (megaCaption) megaCaption.textContent = defaultCaption;
+			megaLinks?.forEach((l) => l.classList.remove('is-active'));
+		}
 	}
 
 	// A short close delay absorbs fast/diagonal mouse movement between the
@@ -710,8 +887,9 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 
 	megaLinks?.forEach((link) => {
 		const preview = link.getAttribute('data-preview');
+		const caption = link.getAttribute('data-line') ?? '';
 		const activate = () => {
-			if (preview && megaPreviewImg) megaPreviewImg.setAttribute('src', preview);
+			if (preview) showPreview(preview, caption);
 			megaLinks.forEach((l) => l.classList.toggle('is-active', l === link));
 		};
 		link.addEventListener('mouseenter', activate);

@@ -1,6 +1,7 @@
 ---
 // A short editorial gallery: one portrait, one working shot, and a wide
-// closing frame of a whole estate at dusk.
+// closing frame of a whole estate at dusk, then a short note on the lighting's
+// second job: security.
 import Picture from '../../components/ui/Picture.astro';
 ---
 
@@ -50,13 +51,27 @@ import Picture from '../../components/ui/Picture.astro';
 				</div>
 				<figcaption>Uplighting that lets the architecture and the trees carry the evening.</figcaption>
 			</figure>
+
+			<!-- The security overlap, stated once in plain words. The Perimeter watch
+			     scenario further down the page (ServiceIntegrations) shows it at work. -->
+			<div class="watch" style="--i:3">
+				<div class="watch-head">
+					<span class="eyebrow">Lighting and Security</span>
+					<h3>Light that keeps watch.</h3>
+				</div>
+				<p>
+					The fixtures that draw the garden out of the dark also serve its security. Linked to the cameras and
+					perimeter sensors, path and facade lights rise the moment something moves at the edge of the property
+					after dark: one system with the gates and cameras, not another to manage.
+				</p>
+			</div>
 		</div>
 	</div>
 </section>
 
 <script>
-	// Each frame settles once as it enters.
-	const shots = document.querySelectorAll<HTMLElement>('[data-after-dark] .shot');
+	// Each frame (and the closing note) settles once as it enters.
+	const shots = document.querySelectorAll<HTMLElement>('[data-after-dark] .shot, [data-after-dark] .watch');
 	if (!('IntersectionObserver' in window)) {
 		shots.forEach((shot) => shot.classList.add('is-revealed'));
 	} else {
@@ -160,11 +175,51 @@ import Picture from '../../components/ui/Picture.astro';
 		color: var(--color-text-on-dark);
 	}
 
+	/* Spans the gallery and reuses its 5/7 columns, so the heading sits under
+	   the portrait and the text under the side column. */
+	.watch {
+		grid-column: 1 / -1;
+		display: grid;
+		grid-template-columns: subgrid;
+		align-items: start;
+		padding-top: clamp(2rem, 4vw, 3rem);
+		border-top: 1px solid var(--color-border-on-dark);
+	}
+
+	.watch .eyebrow {
+		display: block;
+		margin-bottom: var(--space-3);
+		color: color-mix(in srgb, var(--color-gold-light) 68%, var(--color-white));
+	}
+
+	.watch h3 {
+		margin: 0;
+		font-size: var(--text-tile);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+		color: var(--color-text-on-dark);
+	}
+
+	.watch p {
+		max-width: 38rem;
+		margin: 0;
+		font-size: var(--text-body-lg);
+		line-height: 1.7;
+		color: var(--color-text-on-dark);
+		text-wrap: pretty;
+	}
+
 	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-		.shot {
+		.shot,
+		.watch {
 			opacity: 0;
 			transition: opacity 1100ms var(--ease-out-expo);
 			transition-delay: calc(var(--i, 0) * 120ms);
+		}
+
+		.watch.is-revealed {
+			opacity: 1;
 		}
 
 		.shot .frame :global(img) {
@@ -185,8 +240,12 @@ import Picture from '../../components/ui/Picture.astro';
 		.gallery {
 			grid-template-columns: minmax(0, 1fr);
 		}
-		.shot {
+		.shot,
+		.watch {
 			transition-delay: 0ms;
+		}
+		.watch {
+			gap: var(--space-4);
 		}
 		.shot-wide .frame :global(img) {
 			aspect-ratio: 16 / 9;
