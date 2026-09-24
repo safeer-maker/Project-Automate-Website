@@ -36,6 +36,7 @@ Site photography is a licensed Adobe Stock set. The originals (1–23MB each) li
 - `npm run images` renders responsive WebP to `public/images/library/<id>-<width>.webp`, a 1200×630 JPEG social preview to `public/images/og/<id>.jpg`, and `src/data/image-library.json`. It only renders missing files; `-- --force` re-renders all. Point `PA_IMAGE_SOURCE` at the originals folder if it isn't `C:/Users/Safeer/Downloads/pa`.
 - In pages use `<Picture id="…" alt="…" sizes="…" />` (`src/components/ui/Picture.astro`) with a `sizes` that matches the slot; `priority` only for the one above-the-fold LCP image. `imageUrl()` / `ogImageUrl()` in `src/lib/images.ts` cover CSS backgrounds, data files and `og:image`.
 - Raw video masters live in `media-src/videos/` — never in `public/` (Cloudflare Workers rejects assets over 25 MiB, and everything in `public/` is deployed).
+- Two films: the hero (`public/videos/hero*.{mp4,webm}`) and the homepage closing film (`closing*`, the site's previous hero). Encodes trim each master's fade from/to black, and each film's poster must be its encode's exact first frame (`ffmpeg -i hero.mp4 -frames:v 1`) — a poster from mid-clip followed by a fade from black read as the video "loading twice". Both start playing only once ~3s is buffered, fade in over the poster, pause off-screen, and have a pause button. Don't add `autoplay` back.
 
 ## Scrolling & motion
 

@@ -72,11 +72,12 @@ for (const entry of images) {
 			bytes += fs.statSync(file).size;
 			continue;
 		}
-		let pipeline = sharp(srcPath, { limitInputPixels: false }).rotate();
-		if (crop) {
-			pipeline = pipeline.resize(crop.width, crop.height, { fit: 'cover', position: entry.position ?? 'centre' });
-		}
-		await pipeline.resize({ width: w, withoutEnlargement: true }).webp(WEBP).toFile(file);
+		// One resize only: sharp applies just the last resize() in a pipeline,
+		// so a separate crop-then-scale silently dropped the crop.
+		const target = crop
+			? { width: w, height: Math.round((w * crop.height) / crop.width), fit: 'cover', position: entry.position ?? 'centre' }
+			: { width: w, withoutEnlargement: true };
+		await sharp(srcPath, { limitInputPixels: false }).rotate().resize(target).webp(WEBP).toFile(file);
 		const size = fs.statSync(file).size;
 		bytes += size;
 		written++;
@@ -88,9 +89,11 @@ for (const entry of images) {
 	const ogFile = path.join(ogDir, `${entry.id}.jpg`);
 	fs.mkdirSync(path.dirname(ogFile), { recursive: true });
 	if (force || !fs.existsSync(ogFile)) {
-		let og = sharp(srcPath, { limitInputPixels: false }).rotate();
-		if (crop) og = og.resize(crop.width, crop.height, { fit: 'cover', position: entry.position ?? 'centre' });
-		await og.resize(1200, 630, { fit: 'cover', position: entry.position ?? 'centre' }).jpeg({ quality: 78, mozjpeg: true }).toFile(ogFile);
+		await sharp(srcPath, { limitInputPixels: false })
+			.rotate()
+			.resize(1200, 630, { fit: 'cover', position: entry.position ?? 'centre' })
+			.jpeg({ quality: 78, mozjpeg: true })
+			.toFile(ogFile);
 		written++;
 	}
 

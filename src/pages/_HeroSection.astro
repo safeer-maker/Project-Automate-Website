@@ -1,8 +1,12 @@
 ---
 // Desktop sources are re-encoded from media-src/videos/project-automate-hero-1080.mp4,
 // mobile sources from media-src/videos/project-automate-hero-720.mp4 (both raw
-// source clips, kept for reference/regeneration). Poster is a still pulled from
-// the desktop clip at 3s.
+// source clips, kept for reference/regeneration). Both masters open with a
+// fade up from black and close with a fade down; the encodes trim those off
+// (-ss 0.5 -to 49.65 desktop, -ss 0.6 -to 48.95 mobile) so the loop cuts
+// cleanly and frame 0 is a real picture. The posters are those exact first
+// frames (ffmpeg -i hero.mp4 -frames:v 1): a poster from mid-clip followed by
+// a fade from black read as the video "loading twice".
 //
 // mp4/H.264 is listed before webm/VP9 in every <source> group on purpose: the
 // browser plays whichever source it hits first that it supports, it doesn't
@@ -14,7 +18,7 @@
 // spikes the decoder has to catch up on.
 //
 // To regenerate after swapping the clip:
-//   ffmpeg -i <clip> -vf scale=1600:-2 -r 30 -c:v libx264 -preset slow -crf 26 \
+//   ffmpeg -ss <in> -to <out> -i <clip> -vf scale=1600:-2 -r 30 -c:v libx264 -preset slow -crf 26 \
 //     -maxrate 1800k -bufsize 3600k -g 60 -keyint_min 60 -pix_fmt yuv420p -an \
 //     -movflags +faststart public/videos/hero.mp4
 //   ffmpeg -i <clip> -vf scale=1600:-2 -r 30 -c:v libvpx-vp9 -crf 34 -b:v 1400k \
@@ -25,23 +29,29 @@
 import { withBase } from "../lib/paths.ts";
 
 const poster = withBase("/images/home/hero/poster.webp");
+const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
 ---
 
 <section class="hero" aria-labelledby="hero-title">
 	<div class="scroll-sentinel" data-hero-sentinel aria-hidden="true"></div>
 	<div class="hero-media">
-		<!-- The poster is the page's LCP image, and `poster` can't take
-		     fetchpriority. A body-level preload (rel=preload is allowed in
-		     <body>) asks for it at high priority as soon as the markup streams. -->
-		<link rel="preload" as="image" href={poster} fetchpriority="high" />
+		<!-- The still under the film is each clip's exact first frame (desktop
+		     and mobile are different edits), so when the video fades in over it
+		     nothing jumps. It's the page's LCP image, hence fetchpriority. The
+		     video's own `poster` isn't used: it can't vary by breakpoint. -->
+		<picture class="hero-poster">
+			<source media="(max-width: 700px)" srcset={posterMobile} width="960" height="540" />
+			<img src={poster} alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+		</picture>
+		<!-- No autoplay attribute: the script starts playback once a few
+		     seconds are buffered (see below). -->
 		<video
 			class="hero-video"
-			autoplay
+			data-hero-video
 			muted
 			loop
 			playsinline
 			preload="auto"
-			poster={poster}
 			aria-hidden="true"
 			tabindex="-1"
 		>
@@ -60,6 +70,13 @@ const poster = withBase("/images/home/hero/poster.webp");
 		</video>
 		<span class="hero-scrim"></span>
 	</div>
+
+	<!-- Moving backgrounds need a way to stop them (WCAG 2.2.2). Shown once
+	     the script runs; it's the only control for the film. -->
+	<button class="hero-toggle" type="button" data-hero-toggle aria-label="Pause background video" hidden>
+		<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+		<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.8v8.4l6.6-4.2z" fill="currentColor" /></svg>
+	</button>
 
 	<div class="hero-inner">
 		<div class="hero-box">
@@ -103,14 +120,94 @@ const poster = withBase("/images/home/hero/poster.webp");
 </section>
 
 <script>
-	const video = document.querySelector<HTMLVideoElement>('.hero-video');
-	if (video) {
+	const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+	const toggle = document.querySelector<HTMLButtonElement>('[data-hero-toggle]');
+
+	if (video && toggle) {
 		// Slightly under real time. Almost subliminal, but it stops the clip
 		// feeling like stock footage.
 		const settle = () => (video.playbackRate = 0.85);
 		settle();
 		// Some browsers reset playbackRate when the source finishes loading.
 		video.addEventListener('loadeddata', settle);
+
+		// The film fades in over its own first frame once it's genuinely
+		// playing, so the swap from still to motion is invisible.
+		video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let userPaused = reduce;
+		let onScreen = true;
+
+		const syncToggle = () => {
+			const paused = video.paused;
+			toggle.classList.toggle('is-paused', paused);
+			toggle.setAttribute('aria-label', paused ? 'Play background video' : 'Pause background video');
+		};
+		video.addEventListener('play', syncToggle);
+		video.addEventListener('pause', syncToggle);
+
+		const play = () => {
+			if (userPaused || !onScreen) return;
+			video.play().catch(() => {
+				// Autoplay refused (e.g. Low Power Mode): the still stays, and the
+				// toggle offers play.
+				syncToggle();
+			});
+		};
+
+		// Autoplay used to start the instant the first frames arrived, then
+		// freeze a second in to buffer and start again. Wait until ~3s is
+		// buffered ahead (or the whole clip, or 6s have passed) before starting.
+		let started = false;
+		const bufferedAhead = () => {
+			const ranges = video.buffered;
+			for (let i = 0; i < ranges.length; i++) {
+				if (ranges.start(i) <= video.currentTime + 0.1) return ranges.end(i) - video.currentTime;
+			}
+			return 0;
+		};
+		const startWhenReady = () => {
+			if (started) return;
+			const ahead = bufferedAhead();
+			const whole = Number.isFinite(video.duration) && ahead >= video.duration - 0.5;
+			if (ahead >= 3 || whole) {
+				started = true;
+				play();
+			}
+		};
+		if (!reduce) {
+			video.addEventListener('progress', startWhenReady);
+			video.addEventListener('canplaythrough', startWhenReady);
+			startWhenReady();
+			window.setTimeout(() => {
+				if (!started) {
+					started = true;
+					play();
+				}
+			}, 6000);
+		}
+
+		// No point decoding a film nobody can see.
+		new IntersectionObserver(([entry]) => {
+			onScreen = entry.isIntersecting;
+			if (!onScreen) video.pause();
+			else if (started) play();
+		}).observe(video);
+
+		toggle.addEventListener('click', () => {
+			if (video.paused) {
+				userPaused = false;
+				started = true;
+				play();
+			} else {
+				userPaused = true;
+				video.pause();
+			}
+		});
+
+		syncToggle();
+		toggle.hidden = false;
 	}
 </script>
 
@@ -148,6 +245,7 @@ const poster = withBase("/images/home/hero/poster.webp");
 		z-index: 0;
 	}
 
+	.hero-poster img,
 	.hero-video {
 		position: absolute;
 		inset: 0;
@@ -155,6 +253,65 @@ const poster = withBase("/images/home/hero/poster.webp");
 		height: 100%;
 		object-fit: cover;
 		pointer-events: none;
+	}
+
+	/* Hidden until it is actually playing; the poster underneath is the same
+	   frame, so the fade only ever reveals motion, never a different picture. */
+	.hero-video {
+		opacity: 0;
+		transition: opacity 600ms var(--ease-in-out-soft);
+	}
+
+	.hero-video.is-playing {
+		opacity: 1;
+	}
+
+	.hero-toggle {
+		position: absolute;
+		z-index: 2;
+		right: var(--page-gutter);
+		bottom: clamp(1.25rem, 3vh, 2rem);
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		border-radius: 50%;
+		background: rgba(10, 10, 10, 0.25);
+		color: var(--color-white);
+		cursor: pointer;
+		opacity: 0.7;
+		transition:
+			opacity var(--dur-fast) ease,
+			border-color var(--dur-fast) ease,
+			background-color var(--dur-fast) ease;
+	}
+
+	.hero-toggle:hover,
+	.hero-toggle:focus-visible {
+		opacity: 1;
+		border-color: var(--color-accent-hover);
+		background: rgba(10, 10, 10, 0.45);
+	}
+
+	.hero-toggle:focus-visible {
+		outline: 2px solid var(--color-accent-hover);
+		outline-offset: 3px;
+	}
+
+	.hero-toggle svg {
+		width: 14px;
+		height: 14px;
+	}
+
+	.hero-toggle .icon-play,
+	.hero-toggle.is-paused .icon-pause {
+		display: none;
+	}
+
+	.hero-toggle.is-paused .icon-play {
+		display: block;
 	}
 
 	/* The film moves between bright aerial daylight and dusk, so the copy
@@ -426,6 +583,9 @@ const poster = withBase("/images/home/hero/poster.webp");
 		.hero-lede,
 		.hero-actions {
 			animation: none;
+		}
+		.hero-video {
+			transition: none;
 		}
 	}
 </style>

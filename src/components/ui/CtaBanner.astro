@@ -19,26 +19,29 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 
 <section class:list={['cta', `cta-${variant}`]} data-cta={variant}>
 	{isFeature && (
-		<div
-			class="cta-media"
-			style={`background-image:url(${withBase('/images/home/hero/poster.webp')})`}
-		>
-			<video
-				class="cta-video"
-				data-cta-video
-				muted
-				loop
-				playsinline
-				preload="none"
-				poster={withBase('/images/home/hero/poster.webp')}
-				aria-hidden="true"
-				tabindex="-1"
-			>
-				<source src={withBase('/videos/hero.webm')} type="video/webm" />
-				<source src={withBase('/videos/hero.mp4')} type="video/mp4" />
+		<div class="cta-media">
+			<!-- The closing film is the site's previous hero: evening interiors,
+			     a different world from the aerial above, so the page doesn't end on
+			     the clip it opened with. Encoded from media-src/videos/
+			     closing-original-hero.mp4 with its fade-from/to-black trimmed
+			     (-ss 1.0 -to 28.2); the posters are each encode's exact first frame,
+			     so the fade from still to film never shows a different picture. -->
+			<picture class="cta-poster">
+				<source media="(max-width: 700px)" srcset={withBase('/images/home/closing/poster-mobile.webp')} width="960" height="540" />
+				<img src={withBase('/images/home/closing/poster.webp')} alt="" width="1600" height="900" loading="lazy" decoding="async" />
+			</picture>
+			<video class="cta-video" data-cta-video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+				<source media="(max-width: 700px)" src={withBase('/videos/closing-mobile.mp4')} type="video/mp4" />
+				<source media="(max-width: 700px)" src={withBase('/videos/closing-mobile.webm')} type="video/webm" />
+				<source src={withBase('/videos/closing.mp4')} type="video/mp4" />
+				<source src={withBase('/videos/closing.webm')} type="video/webm" />
 			</video>
 			<span class="cta-scrim"></span>
 		</div>
+		<button class="cta-toggle" type="button" data-cta-toggle aria-label="Pause background video" hidden>
+			<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+			<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.8v8.4l6.6-4.2z" fill="currentColor" /></svg>
+		</button>
 	)}
 
 	{isFeature ? (
@@ -66,26 +69,96 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 </section>
 
 <script>
-	// preload="none" keeps the 4MB clip off the initial load, but it also means
-	// the poster pops to video the moment it appears. Starting playback on
-	// intersection and fading in over 600ms hides the swap.
+	// preload="none" keeps the clip off the initial load. It starts fetching a
+	// screen or so before the section arrives, plays once a few seconds are
+	// buffered (so it never starts, stalls and restarts), fades in over its
+	// first-frame poster, and pauses whenever it's off screen.
 	const video = document.querySelector<HTMLVideoElement>('[data-cta-video]');
+	const toggle = document.querySelector<HTMLButtonElement>('[data-cta-toggle]');
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-	if (video) {
-		const io = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
+	if (video && toggle) {
+		video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+
+		let userPaused = reduceMotion;
+		let onScreen = false;
+		let ready = false;
+
+		const syncToggle = () => {
+			toggle.classList.toggle('is-paused', video.paused);
+			toggle.setAttribute('aria-label', video.paused ? 'Play background video' : 'Pause background video');
+		};
+		video.addEventListener('play', syncToggle);
+		video.addEventListener('pause', syncToggle);
+
+		const play = () => {
+			if (userPaused || !onScreen || !ready) return;
+			video.play().catch(syncToggle);
+		};
+
+		const bufferedAhead = () => {
+			const ranges = video.buffered;
+			for (let i = 0; i < ranges.length; i++) {
+				if (ranges.start(i) <= video.currentTime + 0.1) return ranges.end(i) - video.currentTime;
+			}
+			return 0;
+		};
+		const checkReady = () => {
+			if (ready) return;
+			const whole = Number.isFinite(video.duration) && bufferedAhead() >= video.duration - 0.5;
+			if (bufferedAhead() >= 3 || whole) {
+				ready = true;
+				play();
+			}
+		};
+		video.addEventListener('progress', checkReady);
+		video.addEventListener('canplaythrough', checkReady);
+
+		// Start downloading ahead of arrival (unless motion is reduced, where
+		// the still is the experience and the film only loads on request).
+		if (!reduceMotion) {
+			const warm = new IntersectionObserver(
+				([entry]) => {
 					if (!entry.isIntersecting) return;
-					video.play().catch(() => {
-						/* Autoplay refused — the poster stays, which is fine. */
-					});
-					video.classList.add('is-playing');
-					io.disconnect();
-				});
+					video.preload = 'auto';
+					video.load();
+					window.setTimeout(() => {
+						ready = true;
+						play();
+					}, 6000);
+					warm.disconnect();
+				},
+				{ rootMargin: '100% 0px' }
+			);
+			warm.observe(video);
+		}
+
+		new IntersectionObserver(
+			([entry]) => {
+				onScreen = entry.isIntersecting;
+				if (!onScreen) video.pause();
+				else play();
 			},
 			{ threshold: 0.2 }
-		);
-		io.observe(video);
+		).observe(video);
+
+		toggle.addEventListener('click', () => {
+			if (video.paused) {
+				userPaused = false;
+				if (video.preload !== 'auto') {
+					video.preload = 'auto';
+					video.load();
+				}
+				ready = true;
+				play();
+			} else {
+				userPaused = true;
+				video.pause();
+			}
+		});
+
+		syncToggle();
+		toggle.hidden = false;
 	}
 
 	// The coda's copy fades up once. Armed from here, so it is never hidden
@@ -134,9 +207,63 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		position: absolute;
 		inset: 0;
 		z-index: 0;
-		/* Holds the poster while the video is still faded out. */
-		background-size: cover;
-		background-position: center;
+	}
+
+	/* Holds the first frame while the video is still faded out. */
+	.cta-poster img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.cta-toggle {
+		position: absolute;
+		z-index: 2;
+		right: var(--page-gutter);
+		bottom: clamp(1.25rem, 3vh, 2rem);
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		border-radius: 50%;
+		background: rgba(10, 10, 10, 0.25);
+		color: var(--color-white);
+		cursor: pointer;
+		opacity: 0.7;
+		transition:
+			opacity var(--dur-fast) ease,
+			border-color var(--dur-fast) ease,
+			background-color var(--dur-fast) ease;
+	}
+
+	.cta-toggle:hover,
+	.cta-toggle:focus-visible {
+		opacity: 1;
+		border-color: var(--color-accent-hover);
+		background: rgba(10, 10, 10, 0.45);
+	}
+
+	.cta-toggle:focus-visible {
+		outline: 2px solid var(--color-accent-hover);
+		outline-offset: 3px;
+	}
+
+	.cta-toggle svg {
+		width: 14px;
+		height: 14px;
+	}
+
+	.cta-toggle .icon-play,
+	.cta-toggle.is-paused .icon-pause {
+		display: none;
+	}
+
+	.cta-toggle.is-paused .icon-play {
+		display: block;
 	}
 
 	.cta-video {

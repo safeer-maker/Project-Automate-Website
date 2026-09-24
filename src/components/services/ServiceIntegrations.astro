@@ -1,0 +1,231 @@
+---
+// "Where systems meet": the everyday scenarios (src/data/integrations.ts) this
+// service takes part in, each naming the other services involved. Shows up to
+// four, in the data's order; the /solutions/ hub carries the full set.
+import { withBase } from '../../lib/paths.ts';
+import { type ServiceKey } from '../../data/services.ts';
+import { integrationsFor } from '../../data/integrations.ts';
+import IntegrationCard from './IntegrationCard.astro';
+
+interface Props {
+	current: ServiceKey;
+	eyebrow?: string;
+	title?: string;
+}
+
+const MAX_CARDS = 4;
+
+const { current, eyebrow = 'Where Systems Meet', title = 'How it works with the rest of the home.' } = Astro.props;
+const items = integrationsFor(current).slice(0, MAX_CARDS);
+const count = items.length;
+
+// Two or four cards run two to a row, three run three across (from 1024px).
+// `sizes` follows the column: the container caps at 1280px less its padding.
+const sizes =
+	count === 3
+		? '(max-width: 700px) calc(100vw - 3rem), (max-width: 1023px) 50vw, (min-width: 1280px) 390px, 31vw'
+		: '(max-width: 700px) calc(100vw - 3rem), (min-width: 1280px) 600px, 47vw';
+---
+
+{
+	count > 0 && (
+		<section
+			class="integrations"
+			aria-labelledby="integrations-title"
+			data-integrations
+			style={`--count:${count}`}
+		>
+			<div class="container">
+				<header class="integrations-head">
+					<div>
+						<span class="eyebrow">{eyebrow}</span>
+						<h2 id="integrations-title">{title}</h2>
+					</div>
+					<div class="integrations-aside">
+						<p>
+							Every system in the home is designed with the others in mind. These are a few of the everyday
+							moments where they meet.
+						</p>
+						<a class="hub-link" href={withBase('/solutions/')}>
+							See how every system connects
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+								<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</a>
+					</div>
+				</header>
+				<div class:list={['integrations-grid', `count-${count}`]}>
+					{items.map((integration, i) => (
+						<IntegrationCard
+							integration={integration}
+							current={current}
+							sizes={sizes}
+							class="reveal-card"
+							style={`--i:${i}`}
+						/>
+					))}
+				</div>
+			</div>
+		</section>
+	)
+}
+
+<script>
+	// Cards rise once, in sequence, as the grid first comes into view.
+	document.querySelectorAll<HTMLElement>('[data-integrations]').forEach((section) => {
+		const grid = section.querySelector('.integrations-grid');
+		if (!grid) return;
+		if (!('IntersectionObserver' in window)) {
+			section.classList.add('is-revealed');
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (!entries.some((entry) => entry.isIntersecting)) return;
+				section.classList.add('is-revealed');
+				io.disconnect();
+			},
+			{ rootMargin: '0px 0px -10% 0px', threshold: 0.02 }
+		);
+		io.observe(grid);
+	});
+</script>
+
+<style>
+	.integrations {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+		background: var(--color-surface);
+	}
+
+	.integrations-head {
+		display: grid;
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		gap: var(--space-6) clamp(2.5rem, 6vw, 6rem);
+		align-items: end;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.integrations-head h2 {
+		max-width: 20ch;
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.integrations-aside p {
+		max-width: 30rem;
+		margin: 0 0 var(--space-4);
+		line-height: 1.7;
+		text-wrap: pretty;
+	}
+
+	.hub-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		padding-block: var(--space-1);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.02em;
+		color: var(--color-text);
+		border-bottom: 1px solid var(--color-border);
+		transition:
+			color var(--dur-fast) ease,
+			border-color var(--dur-fast) ease;
+	}
+
+	.hub-link svg {
+		width: 16px;
+		height: 16px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.hub-link:hover {
+		color: var(--color-bronze-text);
+		border-color: currentColor;
+	}
+
+	.hub-link:hover svg {
+		transform: translateX(4px);
+	}
+
+	.hub-link:focus-visible {
+		outline: 2px solid var(--color-bronze);
+		outline-offset: 4px;
+		border-radius: 2px;
+	}
+
+	.integrations-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 3vw, 3rem);
+		/* Wide frames when two share a row; squarer ones when three do. */
+		--card-ratio: 16 / 10;
+	}
+
+	@media (min-width: 1024px) {
+		.integrations-grid.count-3 {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			--card-ratio: 4 / 3;
+		}
+	}
+
+	/* Three on a tablet: the first runs full width, image beside its text. */
+	@media (min-width: 701px) and (max-width: 1023px) {
+		.integrations-grid.count-3 > :global(:first-child) {
+			grid-column: 1 / -1;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			gap: var(--space-8);
+			align-items: stretch;
+		}
+
+		.integrations-grid.count-3 > :global(:first-child .card-body) {
+			padding-top: 0;
+		}
+
+		.integrations-grid.count-3 > :global(:first-child.is-plain) {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.integrations-grid > :global(.reveal-card) {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 1000ms var(--ease-out-expo),
+				transform 1000ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 110ms);
+		}
+
+		.is-revealed .integrations-grid > :global(.reveal-card) {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.integrations-head {
+			grid-template-columns: minmax(0, 1fr);
+			align-items: start;
+		}
+	}
+
+	@media (max-width: 700px) {
+		.integrations-grid {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-12);
+			--card-ratio: 3 / 2;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hub-link svg {
+			transition: none;
+		}
+	}
+</style>
