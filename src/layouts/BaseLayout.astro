@@ -10,7 +10,8 @@ import '../styles/global.css';
 // Imported (not public/) so Vite hashes them and applies the deploy base —
 // these resolve to the same emitted files the @font-face rules reference.
 import manrope400 from '../styles/fonts/manrope-latin-400-normal.woff2';
-import manrope700 from '../styles/fonts/manrope-latin-700-normal.woff2';
+import manrope500 from '../styles/fonts/manrope-latin-500-normal.woff2';
+import manrope600 from '../styles/fonts/manrope-latin-600-normal.woff2';
 
 type Crumb = { name: string; path: string };
 
@@ -56,6 +57,7 @@ const {
 const ORIGIN = siteInfo.url.replace(/\/$/, '');
 const BUSINESS_ID = `${ORIGIN}/#business`;
 const WEBSITE_ID = `${ORIGIN}/#website`;
+const FOUNDER_ID = `${ORIGIN}/#founder`;
 const absolute = (path: string) => new URL(withBase(path), Astro.site).toString();
 
 const phoneDigits = siteInfo.phones[0].replace(/\D/g, '');
@@ -93,7 +95,7 @@ const business = {
 		postalCode: '90266',
 		addressCountry: 'US',
 	},
-	founder: { '@type': 'Person', '@id': `${ORIGIN}/#founder`, name: 'Joshua Trevithick', jobTitle: 'Founder' },
+	founder: { '@id': FOUNDER_ID },
 	// One shared list (src/data/site.ts), also used by every Service node
 	// (ServiceLayout / BrandLayout), so the two never drift.
 	areaServed,
@@ -128,6 +130,18 @@ const business = {
 		},
 	],
 	sameAs: siteInfo.social.map((s) => s.href),
+};
+
+// The founder as an entity of his own, as the homepage and About page present
+// him (name, title, portrait), so the business and any page can point at him.
+const founder = {
+	'@type': 'Person',
+	'@id': FOUNDER_ID,
+	name: 'Joshua Trevithick',
+	jobTitle: 'Founder & CEO',
+	worksFor: { '@id': BUSINESS_ID },
+	url: absolute('/about-us/'),
+	image: absolute('/images/about-us/founder-joshua-trevithick.webp'),
 };
 
 // Google reads the site name shown in results from this node.
@@ -197,7 +211,7 @@ const extraNodes = schema.map(({ '@context': _context, ...node }) => node);
 
 const structuredData = {
 	'@context': 'https://schema.org',
-	'@graph': [business, website, ...(breadcrumbList ? [breadcrumbList] : []), ...extraNodes],
+	'@graph': [business, founder, website, ...(breadcrumbList ? [breadcrumbList] : []), ...extraNodes],
 };
 // Escape "<" so no string in the graph can close the script element early.
 const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
@@ -210,8 +224,13 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
 		<link rel="icon" type="image/webp" href={withBase('/images/logo/favicon.webp')} />
 		<meta name="generator" content={Astro.generator} />
 
-		<link rel="preload" href={manrope700} as="font" type="font/woff2" crossorigin />
+		<!-- The weights every page's first screen uses: body (400), nav links and
+		     headings (500), header CTA and eyebrows (600). Found only through CSS,
+		     500/600 arrived after first paint and the desktop nav reflowed 7–18px
+		     when they swapped in. 700 (only <strong>/<b>) isn't worth a preload. -->
 		<link rel="preload" href={manrope400} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={manrope500} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={manrope600} as="font" type="font/woff2" crossorigin />
 
 		<Seo
 			title={title}
@@ -238,9 +257,12 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
 		<script is:inline async src={ghlFormEmbedScript}></script>
 	</head>
 	<body>
+		<!-- Keyboard bypass past the header's eight stops; invisible until focused. -->
+		<a class="skip-link" href="#main">Skip to content</a>
+		<!-- First in the body so "Got it" is an early Tab stop; it's fixed-position. -->
+		<CookieNotice />
 		<slot />
 		<GhlFormModal />
-		<CookieNotice />
 		<SmoothScroll />
 	</body>
 </html>

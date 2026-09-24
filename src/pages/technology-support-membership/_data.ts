@@ -1,6 +1,7 @@
-// Membership plans and FAQ, shared by the page sections and the JSON-LD in
-// index.astro so the structured data can never drift from what is on screen.
-// The underscore keeps this module out of Astro's routing.
+// Membership plans, shared by the plans section and the JSON-LD in index.astro
+// so the structured data can never drift from what is on screen. The
+// underscore keeps this module out of Astro's routing. The membership FAQ
+// lives in src/data/faqs/technology-support-membership.ts (ServiceFaq).
 //
 // Prices, response times and inclusions are the client's published terms —
 // reword for tone only, never change a figure without confirming it.
@@ -47,28 +48,5 @@ export const plans: Plan[] = [
 			'Prioritized on-site support, 7 days a week',
 		],
 		featured: true,
-	},
-];
-
-export const faqs = [
-	{
-		q: 'What is included in Basic Support?',
-		a: 'Basic Support includes priority assistance during business hours, routine maintenance guidance, troubleshooting and access to member-only support resources. It is designed to keep every system running smoothly, with dependable help whenever you need it.',
-	},
-	{
-		q: 'What qualifies as an urgent issue?',
-		a: 'Any problem that causes a complete service outage, a major security concern, or significantly affects how you use your home. Urgent requests receive priority response according to your membership.',
-	},
-	{
-		q: 'Are on-site service charges included?',
-		a: 'On-site visits are not included in standard memberships unless your plan states otherwise. Members receive preferred on-site rates and priority scheduling whenever a visit is required.',
-	},
-	{
-		q: 'Can I change my membership later?',
-		a: 'Yes. You may move between memberships at any time. Changes usually take effect at the start of your next billing cycle, and upgrades can often begin immediately.',
-	},
-	{
-		q: 'How does annual billing work?',
-		a: 'Annual billing covers a full year of membership in a single payment, with a 10% saving compared with monthly billing.',
 	},
 ];

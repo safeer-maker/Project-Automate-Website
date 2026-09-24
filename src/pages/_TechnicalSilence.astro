@@ -8,14 +8,27 @@
 //   ffmpeg -i <clip> -vf "select='not(mod(n\,4))',scale=1280:-2" -vsync 0 \
 //     -c:v libwebp -quality 72 -compression_level 6 \
 //     public/images/home/technical-silence/frame-%03d.webp
+//
+// Portrait phones get the lit final frame (n=296, i.e. frame-075) as a native
+// 608x1080 centre crop of the 1080p master instead of the 1280x720 frame
+// cover-fitted and upscaled ~3.4x:
+//   ffmpeg -i <clip> -vf "select='eq(n\,296)',crop=608:1080:656:0" -vsync 0 -frames:v 1 \
+//     -c:v libwebp -quality 75 -compression_level 6 .../still-portrait.webp
 import { withBase } from '../lib/paths.ts';
 
 const FRAME_COUNT = 75;
 const framePath = (n: number) =>
 	withBase(`/images/home/technical-silence/frame-${String(n).padStart(3, '0')}.webp`);
+const stillPortrait = withBase('/images/home/technical-silence/still-portrait.webp');
 ---
 
-<section class="silence" data-silence data-frames={FRAME_COUNT} data-src={framePath(0)}>
+<section
+	class="silence"
+	data-silence
+	data-frames={FRAME_COUNT}
+	data-src={framePath(0)}
+	data-still-portrait={stillPortrait}
+>
 	<div class="silence-stage">
 		<div class="silence-media">
 			<canvas data-canvas width="1280" height="720" aria-hidden="true"></canvas>
@@ -57,6 +70,35 @@ const framePath = (n: number) =>
 
 		const src = (n: number) => `${base}frame-${String(n).padStart(3, '0')}.webp`;
 
+		// Nothing here is needed at first paint, so nothing is requested at parse
+		// time: fetching all 75 frames up front took the bandwidth the hero film
+		// needed (it started ~1.8–3.8s later) and pushed back window.load, which
+		// the popup form's preload waits for. Each loader runs once, on whichever
+		// comes first: its settle condition, or the section drawing near.
+		const once = (fn: () => void) => {
+			let done = false;
+			return () => {
+				if (done) return;
+				done = true;
+				fn();
+			};
+		};
+		const whenLoaded = (fn: () => void) => {
+			if (document.readyState === 'complete') fn();
+			else window.addEventListener('load', fn, { once: true });
+		};
+		const whenNear = (fn: () => void, rootMargin: string) => {
+			const near = new IntersectionObserver(
+				([entry]) => {
+					if (!entry.isIntersecting) return;
+					near.disconnect();
+					fn();
+				},
+				{ rootMargin }
+			);
+			near.observe(section);
+		};
+
 		// Fraction of the pinned travel spent scrubbing; see render(). With the
 		// section at 320vh (220vh pinned), that is ~150vh of scrub and ~70vh of
 		// hold on the lit frame.
@@ -75,14 +117,26 @@ const framePath = (n: number) =>
 		};
 
 		if (lightweight) {
+			// Portrait phones get a native portrait crop of the lit frame; small
+			// landscape screens and Save-Data desktops keep the 16:9 frame.
+			const portrait = window.matchMedia('(max-width: 700px) and (orientation: portrait)').matches;
 			const still = new Image();
 			still.decoding = 'async';
-			still.onload = () => draw(still);
-			still.src = src(total);
+			still.onload = () => {
+				// draw() stretches the image to the canvas bitmap, so the bitmap
+				// takes the still's own size (object-fit: cover then crops it).
+				canvas.width = still.naturalWidth;
+				canvas.height = still.naturalHeight;
+				draw(still);
+			};
+			const load = once(() => {
+				still.src = portrait ? section.dataset.stillPortrait! : src(total);
+			});
+			whenLoaded(load);
+			whenNear(load, '50% 0px');
 			section.classList.add('is-lit');
 		} else {
 			const frames: HTMLImageElement[] = [];
-			let loaded = 0;
 
 			for (let i = 1; i <= total; i++) {
 				const img = new Image();
@@ -93,15 +147,64 @@ const framePath = (n: number) =>
 				// on a half-lit stand-in frame until they scrolled again. onload is
 				// always async, so `queued`/`render` below are initialised by then.
 				img.onload = () => {
-					loaded++;
 					if (!queued) {
 						queued = true;
 						requestAnimationFrame(render);
 					}
 				};
-				img.src = src(i);
 				frames[i - 1] = img;
 			}
+
+			// Coarse to fine, a few at a time: the lit hold frame first, then
+			// every 8th, 4th and 2nd frame, then the rest. render() already
+			// stands in the nearest loaded frame, so the scrub is usable early.
+			const order: number[] = [total];
+			for (const step of [8, 4, 2, 1]) {
+				for (let n = 1; n < total; n += step) if (!order.includes(n)) order.push(n);
+			}
+			const MAX_IN_FLIGHT = 4;
+			let next = 0;
+			let inFlight = 0;
+			const pump = () => {
+				while (inFlight < MAX_IN_FLIGHT && next < order.length) {
+					const n = order[next++];
+					const img = frames[n - 1];
+					inFlight++;
+					const settle = () => {
+						inFlight--;
+						pump();
+					};
+					img.addEventListener('load', settle, { once: true });
+					img.addEventListener('error', settle, { once: true });
+					img.src = src(n);
+				}
+			};
+			const startFrames = once(pump);
+
+			// Start once the hero film is playing AND the page has loaded (new
+			// Image() requests hold the load event, so starting before it would
+			// delay it again). The timeout covers reduced-motion visitors, whose
+			// film never plays, and a film that never gets going.
+			const film = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+			let filmReady = !film || film.classList.contains('is-playing');
+			let pageLoaded = document.readyState === 'complete';
+			const maybeStart = () => {
+				if (filmReady && pageLoaded) startFrames();
+			};
+			if (!filmReady && film) {
+				const ready = () => {
+					filmReady = true;
+					maybeStart();
+				};
+				film.addEventListener('playing', ready, { once: true });
+				window.setTimeout(ready, 6000);
+			}
+			whenLoaded(() => {
+				pageLoaded = true;
+				maybeStart();
+			});
+			// A fast scroller shouldn't arrive to an empty sequence.
+			whenNear(startFrames, '25% 0px');
 
 			const nearestLoaded = (i: number) => {
 				for (let d = 0; d < total; d++) {
@@ -204,7 +307,8 @@ const framePath = (n: number) =>
 		width: 100%;
 		height: 100%;
 		/* object-fit applies to canvas as a replaced element, so the 1280x720
-		   bitmap fills any viewport without distorting. */
+		   bitmap (or the phone still, which resizes it) fills any viewport
+		   without distorting. */
 		object-fit: cover;
 		opacity: 0;
 		transition: opacity var(--dur-slow) var(--ease-in-out-soft);
@@ -233,6 +337,28 @@ const framePath = (n: number) =>
 		width: 100%;
 	}
 
+	/* The paragraph lands on the brightest part of the lit facade (the arch
+	   and windows), where the scrim is at its lightest. A soft pool of shade
+	   that travels with the copy, as behind the hero's, rather than a heavier
+	   full-frame scrim that would dull the payoff. Centred on the ~34rem text
+	   block and wide enough that its edge never reads as a shape. */
+	.silence-copy::before {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		top: -6rem;
+		bottom: -6rem;
+		left: calc(var(--page-gutter) - 8rem);
+		width: 50rem;
+		pointer-events: none;
+		background: radial-gradient(
+			closest-side,
+			rgba(10, 10, 10, 0.55),
+			rgba(10, 10, 10, 0.4) 55%,
+			rgba(10, 10, 10, 0)
+		);
+	}
+
 	/* Was --text-display-xl (160px), which was nearly three times every other
 	   heading on the page and read as a different site. Matched to the section
 	   headings elsewhere. */
@@ -246,13 +372,14 @@ const framePath = (n: number) =>
 		text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
 	}
 
-	/* Sits under the heading rather than pushed out to the right margin. */
+	/* Sits under the heading rather than pushed out to the right margin. Full
+	   white: at 0.7 over the lit stucco it fell below 3:1 in places. */
 	.silence p {
 		margin: 0;
 		max-width: 34rem;
 		font-size: var(--text-body-lg);
 		line-height: 1.6;
-		color: var(--color-text-on-dark-muted);
+		color: var(--color-text-on-dark);
 		text-shadow: 0 1px 20px rgba(0, 0, 0, 0.6);
 		transition:
 			opacity var(--dur-slow) var(--ease-out-expo),
@@ -288,6 +415,12 @@ const framePath = (n: number) =>
 			height: auto;
 			min-height: 100vh;
 			padding-block: clamp(4rem, 9vw, 7.5rem);
+		}
+		/* The copy spans the phone's width, so the pool centres on the screen. */
+		.silence-copy::before {
+			left: -4rem;
+			right: -4rem;
+			width: auto;
 		}
 	}
 </style>

@@ -1,17 +1,15 @@
 ---
+// Intrusion Detection: the sensor layer of the Security & Access family. This
+// page stays with what the sensors cover, arming and alerts; the system as a
+// whole is explained on /security-systems/.
 import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 
+// The sensors first (what is installed), then what they do for you.
 const capabilities = [
-	{
-		title: 'Instant Alerts',
-		description: 'Real-time notifications, delivered at once to the device you prefer.',
-		image: withBase('/images/solutions/intrusion-detection-systems/feature-1.webp'),
-		imageAlt: 'Phone showing an intrusion alert with quick actions for cameras and the alarm',
-	},
 	{
 		title: 'Precise Sensors',
 		description:
@@ -20,8 +18,14 @@ const capabilities = [
 		imageAlt: 'Slim security keypad beside a glass door in a bright modern home',
 	},
 	{
-		title: 'Remote Management',
-		description: 'Monitor and manage the whole system remotely, from anywhere, at any hour.',
+		title: 'Instant Alerts',
+		description: 'The moment a sensor is triggered, a real-time notification reaches the device you prefer.',
+		image: withBase('/images/solutions/intrusion-detection-systems/feature-1.webp'),
+		imageAlt: 'Phone showing an intrusion alert with quick actions for cameras and the alarm',
+	},
+	{
+		title: 'Arm and Manage From Anywhere',
+		description: 'Arm, disarm, monitor and manage the whole system remotely, from anywhere, at any hour.',
 		image: withBase('/images/solutions/intrusion-detection-systems/feature-3.webp'),
 		imageAlt: 'Wall-mounted security panel showing camera views and system status',
 	},
@@ -44,19 +48,17 @@ const scenes = [
 	eyebrow="Intrusion Detection"
 	heroTitle="Intrusion Detection, Invisible Until Needed"
 	heroSubtitle="An additional layer of protection that detects unauthorized access swiftly and accurately, and stays out of sight the rest of the time."
-	intro="The best sensors are the ones you forget are there. They rest through ordinary life, cover every approach to the residence, and act the moment something is wrong."
-	related={['security-systems', 'surveillance-systems', 'access-control-and-intercom']}
-	relatedEyebrow="The Security Suite"
-	relatedTitle="Part of one quiet system."
+	intro="Intrusion detection is the sensor layer of estate security: motion, glass-break and perimeter sensors that cover every approach to a Los Angeles residence. The best are the ones you forget are there. They rest through ordinary life, and act the moment something is wrong."
+	serviceKey="intrusion-detection-systems"
 >
-	<CapabilityList eyebrow="Key Features" title="Precise sensors and instant alerts, adapted to any property." items={capabilities} />
+	<CapabilityList eyebrow="What's Included" title="Precise sensors and instant alerts, adapted to any property." items={capabilities} />
 
 	<DailyExperience
 		eyebrow="Daily Experience"
 		title="Always ready, rarely noticed."
 		scenes={scenes}
-		imageId="residences/malibu-stone-court"
-		imageAlt="Modern residence and lit stone wall at blue hour"
+		imageId="residences/palm-drive-estate"
+		imageAlt="A modern residence glowing at the end of a palm-lined drive at dusk"
 	/>
 
 	<CtaBanner slot="closing" />

@@ -2,80 +2,22 @@
 import { withBase } from '../lib/paths.ts';
 import { libraryEntry, ogImageUrl, type LibraryImageId } from '../lib/images.ts';
 import { siteInfo, areaServed } from '../data/site.ts';
+import { services, type ServiceKey } from '../data/services.ts';
+import { faqPageSchema } from '../data/faqs/index.ts';
 import PageLayout from './PageLayout.astro';
 import Button from '../components/ui/Button.astro';
 import Picture from '../components/ui/Picture.astro';
+import PillarNav from '../components/services/PillarNav.astro';
+import ProcessStrip from '../components/services/ProcessStrip.astro';
+import ServiceIntegrations from '../components/services/ServiceIntegrations.astro';
+import ServiceFaq from '../components/services/ServiceFaq.astro';
 
 /**
- * Solution pages link sideways to their neighbours so the site reads as one
- * system. Titles and lines follow the homepage "One system, every room" grid.
- * Energy Management is deliberately absent (unlinked by design).
+ * Legacy cross-links: pages that don't pass `serviceKey` can still list
+ * sibling services above the closing CTA. Titles and lines come from
+ * src/data/services.ts (formerly the SOLUTIONS map here).
  */
-const SOLUTIONS = {
-	'control-systems': {
-		title: 'Smart Home Automation',
-		href: '/control-systems/',
-		line: 'Every system, every room, answered with a single, intuitive gesture.',
-	},
-	'lighting-control-systems': {
-		title: 'Lighting Control',
-		href: '/lighting-control-systems/',
-		line: 'Light that shifts with the hour, the season and the occasion.',
-	},
-	'outdoor-lighting-audio': {
-		title: 'Landscape Lighting & Outdoor Audio',
-		href: '/outdoor-lighting-audio/',
-		line: 'Gardens, paths and pools, drawn softly in light after dark.',
-	},
-	'outdoor-living': {
-		title: 'Outdoor Living',
-		href: '/outdoor-living/',
-		line: 'Terraces, pools and gardens, as connected as the rooms inside.',
-	},
-	'home-theater': {
-		title: 'Private Cinema',
-		href: '/home-theater/',
-		line: 'Reference picture and sound, built into the architecture of the room.',
-	},
-	'audio-video-solutions': {
-		title: 'Whole-Home Audio & Video',
-		href: '/audio-video-solutions/',
-		line: 'Music in every room and across the terrace, with no speaker in sight.',
-	},
-	'motorized-shades-and-drapery': {
-		title: 'Motorized Shades & Drapery',
-		href: '/motorized-shades-and-drapery/',
-		line: 'Privacy, shade and daylight, adjusted without lifting a finger.',
-	},
-	'security-systems': {
-		title: 'Security & Access Control',
-		href: '/security-systems/',
-		line: 'Gates, cameras and doors that protect quietly and answer to one interface.',
-	},
-	// The security family's sub-pages: linked from each other and the hub.
-	'surveillance-systems': {
-		title: 'Surveillance Systems',
-		href: '/surveillance-systems/',
-		line: 'High-resolution cameras, intelligent alerts and secure remote viewing.',
-	},
-	'access-control-and-intercom': {
-		title: 'Access Control & Intercom',
-		href: '/access-control-and-intercom/',
-		line: 'Gate, door and guest access, with video intercom and mobile entry.',
-	},
-	'intrusion-detection-systems': {
-		title: 'Intrusion Detection',
-		href: '/intrusion-detection-systems/',
-		line: 'Perimeter and interior sensors that stay invisible until needed.',
-	},
-	'hvac-and-climate-integration': {
-		title: 'Climate Control',
-		href: '/hvac-and-climate-integration/',
-		line: 'Quiet, room-by-room comfort, in step with the shades and the sun.',
-	},
-} as const;
-
-export type RelatedSolution = keyof typeof SOLUTIONS;
+export type RelatedSolution = ServiceKey;
 
 /**
  * The hero photo is object-fit: cover inside .service-hero, whose height is a
@@ -145,9 +87,20 @@ interface Props {
 	serviceName?: string;
 	/** Service.serviceType; falls back to `serviceName`. */
 	serviceType?: string;
-	/** Sibling solutions to cross-link above the closing CTA. */
+	/**
+	 * This page's service (src/data/services.ts). Set, the page gains the pillar
+	 * sub-navigation under the hero and, after its content: How we deliver it →
+	 * Where systems meet → Questions (published FAQs only) → the closing slot.
+	 * It replaces the legacy `related` row.
+	 */
+	serviceKey?: ServiceKey;
+	/** Heading overrides for the serviceKey sections. */
+	integrationsEyebrow?: string;
+	integrationsTitle?: string;
+	faqTitle?: string;
+	/** Legacy (pages without `serviceKey`): sibling solutions to cross-link above the closing CTA. */
 	related?: RelatedSolution[];
-	/** Eyebrow and heading for the related row (e.g. "The Security Suite" on the security family). */
+	/** Eyebrow and heading for the legacy related row (e.g. "The Security Suite" on the security family). */
 	relatedEyebrow?: string;
 	relatedTitle?: string;
 	/** Short last breadcrumb ("Security Systems") when the SEO title reads long in the trail. */
@@ -169,6 +122,10 @@ const {
 	intro,
 	serviceName,
 	serviceType,
+	serviceKey,
+	integrationsEyebrow,
+	integrationsTitle,
+	faqTitle,
 	related = [],
 	relatedEyebrow = 'One System',
 	relatedTitle = 'Designed to work together.',
@@ -180,7 +137,7 @@ const ogImage = heroImage ?? (heroImageId ? ogImageUrl(heroImageId) : undefined)
 const site = Astro.site ?? new URL(siteInfo.url);
 const pageUrl = new URL(Astro.url.pathname, site).toString();
 
-const schema = serviceName
+const serviceNode = serviceName
 	? [
 			{
 				'@type': 'Service',
@@ -199,9 +156,16 @@ const schema = serviceName
 				},
 			},
 		]
-	: undefined;
+	: [];
 
-const relatedLinks = related.map((key) => SOLUTIONS[key]);
+// FAQPage for exactly the published questions ServiceFaq renders below, in
+// the page's one @graph (ServiceFaq's own JSON-LD is switched off here).
+const faqNode = serviceKey ? faqPageSchema(serviceKey, pageUrl) : undefined;
+const schemaNodes = [...serviceNode, ...(faqNode ? [faqNode] : [])];
+const schema = schemaNodes.length > 0 ? schemaNodes : undefined;
+
+// The integrations section replaces the legacy row whenever serviceKey is set.
+const relatedLinks = serviceKey ? [] : related.map((key) => services[key]);
 const studioPhone = siteInfo.phones[0];
 const heroStyle = heroPosition ? `object-position:${heroPosition}` : undefined;
 const heroEntry = heroImageId ? libraryEntry(heroImageId) : undefined;
@@ -245,6 +209,8 @@ const heroSizes = heroEntry ? coverSizes(heroEntry.width / heroEntry.height) : '
 		</div>
 	</section>
 
+	{serviceKey && <PillarNav current={serviceKey} />}
+
 	{intro && (
 		<section class="service-intro">
 			<div class="container intro-inner">
@@ -259,6 +225,14 @@ const heroSizes = heroEntry ? coverSizes(heroEntry.width / heroEntry.height) : '
 	)}
 
 	<slot />
+
+	{serviceKey && (
+		<>
+			<ProcessStrip />
+			<ServiceIntegrations current={serviceKey} eyebrow={integrationsEyebrow} title={integrationsTitle} />
+			<ServiceFaq key={serviceKey} title={faqTitle} schema={false} />
+		</>
+	)}
 
 	{relatedLinks.length > 0 && (
 		<section class="related" aria-labelledby="related-heading">
@@ -523,7 +497,7 @@ const heroSizes = heroEntry ? coverSizes(heroEntry.width / heroEntry.height) : '
 
 	.related-link:hover .related-title,
 	.related-link:focus-visible .related-title {
-		color: var(--color-accent);
+		color: var(--color-bronze-text);
 	}
 
 	.related-link:hover .related-arrow,

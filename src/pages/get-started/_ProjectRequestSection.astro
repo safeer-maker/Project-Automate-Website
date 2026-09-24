@@ -89,7 +89,8 @@ const [phone] = siteInfo.phones;
 		font-weight: var(--fw-semibold);
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--color-accent);
+		/* Small type on cream: the text bronze clears 4.5:1, the brand bronze doesn't. */
+		color: var(--color-bronze-text);
 	}
 
 	.notes {
@@ -127,14 +128,15 @@ const [phone] = siteInfo.phones;
 	}
 
 	.aside a {
-		color: var(--color-accent);
+		color: var(--color-bronze-text);
 		border-bottom: 1px solid currentColor;
 		transition: color var(--dur-fast) ease;
 	}
 
 	.aside a:hover,
 	.aside a:focus-visible {
-		color: var(--color-accent-hover);
+		/* Hover darkens rather than lightens, so the link stays legible. */
+		color: var(--color-bronze-fill-hover);
 	}
 
 	@media (max-width: 960px) {

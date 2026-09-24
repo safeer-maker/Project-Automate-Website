@@ -1,0 +1,74 @@
+---
+// Editorial lede under the hub hero, set like the service pages' intro: one
+// defining sentence beside the studio's three plain facts.
+---
+
+<section class="hub-intro">
+	<div class="container intro-inner">
+		<p class="intro-lede">
+			Every system in the residence, from the lighting and shades to the cinema, the climate and the gates, is
+			designed by one team with the others in mind, and answers to one quiet interface.
+		</p>
+		<ul class="intro-facts" aria-label="PROJECT: automate at a glance">
+			<li><strong>17+</strong><span>Years of expertise</span></li>
+			<li><strong>400+</strong><span>Los Angeles residences</span></li>
+			<li><strong>CEDIA · HTA</strong><span>Certified integrator</span></li>
+		</ul>
+	</div>
+</section>
+
+<style>
+	.hub-intro {
+		padding-block: clamp(4.5rem, 10vw, 8.5rem) clamp(3rem, 6vw, 5rem);
+	}
+
+	.intro-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+		gap: clamp(2.5rem, 7vw, 7rem);
+		align-items: end;
+	}
+
+	.intro-lede {
+		margin: 0;
+		font-size: clamp(1.375rem, 2.3vw, 2.125rem);
+		font-weight: var(--fw-regular);
+		line-height: 1.42;
+		letter-spacing: -0.005em;
+		color: var(--color-text);
+		text-wrap: pretty;
+	}
+
+	.intro-facts li {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-4);
+		padding-block: var(--space-4);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.intro-facts li:last-child {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.intro-facts strong {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		color: var(--color-text);
+		white-space: nowrap;
+	}
+
+	.intro-facts span {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		text-align: right;
+	}
+
+	@media (max-width: 900px) {
+		.intro-inner {
+			grid-template-columns: 1fr;
+			align-items: start;
+		}
+	}
+</style>

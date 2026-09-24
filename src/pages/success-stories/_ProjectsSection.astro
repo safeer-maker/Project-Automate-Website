@@ -194,7 +194,8 @@ const [feature, ...projects]: Project[] = [
 		font-weight: var(--fw-semibold);
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--color-accent);
+		/* Small type on cream: the text bronze clears 4.5:1, the brand bronze doesn't. */
+		color: var(--color-bronze-text);
 	}
 
 	.feature-copy h2 {
@@ -222,7 +223,7 @@ const [feature, ...projects]: Project[] = [
 		padding-bottom: var(--space-1);
 		border-bottom: 1px solid currentColor;
 		font-weight: var(--fw-medium);
-		color: var(--color-accent);
+		color: var(--color-bronze-text);
 		transition: color var(--dur-fast) ease;
 	}
 

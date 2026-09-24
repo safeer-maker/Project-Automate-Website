@@ -1,4 +1,43 @@
+# PROJECT: automate
+#
+# Every crawler may read the whole site.
+#
+# The AI crawlers below are named on purpose, not by oversight: the studio wants
+# its services described and cited accurately by AI search and assistants, so
+# each one is allowed explicitly (the same access as "*", stated so the choice
+# is visible). To opt one out, change its "Allow: /" to "Disallow: /".
+# A plain-language summary for these tools lives at /llms.txt.
+
 User-agent: *
+Allow: /
+
+# OpenAI: training crawler, ChatGPT search index, and user-initiated fetches.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic: training crawler and Claude search index.
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+# Perplexity search index.
+User-agent: PerplexityBot
+Allow: /
+
+# Google Gemini and Apple Intelligence use of content (product tokens, not
+# separate crawlers; ordinary Google and Apple search are unaffected).
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
 Allow: /
 
 Sitemap: https://projectautomate.com/sitemap-index.xml

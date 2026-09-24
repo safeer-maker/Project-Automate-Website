@@ -1,35 +1,12 @@
 ---
+// Estate Security: the hub of the Security & Access family. It explains the
+// system as a whole (the alarm at the centre, one interface, the layers
+// designed together); Surveillance, Access Control & Intercom and Intrusion
+// Detection each go deep on one layer on their own pages.
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
-import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
-import type { LibraryImageId } from '../../lib/images.ts';
-
-type Capability = { title: string; description: string; imageId: LibraryImageId; imageAlt: string };
-
-const capabilities: Capability[] = [
-	{
-		title: 'Intelligent Alarms',
-		description:
-			'Alarms that detect, alert and respond the moment something changes. Real-time notifications reach you wherever you are, and the whole property can be checked from a single screen.',
-		imageId: 'solutions/security-camera',
-		imageAlt: 'Security camera mounted discreetly on a modern residence at dusk',
-	},
-	{
-		title: 'Smart Entry',
-		description:
-			'See, speak with and admit visitors from anywhere. Entry that is effortless for the family and exacting about everyone else.',
-		imageId: 'solutions/security-smart-lock',
-		imageAlt: 'Smart lock set into a timber front door, with a sunset terrace beyond',
-	},
-	{
-		title: 'Access Control',
-		description:
-			'Full command over who comes and goes, at every gate and door, from any part of the property.',
-		imageId: 'solutions/security-estate-gate',
-		imageAlt: 'Estate gates lit at night, opening onto a palm-lined drive',
-	},
-];
+import SecurityLayers from './_SecurityLayers.astro';
 
 const scenes = [
 	{ title: 'Arrival', description: 'The system recognizes your approach, disarms the alarm and unlocks the entry.' },
@@ -48,12 +25,10 @@ const scenes = [
 	eyebrow="Estate Security"
 	heroTitle="Complete Protection for Every Part of Your Property"
 	heroSubtitle="Alarms, cameras, gates and access control, designed as one quiet system. Always present, and never in the way."
-	intro="The finest protection is felt rather than seen. We design alarms, cameras, gates and access control as a single system, placed in step with the architecture and answering to the same interface as the rest of the home."
-	related={['surveillance-systems', 'access-control-and-intercom', 'intrusion-detection-systems']}
-	relatedEyebrow="The Security Suite"
-	relatedTitle="Every layer, designed together."
+	intro="Estate security is a single system that protects the whole property, from the gate to every door and window, for Los Angeles homeowners who want protection felt rather than seen. Cameras, entry, sensors and landscape light are designed together, and answer to the same interface as the rest of the home."
+	serviceKey="security-systems"
 >
-	<CapabilityList eyebrow="Modern Security" title="Alarms, entry and access, working as one." items={capabilities} />
+	<SecurityLayers />
 
 	<DailyExperience
 		eyebrow="Daily Experience"

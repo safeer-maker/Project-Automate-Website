@@ -33,7 +33,8 @@ const { progress = false, ...seo } = Astro.props;
 	<Header />
 	{/* Header opts in on the attribute's presence, so omit it entirely — Astro would
 	    otherwise render data-progress-track="false" and every page got the hairline. */}
-	<main data-progress-track={progress ? 'true' : undefined}>
+	{/* id + tabindex: the skip link's target (BaseLayout), focusable so focus moves with it. */}
+	<main id="main" tabindex="-1" data-progress-track={progress ? 'true' : undefined}>
 		<slot />
 	</main>
 	<Footer />

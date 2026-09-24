@@ -4,8 +4,8 @@
 // were wider than the measure and wrapped again, which orphaned single words
 // onto their own line. id="approach" is the hero's "Discover the approach"
 // target.
-const statement =
-	'A great home does not ask to be operated. Light, climate, sound and security simply respond, then step quietly out of sight.';
+// No list of systems here: the hero's lede, directly above, already names them.
+const statement = 'A great home does not ask to be operated. It simply responds, then steps out of sight.';
 
 const words = statement.split(' ');
 ---
@@ -92,8 +92,11 @@ const words = statement.split(' ');
 		background: var(--color-bg);
 		padding-block: clamp(5rem, 12vw, 10rem);
 		/* Landing from the hero's "Discover the approach": clears the sticky
-		   header by a comfortable margin at every width. */
+		   header by a comfortable margin at every width. Rounded to a whole
+		   pixel (an odd header height gave a half-pixel target, which Lenis's
+		   lerp never finished; see SmoothScroll). */
 		scroll-margin-top: calc(var(--header-height, 96px) * 0.5);
+		scroll-margin-top: round(calc(var(--header-height, 96px) * 0.5), 1px);
 	}
 
 	.statement h2 {

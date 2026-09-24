@@ -8,19 +8,25 @@
 // lives separately in _CertificationMarquee.astro.
 import { withBase } from '../lib/paths.ts';
 
+// `scale` evens out optical weight, tuned by eye on the static grid: the box
+// alone sized marks by their files, so a heavy outline mark (Josh.ai) or a
+// file padded with empty canvas (Lutron, eero) read far bigger or smaller
+// than its neighbours. Savant is the plain wordmark (the file used before was
+// the Spanish "30 AÑOS" anniversary lockup) and Control4's drops the tagline
+// that was illegible at this size.
 const vendors = [
-	{ name: 'Savant', logo: '/images/vendors/savant.png' },
-	{ name: 'Control4', logo: '/images/vendors/control4.png' },
-	{ name: 'Lutron', logo: '/images/vendors/lutron.png' },
-	{ name: 'Crestron', logo: '/images/vendors/crestron.png' },
-	{ name: 'Josh.ai', logo: '/images/vendors/josh-ai.webp' },
-	{ name: 'Alarm.com', logo: '/images/vendors/alarm-com.png' },
-	{ name: 'Qolsys', logo: '/images/vendors/qolsys.png' },
-	{ name: 'Ruckus', logo: '/images/vendors/ruckus.png' },
-	{ name: 'Sophos', logo: '/images/vendors/sophos.png' },
-	{ name: 'eero', logo: '/images/vendors/eero.webp' },
-	{ name: 'Rega', logo: '/images/vendors/rega.webp' },
-	{ name: 'Coastal Source', logo: '/images/vendors/coastal-source.png' },
+	{ name: 'Savant', logo: '/images/brands/logos/savant.svg', scale: 0.95 },
+	{ name: 'Control4', logo: '/images/vendors/control4-wordmark.png', scale: 0.9 },
+	{ name: 'Lutron', logo: '/images/vendors/lutron.png', scale: 1.4 },
+	{ name: 'Crestron', logo: '/images/vendors/crestron.png', scale: 1.05 },
+	{ name: 'Josh.ai', logo: '/images/vendors/josh-ai.webp', scale: 0.7 },
+	{ name: 'Alarm.com', logo: '/images/vendors/alarm-com.png', scale: 0.95 },
+	{ name: 'Qolsys', logo: '/images/vendors/qolsys.png', scale: 0.78 },
+	{ name: 'Ruckus', logo: '/images/vendors/ruckus.png', scale: 0.8 },
+	{ name: 'Sophos', logo: '/images/vendors/sophos.png', scale: 1 },
+	{ name: 'eero', logo: '/images/vendors/eero.webp', scale: 1.35 },
+	{ name: 'Rega', logo: '/images/vendors/rega.webp', scale: 0.75 },
+	{ name: 'Coastal Source', logo: '/images/vendors/coastal-source.png', scale: 1 },
 ];
 
 // A marquee half has to be wider than the viewport or the loop shows a gap.
@@ -55,14 +61,14 @@ const vendorRow = repeatToFill(vendors, 10);
 	<div class="marquee-row">
 		<ul class="marquee-track">
 			{vendorRow.map((item) => (
-				<li class="marquee-item">
+				<li class="marquee-item" style={`--logo-scale:${item.scale}`}>
 					<img src={withBase(item.logo)} alt={item.name} loading="lazy" decoding="async" />
 				</li>
 			))}
 			{/* The duplicate half exists only to close the loop, so it is hidden
 			    from assistive tech and every brand is announced once. */}
 			{vendorRow.map((item) => (
-				<li class="marquee-item is-clone" aria-hidden="true">
+				<li class="marquee-item is-clone" aria-hidden="true" style={`--logo-scale:${item.scale}`}>
 					<img src={withBase(item.logo)} alt="" loading="lazy" decoding="async" />
 				</li>
 			))}
@@ -105,6 +111,7 @@ const vendorRow = repeatToFill(vendors, 10);
 		text-transform: uppercase;
 		text-align: center;
 		color: var(--color-text-muted);
+		text-wrap: pretty;
 	}
 
 	.marquee-row {
@@ -205,6 +212,8 @@ const vendorRow = repeatToFill(vendors, 10);
 		width: auto;
 		height: auto;
 		object-fit: contain;
+		/* Scaled around its centre, so the spacing between marks is unchanged. */
+		transform: scale(var(--logo-scale, 1));
 		filter: grayscale(1) contrast(0.9);
 		opacity: 0.5;
 		transition:

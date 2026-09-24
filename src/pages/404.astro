@@ -7,7 +7,7 @@ import Picture from '../components/ui/Picture.astro';
 import Button from '../components/ui/Button.astro';
 import { withBase } from '../lib/paths.ts';
 import { libraryEntry, ogImageUrl } from '../lib/images.ts';
-import { coreServices } from '../data/nav.ts';
+import { serviceGroups, solutionsHub } from '../data/nav.ts';
 import { siteInfo } from '../data/site.ts';
 
 const phone = siteInfo.phones[0];
@@ -24,6 +24,7 @@ const heroSizes = [
 ].join(', ');
 
 const moreLinks = [
+	{ label: 'All services', href: solutionsHub },
 	{ label: 'About Us', href: withBase('/about-us/') },
 	{ label: 'Success Stories', href: withBase('/success-stories/') },
 	{ label: 'Design Partners', href: withBase('/design-partners/') },
@@ -67,11 +68,11 @@ const moreLinks = [
 
 		<nav class="explore-body" aria-label="Solutions">
 			<ol class="solutions">
-				{coreServices.map((service, i) => (
+				{serviceGroups.map((group, i) => (
 					<li>
-						<a href={service.href}>
+						<a href={group.hubHref}>
 							<span class="index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-							<span class="label">{service.label}</span>
+							<span class="label">{group.title}</span>
 							<span class="arrow" aria-hidden="true">&rarr;</span>
 						</a>
 					</li>

@@ -1,4 +1,7 @@
 ---
+// Surveillance: the camera layer of the Security & Access family. This page
+// stays with what cameras see, recognize, tell you and record; the system as
+// a whole is explained on /security-systems/.
 import { withBase } from '../../lib/paths.ts';
 import type { LibraryImageId } from '../../lib/images.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
@@ -8,29 +11,32 @@ import CtaBanner from '../../components/ui/CtaBanner.astro';
 
 type Capability = { title: string; description: string; image?: string; imageId?: LibraryImageId; imageAlt: string };
 
+// Ordered as a homeowner meets them: where the cameras go, what they
+// recognize, when they speak up, and how you look in.
 const capabilities: Capability[] = [
-	{
-		title: 'Real-Time Alerts',
-		description: 'Immediate notice by text, email or push notification, sent only to the devices you choose.',
-		image: withBase('/images/solutions/surveillance-systems/feature-1.webp'),
-		imageAlt: 'Tablet showing live camera views of a residence and its pool at night',
-	},
-	{
-		title: 'Facial Recognition',
-		description:
-			'Facial recognition and automatic number plate recognition tell familiar arrivals from the unexpected, so the system speaks up only when it should.',
-		image: withBase('/images/solutions/surveillance-systems/feature-2.webp'),
-		imageAlt: 'Homeowner reviewing camera feeds on a tablet in a bright living room',
-	},
 	{
 		title: 'Every Approach, Watched',
 		description:
-			'Cameras at the gate and driveway recognize familiar vehicles and flag the unfamiliar, well before anyone reaches the door.',
+			'Cameras cover the gate, the drive and each approach to the residence, placed with the architecture and landscape in mind so they see everything and are noticed by no one.',
 		imageId: 'solutions/security-driveway-gate',
 		imageAlt: 'Modern sliding driveway gate and intercom post, softly lit at night',
 	},
 	{
-		title: 'Remote Monitoring',
+		title: 'Faces and Plates, Recognized',
+		description:
+			'Facial recognition and automatic number plate recognition tell familiar arrivals from the unexpected, and flag an unfamiliar vehicle well before anyone reaches the door.',
+		image: withBase('/images/solutions/surveillance-systems/feature-2.webp'),
+		imageAlt: 'Homeowner reviewing camera feeds on a tablet in a bright living room',
+	},
+	{
+		title: 'Alerts Only When It Matters',
+		description:
+			'Immediate notice by text, email or push notification, sent only to the devices you choose, and only when something deserves your attention.',
+		image: withBase('/images/solutions/surveillance-systems/feature-1.webp'),
+		imageAlt: 'Tablet showing live camera views of a residence and its pool at night',
+	},
+	{
+		title: 'Remote Viewing',
 		description: 'Secure access to every camera on the property, from anywhere, at any hour.',
 		image: withBase('/images/solutions/surveillance-systems/feature-3.webp'),
 		imageAlt: 'Wall-mounted security panel showing live camera views and access status',
@@ -39,7 +45,7 @@ const capabilities: Capability[] = [
 
 const scenes = [
 	{ title: 'Arrival', description: 'A familiar face at the gate is recognized, and the system stands down without a single alert.' },
-	{ title: 'Away', description: 'Every camera feed, viewed securely from anywhere, at any hour of the day.' },
+	{ title: 'Away', description: 'Every camera, viewed securely from wherever you are, at any hour of the day.' },
 	{ title: 'The Unexpected', description: 'An unfamiliar vehicle is identified by its plate, and a notification reaches you at once.' },
 	{ title: 'Overnight', description: 'High-definition footage records continuously, ready the moment it is needed.' },
 ];
@@ -54,12 +60,10 @@ const scenes = [
 	eyebrow="Surveillance Systems"
 	heroTitle="Security That Stays Quiet, Until It Matters"
 	heroSubtitle="Discreet cameras and advanced analytics that watch over the whole property, and speak up only when something deserves your attention."
-	intro="Cameras should see everything and be noticed by no one. Each one is placed with the architecture and landscape in mind, then tuned so that you hear only about what matters."
-	related={['security-systems', 'access-control-and-intercom', 'intrusion-detection-systems']}
-	relatedEyebrow="The Security Suite"
-	relatedTitle="Part of one quiet system."
+	intro="Surveillance is the camera layer of estate security: discreet cameras that watch every approach to a Los Angeles residence, record continuously and speak up only when something deserves your attention. Each one is placed with the architecture and landscape in mind, so it sees everything and is noticed by no one."
+	serviceKey="surveillance-systems"
 >
-	<CapabilityList eyebrow="Advanced Features" title="Intelligent surveillance, scaled to any property." items={capabilities} />
+	<CapabilityList eyebrow="What's Included" title="Intelligent surveillance, scaled to any property." items={capabilities} />
 
 	<DailyExperience
 		eyebrow="Daily Experience"

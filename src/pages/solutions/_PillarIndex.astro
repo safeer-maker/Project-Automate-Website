@@ -1,0 +1,142 @@
+---
+// Slim index under the hero, in the manner of the service pages' PillarNav:
+// the six pillars as in-page links (Lenis glides to them), then the moments.
+// On narrow screens the row scrolls sideways rather than wrapping.
+import { pillars } from '../../data/services.ts';
+---
+
+<nav class="pillar-index" aria-label="On this page">
+	<div class="container">
+		<div class="index-scroll" data-lenis-prevent>
+			<ol class="index-row">
+				{pillars.map((pillar, i) => (
+					<li>
+						<a href={`#${pillar.key}`}>
+							<span class="index-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+							{pillar.title}
+						</a>
+					</li>
+				))}
+				<li class="index-moments">
+					<a href="#where-systems-meet">Where systems meet</a>
+				</li>
+			</ol>
+		</div>
+	</div>
+</nav>
+
+<style>
+	.pillar-index {
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-bg);
+	}
+
+	.index-scroll {
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scrollbar-width: none;
+		/* Room for the focus ring, which overflow would otherwise clip. */
+		padding-block: 3px;
+		margin-block: -3px;
+	}
+
+	.index-scroll::-webkit-scrollbar {
+		display: none;
+	}
+
+	.index-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-8);
+		width: max-content;
+		min-width: 100%;
+		min-height: 4rem;
+		white-space: nowrap;
+	}
+
+	.index-row a {
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--space-2);
+		min-height: 2.75rem;
+		padding-block: var(--space-3);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		color: var(--color-text-muted);
+		transition: color var(--dur-fast) ease;
+	}
+
+	.index-num {
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.1em;
+		color: var(--color-bronze-text);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.index-row a:hover {
+		color: var(--color-text);
+	}
+
+	/* The moments close the row, set apart by a hairline. */
+	.index-moments {
+		display: flex;
+		align-items: center;
+		gap: var(--space-8);
+	}
+
+	.index-moments::before {
+		content: '';
+		width: 1px;
+		height: 1.25rem;
+		background: var(--color-border);
+	}
+
+	.index-moments a {
+		color: var(--color-text);
+		text-decoration: underline;
+		text-decoration-color: var(--color-border);
+		text-underline-offset: 0.35em;
+	}
+
+	.index-moments a:hover {
+		color: var(--color-bronze-text);
+		text-decoration-color: currentColor;
+	}
+
+	.index-row a:focus-visible {
+		outline: 2px solid var(--color-bronze);
+		outline-offset: 2px;
+		border-radius: 2px;
+	}
+
+	@media (max-width: 1100px) {
+		.index-row {
+			justify-content: flex-start;
+			gap: var(--space-6);
+		}
+		.index-moments {
+			gap: var(--space-6);
+		}
+	}
+
+	@media (max-width: 760px) {
+		.pillar-index .container {
+			padding-inline: 0;
+		}
+
+		/* Full-bleed scroller: the gutter lives inside it, and a soft fade at
+		   the right edge says there is more to see. */
+		.index-scroll {
+			padding-inline: var(--container-padding);
+			scroll-padding-inline: var(--container-padding);
+			mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+		}
+
+		.index-row {
+			min-height: 3.5rem;
+			padding-right: var(--space-8);
+		}
+	}
+</style>

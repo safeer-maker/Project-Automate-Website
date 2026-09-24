@@ -1,6 +1,10 @@
 ---
-// Landing page (paid and referral traffic): one story, one form. No related
-// links or closing banner, so nothing competes with the consultation request.
+// Landing page (paid and referral traffic): one story, one form. It follows
+// the service-page story (what it is → what's included → after dark → how we
+// deliver it → where it meets the rest of the home → questions), and the
+// consultation form closes the page through ServiceLayout's closing slot, so
+// nothing follows it and no banner competes with it. The hero button
+// (ctaHref) and every data-ghl-form-open CTA scroll to #consultation.
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import LightAndSound from './_LightAndSound.astro';
 import AfterDarkGallery from './_AfterDarkGallery.astro';
@@ -18,13 +22,14 @@ import ConsultationFormSection from './_ConsultationFormSection.astro';
 	heroSubtitle="Gardens, paths and pools drawn softly in light after dark, with music that seems to come from the landscape itself."
 	ctaLabel="Request a Design Consultation"
 	ctaHref="#consultation"
-	intro="The garden deserves the same care as the rooms inside. We design landscape lighting and outdoor audio together, so the architecture glows, the paths are safe to walk and music reaches every terrace without a speaker in sight."
+	intro="We design landscape lighting and outdoor audio as one system for the gardens, pools and terraces of Los Angeles residences. The architecture glows, the paths are safe to walk, and music reaches every terrace without a speaker in sight."
 	serviceName="Landscape Lighting & Outdoor Audio"
 	serviceType="Landscape lighting and outdoor audio design and installation"
+	serviceKey="outdoor-lighting-audio"
 >
 	<LightAndSound />
 
 	<AfterDarkGallery />
 
-	<ConsultationFormSection />
+	<ConsultationFormSection slot="closing" />
 </ServiceLayout>

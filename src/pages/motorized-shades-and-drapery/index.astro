@@ -5,11 +5,14 @@ import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 
+// Copy restates what the site already says about shading: this page, and the
+// journal's motorized window coverings post (sheer to blackout fabrics,
+// shades lowered in the heat of the day easing the cooling).
 const capabilities = [
 	{
-		title: 'Automated Window Treatments',
+		title: 'Shades at a Touch',
 		description:
-			'Effortless control of daylight throughout the home. Raise, lower or adjust a single shade, or every window at once, from your phone, a keypad, a touch panel or your voice.',
+			'Raise, lower or adjust a single shade, or every window at once, from your phone, a keypad, a touch panel or your voice, in fabrics that run from soft sheers to full blackout.',
 		// The site's own shade photograph (the former hero), kept at its full 1920px.
 		image: withBase('/images/solutions/motorized-shades-and-drapery/hero.webp'),
 		imageAlt: 'A bright living room with sheer roller shades lowered partway across tall windows',
@@ -17,14 +20,14 @@ const capabilities = [
 	{
 		title: 'Motorized Drapery',
 		description:
-			'Drapery brings softness and grace to living rooms, bedrooms, dining rooms and media rooms. Hidden tracks and whisper-quiet motors move it smoothly while keeping the interior clean and uncluttered.',
+			'Drapery brings softness and grace to living rooms, bedrooms, dining rooms and media rooms. Hidden tracks and whisper-quiet motors move it smoothly, keeping the interior clean and uncluttered.',
 		imageId: 'solutions/control-panel-living',
 		imageAlt: 'A living room with floor-to-ceiling glass onto a forest, and a control panel on the wall',
 	},
 	{
-		title: 'Smarter Living',
+		title: 'Timed to the Sun',
 		description:
-			'Shades adjust through the day on their own, to soften glare, protect art and furnishings, preserve privacy and keep interiors comfortable, with no daily attention required.',
+			'Shades adjust through the day on their own, softening glare, protecting art and furnishings, preserving privacy and, in the heat of the afternoon, easing the work of the cooling. None of it asks for your attention.',
 		imageId: 'solutions/control-great-room',
 		imageAlt: 'A sunlit great room with walls of glass and a slim control panel beside the windows',
 	},
@@ -47,12 +50,12 @@ const scenes = [
 	eyebrow="Motorized Shades & Drapery"
 	heroTitle="Motorized Shades and Drapery, Moving With the Sun"
 	heroSubtitle="Whisper-quiet shades and drapery that balance daylight, privacy and comfort, timed to the sun and concealed in the architecture."
-	intro="Walls of glass are one of the great pleasures of a Los Angeles home. Motorized shading lets the light in when you want it, softens it when you don't, and protects art, furnishings and privacy without a second thought."
+	intro="Motorized shades and drapery are window treatments that move at a touch, on a schedule or with the sun, concealed in the architecture. For Los Angeles homes with walls of glass, they let the light in when you want it, soften it when you don't, and protect art, furnishings and privacy."
 	serviceName="Motorized Shades & Drapery"
 	serviceType="Motorized shade and drapery design and installation"
-	related={['lighting-control-systems', 'hvac-and-climate-integration', 'control-systems']}
+	serviceKey="motorized-shades-and-drapery"
 >
-	<CapabilityList eyebrow="Light and Privacy, Balanced" title="Window treatments that keep time with the day." items={capabilities} />
+	<CapabilityList eyebrow="What's Included" title="Window treatments that keep time with the day." items={capabilities} />
 
 	<DailyExperience eyebrow="Daily Experience" title="Comfort that changes with the light." scenes={scenes} />
 

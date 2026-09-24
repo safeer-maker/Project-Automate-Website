@@ -10,11 +10,11 @@ This runs `scripts/dev.mjs`, a thin wrapper around `astro dev` that keeps the de
 
 ## Deployment
 
-Production deploys to Cloudflare Workers happen automatically via Cloudflare's own Git integration — **not** via a local or CI `wrangler deploy`. When a PR merges into the `stage` branch, Cloudflare detects the change on that branch directly, builds the site, and redeploys it on Workers itself.
+Production deploys to Cloudflare Workers happen automatically via Cloudflare's own Git integration — **not** via a local or CI `wrangler deploy`. Cloudflare watches the `main` branch: when a PR merges into `main` (or anything is pushed to it), Cloudflare builds the site and redeploys it on Workers itself. There is no `stage` branch in this repo.
 
 - `wrangler.jsonc` at the repo root is a static, minimal config (just `name`, `compatibility_date`, and `assets.directory`) that tells Cloudflare's build how to serve this static site. It is not invoked manually — no `wrangler` npm dependency or `wrangler deploy` script is needed in this repo.
-- This is separate from `.github/workflows/deploy.yml`, which deploys the same static build to GitHub Pages independently.
-- To ship a change to production: merge into `stage`. Do not add a `wrangler deploy` step back into `package.json` or CI for this.
+- This is separate from `.github/workflows/deploy.yml`, which deploys the same static build to GitHub Pages (the noindexed staging host). It runs on every push or merge to `main`, on any branch when a pushed commit message contains `@deploy`, and manually from the Actions tab.
+- To ship a change to production: merge into `main`. Do not add a `wrangler deploy` step back into `package.json` or CI for this.
 
 ## GoHighLevel (GHL) form, tracking & cookies
 

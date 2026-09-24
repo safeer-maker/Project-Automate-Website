@@ -21,7 +21,7 @@ const rows: Tile[][] = [
 	[
 		{
 			title: 'Smart Home Automation',
-			description: 'Every system, every room, answered with a single, intuitive gesture.',
+			description: 'Lighting, climate and every other system, answered with a single, intuitive gesture.',
 			image: 'solutions/control-wall-panel',
 			alt: 'A wall-mounted control panel in a calm, light-filled living room',
 			href: '/control-systems/',
@@ -79,7 +79,7 @@ const rows: Tile[][] = [
 		},
 		{
 			title: 'Security & Access Control',
-			description: 'Gates, cameras and doors that protect quietly and answer to one interface.',
+			description: 'Gates, cameras and doors, all answering to one interface.',
 			image: 'solutions/security-driveway-gate',
 			alt: 'A modern sliding driveway gate with a lit intercom post at night',
 			href: '/security-systems/',
@@ -116,7 +116,7 @@ const tileSizes = (row: Tile[], tile: Tile) => {
 			</div>
 			<div class="solutions-aside">
 				<p>Seven disciplines designed together and controlled as one.</p>
-				<a class="text-link" href={withBase('/control-systems/')}>
+				<a class="text-link" href={withBase('/solutions/')}>
 					<span>Explore all solutions</span>
 					<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
 						<path
@@ -139,7 +139,10 @@ const tileSizes = (row: Tile[], tile: Tile) => {
 							href={withBase(tile.href)}
 							style={`--tile-index:${i};--focus:${tile.focus ?? '50% 50%'}`}
 						>
-							<Picture id={tile.image} alt={tile.alt} sizes={tileSizes(row, tile)} />
+							{/* alt="": the photo only illustrates the named service, and its
+							    description led every link's accessible name. `alt` stays in
+							    the data as the photo's description. */}
+							<Picture id={tile.image} alt="" sizes={tileSizes(row, tile)} />
 							<span class="tile-scrim"></span>
 							<span class="tile-foot">
 								<span class="tile-text">
@@ -365,6 +368,7 @@ const tileSizes = (row: Tile[], tile: Tile) => {
 	.tile-desc > span {
 		overflow: hidden;
 		min-height: 0;
+		text-wrap: pretty;
 	}
 
 	.tile:hover .tile-desc,
@@ -431,7 +435,12 @@ const tileSizes = (row: Tile[], tile: Tile) => {
 		.tiles[data-ready] .row.is-visible .tile {
 			clip-path: inset(0 round var(--radius-lg));
 		}
-		/* No hover on touch, so the description would never be reachable. */
+	}
+
+	/* No hover on touch (phones, but also iPads and touch laptops wider than
+	   the stacked layout, where a tap follows the link at once), so the
+	   description would never be reachable. */
+	@media (hover: none), (max-width: 800px) {
 		.tile-desc {
 			grid-template-rows: 1fr;
 			opacity: 1;

@@ -36,9 +36,10 @@ export const footerQuickLinks = linkify([
 ]);
 
 // Design Partner lives in Quick Links only (it used to appear here too as
-// "Partners"). Energy Management is intentionally unlinked site-wide.
+// "Partners"), and the membership in the Services column only (as Concierge
+// Care, see serviceGroups in nav.ts). Energy Management is intentionally
+// unlinked site-wide.
 export const footerMenu = linkify([
-	{ label: 'Membership', href: '/technology-support-membership/' },
 	{ label: 'Success Stories', href: '/success-stories/' },
 	{ label: 'Inspiration', href: '/get-inspired/' },
 	{ label: 'Brands', href: '/brands/' },

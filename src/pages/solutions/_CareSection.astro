@@ -1,0 +1,266 @@
+---
+// The sixth pillar, Concierge Care, as a dark band of its own: care is what
+// holds the other five together after handover. id="care" is the pillar's
+// anchor (the index above and the membership page's PillarNav link here).
+// Copy restates the homepage ("Our concierge team then stays on to care for
+// it", "24/7 Concierge support") and the membership page.
+import Picture from '../../components/ui/Picture.astro';
+import { withBase } from '../../lib/paths.ts';
+import { pillars, services } from '../../data/services.ts';
+
+const care = pillars.find((pillar) => pillar.key === 'care')!;
+const number = String(pillars.indexOf(care) + 1).padStart(2, '0');
+const membership = services['technology-support-membership'];
+
+const facts = [
+	{ value: '24/7', label: 'Concierge support' },
+	{ value: 'Priority', label: 'Members move to the front of the queue' },
+	{ value: 'Remote', label: 'Many requests resolved without waiting for a visit' },
+];
+---
+
+<section class="care" id={care.key} aria-labelledby="care-title" data-care>
+	<div class="container care-inner">
+		<div class="care-media">
+			<Picture
+				id={care.image}
+				alt="A finished residence glowing at dusk at the end of a palm-lined drive"
+				sizes="(max-width: 900px) calc(100vw - 3rem), (min-width: 1280px) 560px, 44vw"
+			/>
+		</div>
+		<div class="care-copy">
+			<span class="care-eyebrow"><span aria-hidden="true">{number} · </span>{care.title}</span>
+			<h2 id="care-title">Handover is where a long relationship begins.</h2>
+			<p class="care-lede">
+				After the final walkthrough, our concierge team stays on to care for the home, keeping every system
+				performing as it did on the day it was handed over.
+			</p>
+			<ul class="care-facts">
+				{facts.map((fact) => (
+					<li>
+						<strong>{fact.value}</strong>
+						<span>{fact.label}</span>
+					</li>
+				))}
+			</ul>
+			<a class="care-link" href={withBase(membership.href)}>
+				Explore the {membership.title}
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+					<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+				</svg>
+			</a>
+		</div>
+	</div>
+</section>
+
+<script>
+	// One-time settle as the band arrives.
+	document.querySelectorAll<HTMLElement>('[data-care]').forEach((band) => {
+		if (!('IntersectionObserver' in window)) {
+			band.classList.add('is-revealed');
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (!entries.some((entry) => entry.isIntersecting)) return;
+				band.classList.add('is-revealed');
+				io.disconnect();
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		io.observe(band);
+	});
+</script>
+
+<style>
+	.care {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+		background:
+			radial-gradient(70% 60% at 100% 0%, rgba(175, 136, 80, 0.14), rgba(175, 136, 80, 0) 70%),
+			var(--color-charcoal);
+		color: var(--color-text-on-dark);
+		scroll-margin-top: var(--header-height, 96px);
+	}
+
+	.care-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+		gap: clamp(2.5rem, 7vw, 7rem);
+		align-items: center;
+	}
+
+	.care-media {
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		background: rgba(255, 255, 255, 0.04);
+	}
+
+	.care-media :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 5;
+		object-fit: cover;
+	}
+
+	.care-eyebrow {
+		display: inline-block;
+		margin-bottom: var(--space-4);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		/* The light gold clears 4.5:1 on charcoal; the text bronze does not. */
+		color: var(--color-gold-light);
+	}
+
+	.care-copy h2 {
+		max-width: 16ch;
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.12;
+		letter-spacing: -0.01em;
+		color: var(--color-text-on-dark);
+		text-wrap: balance;
+	}
+
+	.care-lede {
+		max-width: 34rem;
+		margin: 0 0 var(--space-8);
+		font-size: var(--text-body-lg);
+		line-height: 1.65;
+		color: var(--color-text-on-dark-muted);
+		text-wrap: pretty;
+	}
+
+	.care-facts {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-6);
+		margin-bottom: var(--space-8);
+	}
+
+	.care-facts li {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		padding-top: var(--space-4);
+		border-top: 1px solid var(--color-border-on-dark);
+	}
+
+	.care-facts strong {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		color: var(--color-text-on-dark);
+	}
+
+	.care-facts span {
+		font-size: var(--text-sm);
+		line-height: 1.5;
+		color: var(--color-text-on-dark-muted);
+	}
+
+	.care-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		padding-block: var(--space-1);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.02em;
+		color: var(--color-text-on-dark);
+		border-bottom: 1px solid var(--color-border-on-dark);
+		transition:
+			color var(--dur-fast) ease,
+			border-color var(--dur-fast) ease;
+	}
+
+	.care-link svg {
+		width: 16px;
+		height: 16px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.care-link:hover {
+		color: var(--color-gold-light);
+		border-color: currentColor;
+	}
+
+	.care-link:hover svg {
+		transform: translateX(4px);
+	}
+
+	.care-link:focus-visible {
+		outline: 2px solid var(--color-gold-light);
+		outline-offset: 4px;
+		border-radius: 2px;
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.care-media :global(img) {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+
+		.care-copy > * {
+			opacity: 0;
+			transform: translateY(18px);
+			transition:
+				opacity 1000ms var(--ease-out-expo),
+				transform 1000ms var(--ease-out-expo);
+		}
+
+		.care-copy > :nth-child(2) {
+			transition-delay: 80ms;
+		}
+		.care-copy > :nth-child(3) {
+			transition-delay: 160ms;
+		}
+		.care-copy > :nth-child(4) {
+			transition-delay: 240ms;
+		}
+		.care-copy > :nth-child(5) {
+			transition-delay: 320ms;
+		}
+
+		.is-revealed .care-media :global(img),
+		.is-revealed .care-copy > * {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.care-inner {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.care-media :global(img) {
+			aspect-ratio: 3 / 2;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.care-facts {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-4);
+		}
+
+		.care-facts li {
+			flex-direction: row;
+			align-items: baseline;
+			justify-content: space-between;
+			gap: var(--space-4);
+		}
+
+		.care-facts span {
+			text-align: right;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.care-link svg {
+			transition: none;
+		}
+	}
+</style>

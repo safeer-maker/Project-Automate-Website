@@ -21,7 +21,13 @@
 		smoothWheel: true,
 		syncTouch: false,
 		// In-page anchors (e.g. /#process) glide too, honouring scroll-margin-top.
-		anchors: true,
+		// Time-based, not the lerp above: a lerp only finishes when
+		// Math.round(value) === Math.round(target), so a target on a half pixel
+		// (a fractional scroll-margin or element rect) stalled a hair short
+		// forever, and the endless glide overrode keyboard, Tab and Back
+		// scrolling. A duration always ends. 1.2s with Lenis's default expo-out
+		// easing is close to the lerp's own glide over a screen or so.
+		anchors: { duration: 1.2 },
 		stopInertiaOnNavigate: true,
 		// Off on purpose. With autoToggle, stop()/start() only flip an inline
 		// overflow and wait for a 1ms `transition-behavior: allow-discrete`

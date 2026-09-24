@@ -1,0 +1,324 @@
+---
+// Questions near the end of a service page (or the /solutions/ hub). Renders
+// only published answers (src/data/faqs); with none, it renders nothing at
+// all: no heading, no structured data.
+//
+// Native <details>/<summary>, so it works by keyboard and without JS; a small
+// script only animates the height, and stands aside for reduced motion.
+//
+// Structured data: exactly one FAQPage per page, for exactly the questions
+// shown. By default this component emits it as its own JSON-LD script.
+// ServiceLayout merges it into the page's @graph instead (faqPageSchema) and
+// passes schema={false}; do the same anywhere the page already builds one.
+import { siteInfo } from '../../data/site.ts';
+import { faqPageSchema, publishedFaqsFor, type FaqKey } from '../../data/faqs/index.ts';
+
+interface Props {
+	key: FaqKey;
+	eyebrow?: string;
+	title?: string;
+	/** Emit the FAQPage JSON-LD here. Set false when the page's @graph already carries it. */
+	schema?: boolean;
+}
+
+const { key, eyebrow = 'Questions', title = 'Questions, answered.', schema = true } = Astro.props;
+const faqs = publishedFaqsFor(key);
+
+const site = Astro.site ?? new URL(siteInfo.url);
+const pageUrl = new URL(Astro.url.pathname, site).toString();
+const jsonLd = schema ? faqPageSchema(key, pageUrl) : undefined;
+
+const studioPhone = siteInfo.phones[0];
+const phoneHref = `tel:${studioPhone.replace(/[^\d+]/g, '')}`;
+---
+
+{
+	faqs.length > 0 && (
+		<section class="service-faq" aria-labelledby="faq-title" data-service-faq>
+			<div class="container faq-inner">
+				<div class="faq-head">
+					<span class="eyebrow">{eyebrow}</span>
+					<h2 id="faq-title">{title}</h2>
+					<p class="faq-call">
+						Something else? Call the studio
+						<a href={phoneHref}>{studioPhone}</a>
+					</p>
+				</div>
+				<div class="faq-list">
+					{faqs.map((faq) => (
+						<details class="faq-item">
+							<summary>
+								<span class="faq-q">{faq.q}</span>
+								<span class="faq-icon" aria-hidden="true" />
+							</summary>
+							<div class="faq-answer">
+								<p>{faq.a}</p>
+							</div>
+						</details>
+					))}
+				</div>
+			</div>
+			{jsonLd && (
+				<script
+					type="application/ld+json"
+					set:html={JSON.stringify({ '@context': 'https://schema.org', ...jsonLd }).replace(/</g, '\\u003c')}
+				/>
+			)}
+		</section>
+	)
+}
+
+<script>
+	// Height animation for the accordion (after the WAAPI <details> pattern).
+	// The click is taken over only while motion is allowed; otherwise, and
+	// without JS, the browser opens and closes the <details> natively.
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+	const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'; // --ease-out-expo
+
+	document.querySelectorAll<HTMLDetailsElement>('[data-service-faq] details').forEach((details) => {
+		const summary = details.querySelector('summary');
+		const answer = details.querySelector<HTMLElement>('.faq-answer');
+		if (!summary || !answer) return;
+
+		let animation: Animation | null = null;
+		let closing = false;
+		let opening = false;
+
+		// border-box heights: add the item's own borders to its parts.
+		const borders = () => details.offsetHeight - details.clientHeight;
+
+		const finish = (open: boolean) => {
+			details.open = open;
+			animation = null;
+			closing = opening = false;
+			details.style.height = '';
+			details.style.overflow = '';
+		};
+
+		const run = (from: number, to: number, open: boolean) => {
+			animation?.cancel();
+			const duration = Math.min(560, 280 + Math.abs(to - from) * 0.8);
+			animation = details.animate({ height: [`${from}px`, `${to}px`] }, { duration, easing: EASE });
+			animation.onfinish = () => finish(open);
+			animation.oncancel = () => {
+				closing = opening = false;
+			};
+		};
+
+		summary.addEventListener('click', (event) => {
+			if (reduceMotion.matches || typeof details.animate !== 'function') return;
+			event.preventDefault();
+			details.style.overflow = 'hidden';
+
+			if (closing || !details.open) {
+				// Open: pin the current height, reveal the answer, then grow into it.
+				const from = details.offsetHeight;
+				details.style.height = `${from}px`;
+				details.open = true;
+				opening = true;
+				closing = false;
+				requestAnimationFrame(() => {
+					run(from, summary.offsetHeight + answer.offsetHeight + borders(), true);
+				});
+			} else if (opening || details.open) {
+				closing = true;
+				opening = false;
+				run(details.offsetHeight, summary.offsetHeight + borders(), false);
+			}
+		});
+	});
+</script>
+
+<style>
+	.service-faq {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+	}
+
+	/* The heading holds on the left while the questions run on the right. */
+	.faq-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(2.5rem, 7vw, 7rem);
+		align-items: start;
+	}
+
+	.faq-head {
+		position: sticky;
+		top: calc(var(--header-height, 96px) + var(--space-8));
+	}
+
+	.faq-head h2 {
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.faq-call {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 var(--space-2);
+		margin: 0;
+		font-size: var(--text-base);
+		line-height: 1.6;
+	}
+
+	.faq-call a {
+		font-weight: var(--fw-medium);
+		color: var(--color-text);
+		text-decoration: underline;
+		text-decoration-color: var(--color-border);
+		text-underline-offset: 0.3em;
+		transition:
+			color var(--dur-fast) ease,
+			text-decoration-color var(--dur-fast) ease;
+	}
+
+	.faq-call a:hover {
+		color: var(--color-bronze-text);
+		text-decoration-color: currentColor;
+	}
+
+	.faq-call a:focus-visible {
+		outline: 2px solid var(--color-bronze);
+		outline-offset: 3px;
+		border-radius: 2px;
+	}
+
+	.faq-list {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.faq-item {
+		border-top: 1px solid var(--color-border);
+	}
+
+	summary {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-6);
+		padding-block: var(--space-6);
+		cursor: pointer;
+		list-style: none;
+	}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
+	summary:focus-visible {
+		outline: 2px solid var(--color-bronze);
+		outline-offset: 4px;
+		border-radius: 2px;
+	}
+
+	.faq-q {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.4;
+		color: var(--color-text);
+		text-wrap: pretty;
+		transition: color var(--dur-fast) ease;
+	}
+
+	summary:hover .faq-q {
+		color: var(--color-bronze-text);
+	}
+
+	/* A plus drawn from two hairlines; the vertical one folds flat when open. */
+	.faq-icon {
+		position: relative;
+		flex-shrink: 0;
+		width: 16px;
+		height: 16px;
+		/* Centred on the question's first line. */
+		margin-top: calc((var(--text-xl) * 1.4 - 16px) / 2);
+	}
+
+	.faq-icon::before,
+	.faq-icon::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 0;
+		width: 100%;
+		height: 1.5px;
+		margin-top: -0.75px;
+		background: var(--color-bronze);
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.faq-icon::after {
+		transform: rotate(90deg);
+	}
+
+	.faq-item[open] .faq-icon::after {
+		transform: rotate(0deg);
+	}
+
+	.faq-answer p {
+		max-width: 38rem;
+		margin: 0;
+		padding: 0 var(--space-12) var(--space-8) 0;
+		font-size: var(--text-base);
+		line-height: 1.75;
+		text-wrap: pretty;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.faq-item[open] .faq-answer p {
+			animation: faq-answer-in 600ms var(--ease-out-expo) both;
+		}
+	}
+
+	@keyframes faq-answer-in {
+		from {
+			opacity: 0;
+			transform: translateY(-6px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.faq-inner {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-8);
+		}
+
+		.faq-head {
+			position: static;
+		}
+
+		.faq-q {
+			font-size: var(--text-lg);
+		}
+
+		.faq-icon {
+			margin-top: calc((var(--text-lg) * 1.4 - 16px) / 2);
+		}
+
+		.faq-answer p {
+			padding-right: 0;
+		}
+	}
+
+	@media (max-width: 480px) {
+		summary {
+			gap: var(--space-4);
+			padding-block: 1.25rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.faq-icon::before,
+		.faq-icon::after {
+			transition: none;
+		}
+	}
+</style>

@@ -46,7 +46,9 @@ const steps: { title: string; description: string; image: LibraryImageId; alt: s
 	},
 ];
 
-const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 45vw, (min-width: 1440px) 740px, 52vw';
+// ≥1440: the pinned frame grows with the screen's height, and cover renders
+// the 3:2 photo up to ~985px wide on a 1920x1080 screen, not the column's 740.
+const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 45vw, (min-width: 1440px) 1000px, 52vw';
 ---
 
 <section
@@ -426,6 +428,11 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 		/* One screen for the stage, one stretch per step, then the hold. */
 		height: calc(100vh + var(--steps) * var(--step-vh) + var(--hold-vh));
 		padding-block: 0;
+		/* Breathing room before Why at the pin's release, where the photo
+		   otherwise ran to within ~35–75px of the next section. Margin, not
+		   padding: offsetHeight (and so the pin maths in the script) is
+		   unchanged, and the body is the same cream behind it. */
+		margin-bottom: clamp(3rem, 8vw, 6rem);
 		/* The stage pads itself for the header, so the anchor lands flush:
 		   that is the exact point where the stage pins. */
 		scroll-margin-top: 0;
@@ -559,6 +566,10 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 	   on top of the other; the active one fades up and settles. Positioned
 	   against .process-body (the <li> and list stay unpositioned) so each
 	   image can live beside its own step in the markup. */
+	/* Only the incoming photograph fades; the outgoing one holds at full
+	   opacity underneath for the length of the fade, then drops. Fading both
+	   at once left ~25% of the cream page showing through mid-crossfade, a
+	   milky wash on every step change (same technique as DayAtHome). */
 	.process.is-pinned .step-media {
 		position: absolute;
 		top: 0;
@@ -567,7 +578,7 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 		width: calc((100% - var(--gap)) * var(--share));
 		aspect-ratio: auto;
 		opacity: 0;
-		transition: opacity 900ms var(--ease-in-out-soft);
+		transition: opacity 0s linear 900ms;
 	}
 
 	.process.is-pinned .step-media :global(img) {
@@ -578,6 +589,7 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 	.process.is-pinned .step.is-active .step-media {
 		opacity: 1;
 		z-index: 1;
+		transition: opacity 900ms var(--ease-in-out-soft);
 	}
 
 	.process.is-pinned .step.is-active .step-media :global(img) {
@@ -590,6 +602,11 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 			--col-b: 7fr;
 			--share: calc(7 / 12);
 		}
+		/* The intro paragraph starts on the photo column's edge beneath it
+		   (it sat ~100px right of it on the 1:1 split). */
+		.process.is-pinned .process-intro {
+			grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -600,6 +617,9 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 			transition: none;
 		}
 		.process.is-pinned .step-media {
+			transition: opacity 0s linear 200ms;
+		}
+		.process.is-pinned .step.is-active .step-media {
 			transition: opacity 200ms linear;
 		}
 		.process.is-pinned .step-media :global(img),

@@ -1,0 +1,53 @@
+# PROJECT: automate
+
+> PROJECT: automate (Project Automate Inc.) is a luxury home technology integrator based in Manhattan Beach, California. The studio designs lighting and shading, climate, private cinema and whole-home audio and video, outdoor living and estate security as one quiet system for Los Angeles residences, then cares for it after handover. Led by founder and CEO Joshua Trevithick, it has integrated more than 400 Los Angeles residences over 17+ years, is CEDIA and Home Technology Association (HTA) certified, and designs with Savant, Control4, Lutron, Crestron, Basalte and Josh.ai.
+
+The services are grouped into six pillars below. Several belong to more than one: landscape lighting also serves security, for example, and access control is part of whole-home control. The hub page shows the everyday moments where the systems meet.
+
+Studio: 1600 Rosecrans Ave Building 7, Suite 400, Manhattan Beach, CA 90266 · (310) 740-5375 · sales@projectautomate.com
+
+## Services
+
+- [Luxury Home Technology Services](https://projectautomate.com/solutions/): every service, grouped by pillar, and the moments where the systems work together.
+
+## Control & Climate
+
+- [Smart Home Automation](https://projectautomate.com/control-systems/): Every system, every room, answered with a single, intuitive gesture.
+- [Climate Control](https://projectautomate.com/hvac-and-climate-integration/): Quiet, room-by-room comfort, in step with the shades and the sun.
+
+## Light & Shade
+
+- [Lighting Control](https://projectautomate.com/lighting-control-systems/): Light that shifts with the hour, the season and the occasion. Also part of Outdoor Living.
+- [Motorized Shades & Drapery](https://projectautomate.com/motorized-shades-and-drapery/): Privacy, shade and daylight, adjusted without lifting a finger. Also part of Control & Climate.
+
+## Private Entertainment
+
+- [Private Cinema](https://projectautomate.com/home-theater/): Reference picture and sound, built into the architecture of the room.
+- [Whole-Home Audio & Video](https://projectautomate.com/audio-video-solutions/): Music in every room and across the terrace, with no speaker in sight. Also part of Outdoor Living.
+
+## Outdoor Living
+
+- [Outdoor Living](https://projectautomate.com/outdoor-living/): Terraces, pools and gardens, as connected as the rooms inside.
+- [Landscape Lighting & Outdoor Audio](https://projectautomate.com/outdoor-lighting-audio/): Gardens, paths and pools, drawn softly in light after dark. Also part of Security & Access and Light & Shade.
+
+## Security & Access
+
+- [Estate Security Systems](https://projectautomate.com/security-systems/): Gates, cameras and doors that protect quietly and answer to one interface.
+- [Surveillance Systems](https://projectautomate.com/surveillance-systems/): High-resolution cameras, intelligent alerts and secure remote viewing.
+- [Access Control & Intercom](https://projectautomate.com/access-control-and-intercom/): Gate, door and guest access, with video intercom and mobile entry. Also part of Control & Climate.
+- [Intrusion Detection](https://projectautomate.com/intrusion-detection-systems/): Perimeter and interior sensors that stay invisible until needed.
+
+## Concierge Care
+
+- [Technology Support Membership](https://projectautomate.com/technology-support-membership/): Concierge care after handover, with 24/7 Basic Support on every plan, keeping the home performing as it did on the day it was handed over.
+
+## The studio
+
+- [About](https://projectautomate.com/about-us/): the Manhattan Beach team, led by founder Joshua Trevithick, and how it works: Understand, Design, Integrate, Deliver.
+- [Design Partners](https://projectautomate.com/design-partners/): for architects, interior designers and builders: early coordination, concealed infrastructure and clean handover, with Lunch & Learn sessions that offer CEU credits to qualified professionals.
+- [Journal](https://projectautomate.com/blog/): articles on lighting, private cinema, shading, security and whole-home control.
+- [Schedule a consultation](https://projectautomate.com/schedule/): arrange a private consultation about a residence, its design team and timeline.
+
+## Optional
+
+- [Brands](https://projectautomate.com/brands/): the control platforms the studio designs with: Savant, Control4, Lutron, Crestron, Basalte and Josh.ai.

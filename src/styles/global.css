@@ -119,6 +119,41 @@ textarea {
 	color: var(--color-gold-light);
 }
 
+/* Keyboard focus is never left under the sticky header: when Tab scrolls an
+   element into view, it lands clear of the bar. Scoped to :focus-visible, not
+   html { scroll-padding-top }, because Lenis adds scroll-padding on top of
+   each anchor's own scroll-margin, which would push every anchor landing
+   (/#approach, the forms) down by another header height. */
+:focus-visible {
+	scroll-margin-top: calc(var(--header-height, 96px) + 1rem);
+}
+
+/* Skip link: off-screen until focused, then a charcoal pill above the header. */
+.skip-link {
+	position: fixed;
+	top: 0.75rem;
+	left: 0.75rem;
+	z-index: 100;
+	padding: 0.75rem 1.25rem;
+	border-radius: 999px;
+	background: var(--color-charcoal);
+	color: var(--color-white);
+	font-size: var(--text-sm);
+	font-weight: var(--fw-semibold);
+	transform: translateY(calc(-100% - 1rem));
+}
+
+.skip-link:focus-visible {
+	transform: none;
+	outline: 2px solid var(--color-accent-hover);
+	outline-offset: 2px;
+}
+
+/* The skip link's target takes focus only so the next Tab starts there. */
+#main:focus {
+	outline: none;
+}
+
 .visually-hidden {
 	position: absolute;
 	width: 1px;

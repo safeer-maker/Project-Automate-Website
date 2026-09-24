@@ -1,0 +1,520 @@
+---
+// "Where systems meet": every integration scenario (src/data/integrations.ts)
+// as a card. Above them, a row of service filters (buttons, aria-pressed):
+// choosing one keeps only the moments that include it, marks it on each card,
+// and names the other services it works with.
+//
+// Without JS the filter row stays hidden and every card simply shows. With
+// reduced motion, filtering is instant.
+// A service can be preselected from a link: /solutions/?service=<key>#where-systems-meet
+import { withBase } from '../../lib/paths.ts';
+import { pillars, services, type ServiceKey } from '../../data/services.ts';
+import { integrations } from '../../data/integrations.ts';
+import IntegrationCard from '../../components/services/IntegrationCard.astro';
+
+// Filter chips in pillar order, home members only (as in the header).
+const order: ServiceKey[] = pillars.flatMap((pillar) => pillar.services);
+const rank = (key: ServiceKey) => order.indexOf(key);
+
+// For each service: its moments, and every other service it shares one with.
+const overlaps = order
+	.map((key) => {
+		const moments = integrations.filter((integration) => integration.services.includes(key));
+		const partners = [...new Set(moments.flatMap((integration) => integration.services))]
+			.filter((other) => other !== key)
+			.sort((a, b) => rank(a) - rank(b))
+			.map((other) => services[other]);
+		return { service: services[key], count: moments.length, partners };
+	})
+	.filter(({ count }) => count > 0);
+
+const numberWords = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const inWords = (n: number) => numberWords[n] ?? String(n);
+
+// Three to a row from 1024px, two from 701px, one below. The container caps
+// at 1280px less its padding.
+const cardSizes = '(max-width: 700px) calc(100vw - 3rem), (max-width: 1023px) 47vw, (min-width: 1280px) 390px, 31vw';
+---
+
+<section class="moments" id="where-systems-meet" aria-labelledby="moments-title" data-moments>
+	<div class="container">
+		<header class="moments-head">
+			<div>
+				<span class="eyebrow">Where Systems Meet</span>
+				<h2 id="moments-title">The everyday moments where it all works as one.</h2>
+			</div>
+			<p>
+				No system in a well-designed home works alone. Arriving, entertaining, leaving for a week: each moment
+				draws on several services at once, designed together so they respond together.
+			</p>
+		</header>
+
+		<div class="moment-filter" data-moment-filter hidden>
+			<p class="filter-label" id="moment-filter-label">See the moments for</p>
+			<div class="filter-scroll" data-lenis-prevent>
+				<div class="filter-chips" role="group" aria-labelledby="moment-filter-label">
+					<button type="button" class="filter-chip" data-filter="all" aria-pressed="true">All services</button>
+					{overlaps.map(({ service }) => (
+						<button
+							type="button"
+							class="filter-chip"
+							data-filter={service.key}
+							data-href={withBase(service.href)}
+							data-title={service.title}
+							aria-pressed="false"
+						>
+							{service.shortTitle}
+						</button>
+					))}
+				</div>
+			</div>
+
+			<div class="overlap">
+				<p class="overlap-panel overlap-all" data-overlap="all">
+					{inWords(integrations.length).replace(/^./, (c) => c.toUpperCase())} moments, each bringing several services
+					together. Choose one to see where it meets the rest of the home.
+				</p>
+				{overlaps.map(({ service, count, partners }) => (
+					<div class="overlap-panel" data-overlap={service.key} hidden>
+						<p class="overlap-lede">
+							<strong>{service.title}</strong> takes part in {inWords(count)}
+							{count === 1 ? ' moment' : ' moments'}, alongside:
+						</p>
+						<ul class="overlap-partners">
+							{partners.map((partner) => (
+								<li>
+									<a href={withBase(partner.href)}>{partner.shortTitle}</a>
+								</li>
+							))}
+						</ul>
+						<a class="overlap-link" href={withBase(service.href)}>
+							Explore {service.title}
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+								<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</a>
+					</div>
+				))}
+			</div>
+			<p class="visually-hidden" role="status" data-moment-status></p>
+		</div>
+
+		<div class="moments-grid" data-moments-grid>
+			{integrations.map((integration, i) => (
+				<IntegrationCard integration={integration} sizes={cardSizes} class="moment-card" style={`--i:${i % 3}`} />
+			))}
+		</div>
+	</div>
+</section>
+
+<script>
+	const section = document.querySelector<HTMLElement>('[data-moments]');
+	const filter = section?.querySelector<HTMLElement>('[data-moment-filter]');
+	const grid = section?.querySelector<HTMLElement>('[data-moments-grid]');
+
+	if (section && filter && grid) {
+		const chips = [...filter.querySelectorAll<HTMLButtonElement>('button[data-filter]')];
+		const panels = [...filter.querySelectorAll<HTMLElement>('[data-overlap]')];
+		const status = filter.querySelector<HTMLElement>('[data-moment-status]');
+		const cards = [...grid.querySelectorAll<HTMLElement>('[data-integration]')];
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+		// The filter only works with JS, so it only appears with JS.
+		filter.hidden = false;
+
+		const apply = (key: string, announce: boolean) => {
+			const chip = chips.find((c) => c.dataset.filter === key) ?? chips[0];
+			const active = chip.dataset.filter ?? 'all';
+			const href = chip.dataset.href;
+			chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+			panels.forEach((panel) => (panel.hidden = panel.dataset.overlap !== active));
+
+			let shown = 0;
+			cards.forEach((card) => {
+				const match = active === 'all' || (card.dataset.services ?? '').split(' ').includes(active);
+				card.classList.toggle('is-filtered-out', !match);
+				// The chosen service, marked on every card it appears in.
+				card.querySelectorAll<HTMLAnchorElement>('a.chip').forEach((link) => {
+					link.classList.toggle('is-match', Boolean(href) && link.getAttribute('href') === href);
+				});
+				if (!match) return;
+				// Replay a short settle on the cards that remain.
+				card.classList.remove('is-settling');
+				if (!reduceMotion.matches) {
+					card.style.setProperty('--n', String(shown));
+					void card.offsetWidth;
+					card.classList.add('is-settling');
+				}
+				shown += 1;
+			});
+
+			// Where the chips scroll sideways (phones), bring the chosen one into view.
+			const scroller = chip.closest<HTMLElement>('.filter-scroll');
+			if (scroller && scroller.scrollWidth > scroller.clientWidth) {
+				const box = scroller.getBoundingClientRect();
+				const rect = chip.getBoundingClientRect();
+				scroller.scrollBy({
+					left: rect.left - box.left - (box.width - rect.width) / 2,
+					behavior: announce && !reduceMotion.matches ? 'smooth' : 'auto',
+				});
+			}
+
+			if (announce && status) {
+				status.textContent =
+					active === 'all'
+						? `Showing all ${shown} moments.`
+						: `Showing ${shown} ${shown === 1 ? 'moment' : 'moments'} with ${chip.dataset.title}.`;
+			}
+		};
+
+		chips.forEach((chip) => {
+			chip.addEventListener('click', () => {
+				// Pressing the chosen service again returns to all of them.
+				const key = chip.getAttribute('aria-pressed') === 'true' ? 'all' : (chip.dataset.filter ?? 'all');
+				apply(key, true);
+			});
+		});
+
+		// Preselect from ?service=<key>, when it names a service in the row.
+		const preset = new URLSearchParams(window.location.search).get('service');
+		if (preset && chips.some((c) => c.dataset.filter === preset)) apply(preset, false);
+
+		// Cards rise once, in sequence, as the grid first comes into view.
+		if (!('IntersectionObserver' in window)) {
+			section.classList.add('is-revealed');
+		} else {
+			const io = new IntersectionObserver(
+				(entries) => {
+					if (!entries.some((entry) => entry.isIntersecting)) return;
+					section.classList.add('is-revealed');
+					io.disconnect();
+				},
+				{ rootMargin: '0px 0px -10% 0px', threshold: 0.02 }
+			);
+			io.observe(grid);
+		}
+	}
+</script>
+
+<style>
+	.moments {
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+		background: var(--color-surface);
+		scroll-margin-top: var(--header-height, 96px);
+	}
+
+	.moments-head {
+		display: grid;
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		gap: var(--space-6) clamp(2.5rem, 6vw, 6rem);
+		align-items: end;
+		margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+	}
+
+	.moments-head h2 {
+		max-width: 20ch;
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.moments-head p {
+		max-width: 30rem;
+		margin: 0;
+		line-height: 1.7;
+		text-wrap: pretty;
+	}
+
+	/* ---- Filter ---- */
+
+	.moment-filter {
+		display: grid;
+		gap: var(--space-4);
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+		padding-bottom: var(--space-6);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.moment-filter[hidden],
+	.overlap-panel[hidden] {
+		display: none;
+	}
+
+	.filter-label {
+		margin: 0;
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-bronze-text);
+	}
+
+	.filter-scroll {
+		/* Room for the focus ring on wrapped rows (and when it scrolls, below). */
+		padding: 3px;
+		margin: -3px;
+	}
+
+	.filter-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+
+	.filter-chip {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.5rem;
+		padding: 0.45rem 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		background: transparent;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		color: var(--color-text);
+		white-space: nowrap;
+		transition:
+			color var(--dur-fast) ease,
+			border-color var(--dur-fast) ease,
+			background-color var(--dur-fast) ease;
+	}
+
+	.filter-chip:hover {
+		border-color: var(--color-bronze);
+		color: var(--color-bronze-text);
+	}
+
+	.filter-chip[aria-pressed='true'] {
+		border-color: var(--color-charcoal);
+		background: var(--color-charcoal);
+		color: var(--color-white);
+	}
+
+	.filter-chip:focus-visible {
+		outline: 2px solid var(--color-bronze);
+		outline-offset: 2px;
+	}
+
+	.overlap {
+		min-height: 2.75rem;
+	}
+
+	.overlap-panel {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: var(--space-2) var(--space-4);
+		margin: 0;
+		font-size: var(--text-base);
+		line-height: 1.6;
+		color: var(--color-text-muted);
+		animation: overlap-in 500ms var(--ease-out-expo) both;
+	}
+
+	.overlap-lede {
+		margin: 0;
+	}
+
+	.overlap-lede strong {
+		font-weight: var(--fw-semibold);
+		color: var(--color-text);
+	}
+
+	.overlap-partners {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1) var(--space-3);
+	}
+
+	.overlap-partners li:not(:last-child)::after {
+		content: '·';
+		margin-left: var(--space-3);
+		color: var(--color-text-muted);
+	}
+
+	.overlap-partners a,
+	.overlap-link {
+		color: var(--color-text);
+		text-decoration: underline;
+		text-decoration-color: var(--color-border);
+		text-underline-offset: 0.3em;
+		transition:
+			color var(--dur-fast) ease,
+			text-decoration-color var(--dur-fast) ease;
+	}
+
+	.overlap-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin-left: auto;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		text-decoration: none;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.overlap-link svg {
+		width: 16px;
+		height: 16px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.overlap-partners a:hover,
+	.overlap-link:hover {
+		color: var(--color-bronze-text);
+		text-decoration-color: currentColor;
+		border-color: currentColor;
+	}
+
+	.overlap-link:hover svg {
+		transform: translateX(4px);
+	}
+
+	.overlap-partners a:focus-visible,
+	.overlap-link:focus-visible {
+		outline: 2px solid var(--color-bronze);
+		outline-offset: 3px;
+		border-radius: 2px;
+	}
+
+	/* ---- Cards ---- */
+
+	.moments-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(3rem, 5vw, 4rem) clamp(1.5rem, 2.5vw, 2.5rem);
+		--card-ratio: 4 / 3;
+	}
+
+	.moments-grid > :global(.is-filtered-out) {
+		display: none;
+	}
+
+	/* The chosen service, marked on each card it appears in. */
+	.moments-grid :global(a.chip.is-match) {
+		border-color: var(--color-bronze);
+		background: rgba(154, 114, 57, 0.1);
+		color: var(--color-text);
+	}
+
+	.moments-grid :global(.is-plain a.chip.is-match) {
+		border-color: var(--color-gold-light);
+		background: rgba(175, 136, 80, 0.18);
+		color: var(--color-white);
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.moments-grid > :global(.moment-card) {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 1000ms var(--ease-out-expo),
+				transform 1000ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 110ms);
+		}
+
+		.is-revealed .moments-grid > :global(.moment-card) {
+			opacity: 1;
+			transform: none;
+		}
+
+		.is-revealed .moments-grid > :global(.moment-card.is-settling) {
+			animation: moment-settle 700ms var(--ease-out-expo) both;
+			animation-delay: calc(min(var(--n, 0), 8) * 50ms);
+		}
+	}
+
+	@keyframes moment-settle {
+		from {
+			opacity: 0;
+			transform: translateY(14px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@keyframes overlap-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@media (max-width: 1023px) {
+		.moments-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			--card-ratio: 3 / 2;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.moments-head {
+			grid-template-columns: minmax(0, 1fr);
+			align-items: start;
+		}
+
+		.overlap-link {
+			margin-left: 0;
+		}
+	}
+
+	@media (max-width: 760px) {
+		/* One row that scrolls sideways, running to the screen's edges. */
+		.filter-scroll {
+			overflow-x: auto;
+			overscroll-behavior-x: contain;
+			scrollbar-width: none;
+			margin-inline: calc(-1 * var(--container-padding));
+			padding-inline: var(--container-padding);
+			scroll-padding-inline: var(--container-padding);
+			mask-image: linear-gradient(90deg, #000 calc(100% - 2rem), transparent);
+		}
+
+		.filter-scroll::-webkit-scrollbar {
+			display: none;
+		}
+
+		.filter-chips {
+			flex-wrap: nowrap;
+			width: max-content;
+			padding-right: var(--space-8);
+		}
+
+		.overlap-panel {
+			display: block;
+		}
+
+		.overlap-partners {
+			margin-block: var(--space-2) var(--space-3);
+		}
+
+		.overlap-link {
+			display: inline-flex;
+		}
+	}
+
+	@media (max-width: 700px) {
+		.moments-grid {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-12);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.overlap-panel {
+			animation: none;
+		}
+		.overlap-link svg {
+			transition: none;
+		}
+	}
+</style>

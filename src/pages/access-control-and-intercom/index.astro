@@ -1,4 +1,7 @@
 ---
+// Access Control & Intercom: the entry layer of the Security & Access family.
+// This page stays with who comes and goes and how they are received at the
+// gate and the door; the system as a whole is explained on /security-systems/.
 import type { LibraryImageId } from '../../lib/images.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
@@ -9,22 +12,23 @@ type Capability = { title: string; description: string; imageId: LibraryImageId;
 
 const capabilities: Capability[] = [
 	{
-		title: 'Smart Entry',
+		title: 'Video Intercom',
 		description:
-			'See, speak with and admit visitors from anywhere. Entry that pairs everyday convenience with genuine security.',
+			'See, speak with and admit visitors from anywhere. A call at the gate reaches the nearest touch panel, the television or your phone.',
 		imageId: 'solutions/access-lit-gate',
 		imageAlt: 'Contemporary gate traced with a line of light beside an intercom post at dusk',
 	},
 	{
-		title: 'Quiet, Connected Protection',
+		title: 'Every Gate and Door, as One',
 		description:
-			'Surveillance, access control and remote monitoring work together, giving you greater awareness without the residence ever feeling dominated by security equipment.',
+			'Gates, doors and smart locks answer to one system. Manage every entry point at home or away, and secure them all with a single command.',
 		imageId: 'solutions/security-smart-lock',
 		imageAlt: 'Smart lock set into a timber front door, with a sunset terrace beyond',
 	},
 	{
-		title: 'Entry, Managed From Anywhere',
-		description: 'View cameras, receive alerts, verify visitors and manage every entry point, at home or away.',
+		title: 'Credentials and Schedules',
+		description:
+			'Mobile credentials for the family, scheduled access for staff and one-time entry for couriers, so the right people arrive on your terms.',
 		imageId: 'solutions/security-driveway-gate',
 		imageAlt: 'Modern sliding driveway gate and intercom post, softly lit at night',
 	},
@@ -47,12 +51,10 @@ const scenes = [
 	eyebrow="Access Control & Intercom"
 	heroTitle="Gate and Door Access, Refined"
 	heroSubtitle="Gates, doors, cameras, entry stations and mobile access, brought together as one composed experience for Los Angeles residences."
-	intro="Arrival sets the tone for a home. Family is welcomed without a pause, guests and staff are received on your terms, and everyone else is kept politely at the gate."
-	related={['security-systems', 'surveillance-systems', 'intrusion-detection-systems']}
-	relatedEyebrow="The Security Suite"
-	relatedTitle="Part of one quiet system."
+	intro="Access control and intercom decide who comes and goes at a Los Angeles residence: gates, doors, a video intercom and mobile entry, working as one. Family is welcomed without a pause, guests and staff are received on your terms, and everyone else is kept politely at the gate."
+	serviceKey="access-control-and-intercom"
 >
-	<CapabilityList eyebrow="Key Features" title="Access that feels effortless, and stays exacting." items={capabilities} />
+	<CapabilityList eyebrow="What's Included" title="Access that feels effortless, and stays exacting." items={capabilities} />
 
 	<DailyExperience
 		eyebrow="Daily Experience"
