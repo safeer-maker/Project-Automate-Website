@@ -17,9 +17,19 @@ Checkbox = not started. Strike through / move to "Resolved" as you go.
       `src/data/ghl.ts`). The Footer newsletter is still a client-side placeholder.
       Note the GHL IDs point at a temporary sub-account — see CLAUDE.md.
 
-- [ ] **`/thank-you/` is unreachable.** It exists as a page but nothing redirects to
-      it. Either set the GHL form's on-submit action to redirect to `/thank-you/`,
-      or keep GHL's inline thank-you message and delete the page.
+- [ ] **Point the GHL form at `/thank-you/`.** The page is now a full client-facing
+      page (what happens next, what to prepare, direct line). In the GHL form
+      builder set On submit → redirect to `https://projectautomate.com/thank-you/`,
+      and turn OFF "add form values to URL". Confirm the timings it promises
+      (reply within one business day, 30–45 min discovery call, walkthrough within
+      ~2 weeks, proposal ~2–3 weeks later).
+
+- [ ] **GHL form content needs a pass in the form builder (not in this repo):**
+      the SMS-consent checkbox says "…from Project:automate about **Land Scaping**"
+      (template leftover from the temporary sub-account), the submit button says
+      "Submit" (suggested: "Request a Consultation"), and the field "What budget
+      range are you considering?" is worth rewording for $5M+ clients (e.g.
+      "Anticipated investment").
 
 - [ ] **A2P/SMS compliance is still pending on your end**, per the checklist you sent:
   - IRS CP-575 or 147C letter — not yet provided
@@ -97,30 +107,44 @@ Checkbox = not started. Strike through / move to "Resolved" as you go.
 
 ## Priority 3 — Technical / SEO hygiene
 
-- [ ] **No `sitemap.xml` or `robots.txt`.** Add `@astrojs/sitemap` (trivial with
-      `astro add sitemap`) and a `public/robots.txt`.
-- [ ] **No custom 404 page** — add `src/pages/404.astro`.
 - [ ] **No analytics installed** — no GA4, GTM, or Meta Pixel. Decide what you want
       and add it to `src/layouts/BaseLayout.astro`.
-- [ ] **Structured data is minimal.** A `LocalBusiness` JSON-LD block was added to
-      every page (`src/layouts/BaseLayout.astro`) with the real legal name, address,
-      and phone — but there's no per-service or per-article structured data yet
-      (e.g. `Service`, `BlogPosting`, breadcrumbs).
 - [ ] **Accessibility hasn't had a dedicated pass** — no skip-to-content link, focus
       states haven't been checked against the new cream/charcoal palette, and color
       contrast hasn't been formally verified (should be fine — bronze accent and
       dark text both read well on the cream background — but wasn't run through a
       contrast checker).
-- [ ] **No image optimization pipeline beyond the one-time WebP conversion.** All
-      raster images are now `.webp` (converted from the original 31MB of scraped
-      jpg/png/gif down to ~14MB), but they're plain `<img>` tags — no responsive
-      `srcset`, no Astro `<Image />` component, no lazy-loading audit beyond what
-      individual pages already set.
-- [ ] **The homepage hero video is an embedded YouTube iframe**
-      (`src/components/home/HeroSection.astro`), same as the live site. That's
-      simple but pulls in YouTube's own JS/tracking on every homepage visit and
-      autoplays muted — worth deciding if a self-hosted, compressed background
-      video would load faster and avoid the third-party dependency.
+## Resolved — luxury storytelling rebuild (Sept 2026)
+
+- ~~No sitemap / robots.txt / 404~~ — `@astrojs/sitemap`, `public/robots.txt`, branded
+  `src/pages/404.astro` (Cloudflare `not_found_handling: 404-page`).
+- ~~Minimal structured data~~ — one `@graph` per page: business, website, breadcrumbs,
+  `Service` on solution/brand pages, `BlogPosting` on posts.
+- ~~No responsive images~~ — photo library + `<Picture>` with srcset (see CLAUDE.md
+  "Photography"). Old `/images/home/*` experience/process/inspiration files are no
+  longer referenced.
+- ~~Hero video is a YouTube iframe~~ — self-hosted since; raw masters moved out of
+  `public/` to `media-src/videos/` (a 72 MiB master would have failed the Workers deploy).
+- ~~Typo / WordPress slugs~~ — `/home-theater/`, `/technology-support-membership/`,
+  `/energy-management/`, `/brands/savant|lutron|josh-ai/`,
+  `/success-stories/pacific-horizon-residence/`; `/partner/` merged into
+  `/design-partners/`. 301s in `public/_redirects`.
+- ~~Energy Management on the homepage/nav~~ — removed everywhere; page kept unlinked.
+
+## Needs client confirmation (copy written during the rebuild)
+
+- Residence names/photos: Oceanfront Villa, Marazul Estate, Alpine Retreat and the
+  Success Stories projects are shown with licensed stock photography — confirm the
+  projects are real, or supply real photography.
+- "24/7 concierge support", "6 manufacturer certifications", Control4 Gold vs
+  Platinum dealer status (brand titles say "Integrator" until confirmed).
+- Membership plan response times contradict each other (30 vs 60 minutes; 24/7 vs
+  business hours) — kept as found.
+- areaServed in structured data includes Hermosa Beach, Rolling Hills, Calabasas,
+  Santa Monica and Holmby Hills — confirm these are real service areas.
+- Four off-tone posts (eMylo "budget-friendly", three Brilliant-switch posts) are
+  `noindex` — revert if Search Console shows they bring qualified traffic.
+- The footer newsletter field still sends nowhere — wire it to GHL or remove it.
 
 ## Resolved this session (for reference — don't re-open)
 

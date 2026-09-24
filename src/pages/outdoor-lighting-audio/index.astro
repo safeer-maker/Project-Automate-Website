@@ -1,11 +1,30 @@
 ---
-import PageLayout from '../../layouts/PageLayout.astro';
+// Landing page (paid and referral traffic): one story, one form. No related
+// links or closing banner, so nothing competes with the consultation request.
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import LightAndSound from './_LightAndSound.astro';
+import AfterDarkGallery from './_AfterDarkGallery.astro';
 import ConsultationFormSection from './_ConsultationFormSection.astro';
 ---
 
-<PageLayout
-	title="Outdoor Lighting & Audio"
-	description="Landscape lighting and outdoor audio systems designed for effortless indoor-outdoor living. Request a consultation today."
+<ServiceLayout
+	title="Landscape Lighting & Outdoor Audio, LA"
+	description="Landscape lighting and hidden outdoor audio for Los Angeles gardens, pools and terraces. Request a private design consultation with the PROJECT: automate team."
+	heroImageId="solutions/landscape-water-wall"
+	heroAlt="A lit water wall spilling into a pool at night, framed by softly uplit trees"
+	heroPosition="60% 50%"
+	eyebrow="Gardens · Pools · Terraces"
+	heroTitle="Landscape Lighting & Outdoor Audio"
+	heroSubtitle="Gardens, paths and pools drawn softly in light after dark, with music that seems to come from the landscape itself."
+	ctaLabel="Request a Design Consultation"
+	ctaHref="#consultation"
+	intro="The garden deserves the same care as the rooms inside. We design landscape lighting and outdoor audio together, so the architecture glows, the paths are safe to walk and music reaches every terrace without a speaker in sight."
+	serviceName="Landscape Lighting & Outdoor Audio"
+	serviceType="Landscape lighting and outdoor audio design and installation"
 >
+	<LightAndSound />
+
+	<AfterDarkGallery />
+
 	<ConsultationFormSection />
-</PageLayout>
+</ServiceLayout>

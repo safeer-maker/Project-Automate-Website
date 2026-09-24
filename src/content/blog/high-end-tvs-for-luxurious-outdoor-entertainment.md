@@ -2,6 +2,7 @@
 title: "High-End TVs for Luxurious Outdoor Entertainment"
 publishDate: 2025-06-26
 excerpt: "Bring the fun outside with a proper outdoor TV installation. High-end outdoor displays are engineered for brightness and weather that indoor TVs simply can't handle."
+seoDescription: "High-end outdoor TVs from Séura and Samsung Terrace: why indoor sets fail outside, and how 2,000-nit brightness and anti-glare screens hold up in full sun."
 coverImage: "/images/blog/high-end-tvs-for-luxurious-outdoor-entertainment.webp"
 coverImageAlt: "High-end television mounted in a luxury outdoor living space"
 category: "Outdoor Living"

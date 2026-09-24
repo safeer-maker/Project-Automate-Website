@@ -1,11 +1,17 @@
 ---
+// Landing page for every GHL form ("On submit → redirect" to /thank-you/, with
+// "add form values to the URL" switched off so no personal data reaches the
+// query string). noindex, and kept out of the nav, footer and sitemap.
 import PageLayout from '../../layouts/PageLayout.astro';
 import ThankYouSection from './_ThankYouSection.astro';
+import { ogImageUrl } from '../../lib/images.ts';
 ---
 
 <PageLayout
-	title="Thank You"
-	description="Your request has been received. A member of the PROJECT: automate team will follow up with the next steps."
+	title="Consultation Request Received"
+	description="Your private consultation request has reached PROJECT: automate. Here is what happens next, and how to reach our Manhattan Beach design studio in the meantime."
+	image={ogImageUrl('solutions/landscape-path')}
+	noindex
 >
 	<ThankYouSection />
 </PageLayout>

@@ -1,11 +1,14 @@
 ---
 import { withBase } from '../../lib/paths.ts';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
 ---
 
-<section class="section legal">
+<section class="legal">
 	<div class="container legal-wrap">
-		<SectionHeading eyebrow="Legal" title="Terms and Conditions" subtitle="Last Updated: August 2026" />
+		<header class="legal-head">
+			<span class="eyebrow">Legal</span>
+			<h1>Terms and Conditions</h1>
+			<p class="updated">Last Updated: August 2026</p>
+		</header>
 
 		<p>These Terms and Conditions govern your use of the Project Automate Inc. website and your interactions with our services. By accessing this website or submitting information through it, you agree to these Terms and Conditions.</p>
 
@@ -76,7 +79,28 @@ import SectionHeading from '../../components/ui/SectionHeading.astro';
 <style>
 	.legal-wrap {
 		max-width: 780px;
-		padding-block: var(--space-8) var(--space-24);
+		padding-block: clamp(3.5rem, 8vw, 6.5rem) var(--space-24);
+	}
+
+	.legal-head {
+		margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+		padding-bottom: var(--space-8);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.legal-head h1 {
+		margin: 0 0 var(--space-4);
+		font-size: var(--text-display-lg);
+		font-weight: var(--fw-medium);
+		line-height: 1.08;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+	}
+
+	.legal-head .updated {
+		margin: 0;
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
 	}
 
 	.legal-wrap h2 {

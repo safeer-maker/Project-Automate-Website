@@ -1,83 +1,202 @@
 ---
-import { withBase } from '../../lib/paths.ts';
+import Picture from '../../components/ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
 
-const stories = [
+const stories: { title: string; text: string; image: LibraryImageId; alt: string }[] = [
 	{
 		title: 'A Kitchen Made For Royalty',
-		text: 'Lighting has the power to transform an ordinary kitchen into something extraordinary — and when the kitchen is already stunning, the right lighting can make it a true work of art. For this project, we installed multiple smart recessed ceiling lights, seamlessly integrated into the home’s overall smart system. Each fixture can be controlled individually with the touch of a button or simple voice commands.',
-		image: withBase('/images/get-inspired/kitchen-lighting.webp'),
-		alt: 'Smart recessed lighting integrated throughout a luxury kitchen',
+		text: 'Lighting has the power to transform an ordinary kitchen into something extraordinary, and when the kitchen is already stunning, the right lighting can make it a true work of art. For this project, we installed multiple smart recessed ceiling lights, seamlessly integrated into the home’s overall smart system. Each fixture can be controlled individually with the touch of a button or simple voice commands.',
+		image: 'solutions/lighting-kitchen',
+		alt: 'Dark, sculptural kitchen lit by pendants and soft under-cabinet light',
 	},
 	{
 		title: 'Stunning Privacy',
 		text: 'Privacy was a top priority for this client, so we integrated electric shading throughout their residence. These smart shades can be programmed to open and close automatically based on the time of day, or adjusted instantly with a simple button press or voice command. The result is a perfect balance of privacy and elegance.',
-		image: withBase('/images/get-inspired/privacy-shading.webp'),
-		alt: 'Illuminated residence at night with automated privacy shading',
+		image: 'solutions/shades-glass-wall',
+		alt: 'Bright minimalist living space with floor-to-ceiling glass opening onto a garden',
 	},
 	{
 		title: 'Elegant Safety',
 		text: 'For this project, we designed a lighting system that not only enhances nighttime safety around the client’s multiple pools but also elevates the overall outdoor ambiance. The lights gradually shift throughout the day, creating the perfect atmosphere by nightfall. And when a little more privacy is desired, the entire system can be dimmed or turned off instantly with the touch of a button.',
-		image: withBase('/images/get-inspired/pool-lighting.webp'),
-		alt: 'Poolside lighting scene designed for nighttime safety and ambiance',
+		image: 'residences/hidden-hills-courtyard',
+		alt: 'Pool courtyard at dusk with a fire table, lounge seating and string lights',
 	},
 ];
 ---
 
-<section class="section stories">
+<section class="stories" aria-labelledby="haslam-heading">
 	<div class="container">
-		{stories.map((story, i) => (
-			<div class={`story-row ${i % 2 === 1 ? 'reverse' : ''}`}>
-				<div class="story-image">
-					<img src={story.image} alt={story.alt} loading="lazy" />
-				</div>
-				<div class="story-copy">
-					<h3>{story.title}</h3>
-					<p>{story.text}</p>
-				</div>
-			</div>
-		))}
+		<header class="project-intro">
+			<span class="eyebrow">West Hollywood · Haslam Terrace</span>
+			<h2 id="haslam-heading">Light, security and shade, designed as one.</h2>
+			<p>
+				For our Haslam Terrace project, we designed a state-of-the-art smart home with a strong
+				emphasis on advanced lighting, security illumination, and automated shading. The result
+				is a residence that delivers a top-tier impression, whether admired from the outside or
+				experienced from within.
+			</p>
+		</header>
+
+		<div class="story-list" data-stories>
+			{stories.map((story, i) => (
+				<article class:list={['story', { 'is-flipped': i % 2 === 1 }]}>
+					<figure class="story-media">
+						<Picture id={story.image} alt={story.alt} sizes="(max-width: 900px) 100vw, 58vw" />
+					</figure>
+					<div class="story-copy">
+						<span class="story-number" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+						<h3>{story.title}</h3>
+						<p>{story.text}</p>
+					</div>
+				</article>
+			))}
+		</div>
 	</div>
 </section>
 
+<script>
+	// Each story settles once as it enters; nothing replays.
+	document.querySelectorAll<HTMLElement>('[data-stories]').forEach((list) => {
+		const rows = list.querySelectorAll<HTMLElement>('.story');
+		if (!('IntersectionObserver' in window)) {
+			rows.forEach((row) => row.classList.add('is-revealed'));
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		rows.forEach((row) => io.observe(row));
+	});
+</script>
+
 <style>
-	.story-row {
+	.stories {
+		padding-block: clamp(4.5rem, 10vw, 8.5rem);
+	}
+
+	.project-intro {
+		max-width: 46rem;
+		margin-bottom: clamp(3.5rem, 8vw, 6.5rem);
+	}
+
+	.project-intro h2 {
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.12;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.project-intro p {
+		margin: 0;
+		font-size: var(--text-body-lg);
+		line-height: 1.7;
+	}
+
+	.story-list {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(4rem, 10vw, 8rem);
+	}
+
+	.story {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: var(--space-12);
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		gap: clamp(2rem, 6vw, 6rem);
 		align-items: center;
 	}
 
-	.story-row + .story-row {
-		margin-top: var(--space-16);
+	.story.is-flipped {
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
 	}
 
-	.story-row.reverse .story-image {
+	.story.is-flipped .story-media {
 		order: 2;
 	}
 
-	.story-image img {
+	.story-media {
+		margin: 0;
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		aspect-ratio: 16 / 10;
+		background: var(--color-surface);
+	}
+
+	.story-media :global(img) {
 		width: 100%;
-		aspect-ratio: 4 / 3;
+		height: 100%;
 		object-fit: cover;
-		border-radius: var(--radius-lg);
+	}
+
+	.story-number {
+		display: block;
+		margin-bottom: var(--space-4);
+		padding-bottom: var(--space-4);
+		border-bottom: 1px solid var(--color-border);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		color: var(--color-accent);
 	}
 
 	.story-copy h3 {
-		font-size: var(--text-3xl);
-		margin-bottom: var(--space-4);
+		margin: 0 0 var(--space-4);
+		font-size: var(--text-display-sm);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+		text-wrap: balance;
 	}
 
 	.story-copy p {
-		font-size: var(--text-lg);
+		margin: 0;
+		max-width: 32rem;
+		font-size: var(--text-base);
+		line-height: 1.75;
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.story-media :global(img) {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+		.story-copy {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 1100ms var(--ease-out-expo) 120ms,
+				transform 1100ms var(--ease-out-expo) 120ms;
+		}
+		.story.is-revealed .story-media :global(img) {
+			transform: none;
+		}
+		.story.is-revealed .story-copy {
+			opacity: 1;
+			transform: none;
+		}
 	}
 
 	@media (max-width: 900px) {
-		.story-row {
-			grid-template-columns: 1fr;
+		.story,
+		.story.is-flipped {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-8);
 		}
-
-		.story-row.reverse .story-image {
+		.story.is-flipped .story-media {
 			order: 0;
+		}
+		.story-media {
+			aspect-ratio: 4 / 3;
 		}
 	}
 </style>

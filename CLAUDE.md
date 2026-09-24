@@ -25,7 +25,29 @@ All GHL IDs live in one file: `src/data/ghl.ts` (`formId`, `formName`, `formHeig
 - Any element with a `data-ghl-form-open` attribute opens the popup. Keep its `href` pointing at `/schedule/` as the no-JS / new-tab fallback. `Button` forwards the attribute.
 - The popup's form preloads in the background after page load (or on CTA hover/focus/touch) so it opens instantly. While closed, the dialog stays rendered off-screen with `visibility: hidden` — don't switch it back to `display: none`, or the preloaded form loses its web fonts and sizes itself at the wrong width.
 - Each copy of the form on a page needs a distinct `instance` prop — GHL's `form_embed.js` deletes iframes with duplicate ids.
+- Pages where the form *is* the page (`/schedule/`, `/get-started/`, `/outdoor-lighting-audio/`) use `<GhlForm primary />`: the iframe `src` is written into the HTML so it starts loading during parse, and on those pages the popup never loads — `data-ghl-form-open` CTAs scroll to the page's own form instead. Both GHL scripts in `BaseLayout` are `async`; don't make `form_embed.js` `defer` again — that held every page script (and the form) behind GHL's CDN for 1–4s.
+- The thank-you redirect is a GHL form setting (On submit → redirect to `/thank-you/`, with "add form values to URL" off so no personal data lands in the query string).
 - Cookies: necessary only, no marketing cookies. `CookieNotice.astro` records the acknowledgement as `cookie-config=essential`, the cookie GHL's form reads (`data-cookie-consent-provider="ghl_cookie"`). Never write `all` there unless marketing cookies are deliberately introduced — and update the Privacy Policy "Cookies" section if cookie usage changes.
+
+## Photography
+
+Site photography is a licensed Adobe Stock set. The originals (1–23MB each) live outside the repo; `scripts/image-manifest.mjs` maps each one to a library id (e.g. `solutions/cinema-tiered`).
+
+- `npm run images` renders responsive WebP to `public/images/library/<id>-<width>.webp`, a 1200×630 JPEG social preview to `public/images/og/<id>.jpg`, and `src/data/image-library.json`. It only renders missing files; `-- --force` re-renders all. Point `PA_IMAGE_SOURCE` at the originals folder if it isn't `C:/Users/Safeer/Downloads/pa`.
+- In pages use `<Picture id="…" alt="…" sizes="…" />` (`src/components/ui/Picture.astro`) with a `sizes` that matches the slot; `priority` only for the one above-the-fold LCP image. `imageUrl()` / `ogImageUrl()` in `src/lib/images.ts` cover CSS backgrounds, data files and `og:image`.
+- Raw video masters live in `media-src/videos/` — never in `public/` (Cloudflare Workers rejects assets over 25 MiB, and everything in `public/` is deployed).
+
+## Scrolling & motion
+
+- Lenis (`src/components/layout/SmoothScroll.astro`, mounted in `BaseLayout`) eases wheel input only; touch stays native and reduced-motion disables it. It drives native scroll, so `position: sticky` and `window` scroll listeners work unchanged. Use `window.lenis?.scrollTo(target)` for programmatic scrolls, and add `data-lenis-prevent` to any nested scroll container.
+- The homepage has exactly two pinned scenes: `_TechnicalSilence` (frame scrub, then a hold on the lit frame — `SCRUB_END`) and `_ProcessSteps` (Understand → Design → Integrate → Deliver). Keep it at two.
+
+## SEO & URLs
+
+- `PageLayout` takes the page's own `title` (Seo.astro appends ` | PROJECT: automate` when it fits in 60 chars), `description`, `image` (use `ogImageUrl`), `noindex`, and `schema` (extra JSON-LD nodes). BaseLayout emits one `@graph`: business, website, an automatic breadcrumb trail, plus page nodes.
+- Changed URLs keep a 301 in `public/_redirects` (Cloudflare) **and** an entry in `redirects` in `astro.config.mjs` (meta-refresh stubs for GitHub Pages). Add both when renaming a page, and update internal links so none go through a redirect. `trailingSlash` is `'always'`.
+- The GitHub Pages (staging) build sets `PUBLIC_NOINDEX=1`, so staging is never indexed.
+- Energy Management is deliberately unlinked (the page still exists at `/energy-management/`). Don't add it back to the nav, footer or homepage.
 
 ## Documentation
 

@@ -1,16 +1,20 @@
 ---
-import { withBase } from '../../lib/paths.ts';
+import { ogImageUrl } from '../../lib/images.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 import HeroSection from './_HeroSection.astro';
 import ProjectsSection from './_ProjectsSection.astro';
 import ClosingSection from './_ClosingSection.astro';
+
+// No Article/Review schema here or on the case studies: the project names may
+// be template content the client has yet to confirm (SPEC §5).
 ---
 
 <PageLayout
-	title="Success Stories"
-	description="Explore PROJECT: automate residences where thoughtful design and intelligent technology work together effortlessly."
-	image={withBase('/images/success-stories/pacific-horizon-residence.webp')}
+	title="Luxury Smart Home Portfolio, Los Angeles"
+	description="Inside Los Angeles residences we have integrated, from Malibu to Manhattan Beach, where lighting, shading, cinema and security disappear into the architecture."
+	image={ogImageUrl('residences/malibu-cliffside')}
+	breadcrumbTitle="Success Stories"
 >
 	<HeroSection />
 

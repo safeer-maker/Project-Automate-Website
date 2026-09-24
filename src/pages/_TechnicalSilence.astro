@@ -1,7 +1,7 @@
 ---
 // Scroll-scrubbed frame sequence: the landscape lighting comes up as you scroll
 // into the section. Frames were extracted from
-// /videos/Homepage/Landscapre_lighting_video.mp4 — every 4th frame of a 5s 60fps
+// media-src/videos/Landscapre_lighting_video.mp4 — every 4th frame of a 5s 60fps
 // clip, scaled to 1280 and encoded as WebP q72 (75 frames, ~3.7MB).
 //
 // To regenerate after swapping the clip:
@@ -26,8 +26,8 @@ const framePath = (n: number) =>
 			<span class="eyebrow">Our Philosophy</span>
 			<h2>Technical Silence.</h2>
 			<p>
-				The finest technology is the kind you never notice — working quietly in the background,
-				leaving only comfort, clarity, and a sense of calm behind.
+				The finest technology is the kind you never notice. It works quietly in the background and
+				leaves only comfort, clarity and calm.
 			</p>
 		</div>
 	</div>
@@ -57,6 +57,11 @@ const framePath = (n: number) =>
 
 		const src = (n: number) => `${base}frame-${String(n).padStart(3, '0')}.webp`;
 
+		// Fraction of the pinned travel spent scrubbing; see render(). With the
+		// section at 320vh (220vh pinned), that is ~150vh of scrub and ~70vh of
+		// hold on the lit frame.
+		const SCRUB_END = 0.68;
+
 		const draw = (image: CanvasImageSource, next?: CanvasImageSource, blend = 0) => {
 			if (!ctx) return;
 			ctx.globalAlpha = 1;
@@ -74,6 +79,7 @@ const framePath = (n: number) =>
 			still.decoding = 'async';
 			still.onload = () => draw(still);
 			still.src = src(total);
+			section.classList.add('is-lit');
 		} else {
 			const frames: HTMLImageElement[] = [];
 			let loaded = 0;
@@ -81,11 +87,17 @@ const framePath = (n: number) =>
 			for (let i = 1; i <= total; i++) {
 				const img = new Image();
 				img.decoding = 'async';
+				// Repaint (coalesced to one per frame) whenever any frame lands, not
+				// just the first: on a slow connection a visitor can reach the hold
+				// before the sequence has loaded, and without this the canvas stayed
+				// on a half-lit stand-in frame until they scrolled again. onload is
+				// always async, so `queued`/`render` below are initialised by then.
 				img.onload = () => {
 					loaded++;
-					// Paint as soon as the first frame lands so the section is
-					// never an empty box.
-					if (i === 1) render();
+					if (!queued) {
+						queued = true;
+						requestAnimationFrame(render);
+					}
 				};
 				img.src = src(i);
 				frames[i - 1] = img;
@@ -113,7 +125,12 @@ const framePath = (n: number) =>
 				// every frame is seen before the page moves on.
 				const travel = section.offsetHeight - vh;
 				const raw = travel > 0 ? -rect.top / travel : 1;
-				const progress = Math.min(1, Math.max(0, raw));
+				// The frames play out over the first SCRUB_END of the pinned
+				// distance; the rest holds the fully lit final frame on screen so
+				// the scene can land before the page scrolls on. Without the hold
+				// the last frame and the release happened on the same pixel.
+				const progress = Math.min(1, Math.max(0, raw / SCRUB_END));
+				section.classList.toggle('is-lit', progress >= 1);
 
 				const exact = progress * (total - 1);
 				const i = Math.floor(exact);
@@ -158,11 +175,12 @@ const framePath = (n: number) =>
 
 <style>
 	/* Taller than the screen so the sticky stage inside stays pinned while the
-	   frame sequence plays out. 150vh of travel across 75 frames is ~18px of
-	   scroll per frame. */
+	   frame sequence plays out, then holds. 220vh of pinned travel: ~150vh
+	   scrubs the 75 frames (~18px of scroll per frame), the last ~70vh holds
+	   the lit frame — see SCRUB_END in the script. */
 	.silence {
 		position: relative;
-		height: 250vh;
+		height: 320vh;
 		background: var(--color-black);
 		color: var(--color-text-on-dark);
 	}
@@ -236,6 +254,27 @@ const framePath = (n: number) =>
 		line-height: 1.6;
 		color: var(--color-text-on-dark-muted);
 		text-shadow: 0 1px 20px rgba(0, 0, 0, 0.6);
+		transition:
+			opacity var(--dur-slow) var(--ease-out-expo),
+			transform var(--dur-slow) var(--ease-out-expo);
+	}
+
+	/* The line lands once the lights are fully up, the payoff for the scrub.
+	   Keyed to .is-ready so the copy is never hidden if the script never runs. */
+	.silence.is-ready:not(.is-lit) p {
+		opacity: 0;
+		transform: translateY(0.75rem);
+	}
+
+	/* The light scrub stays (it's a cross-fade, see the script), but the copy
+	   shouldn't travel: a short fade only. */
+	@media (prefers-reduced-motion: reduce) {
+		.silence p {
+			transition: opacity 200ms linear;
+		}
+		.silence.is-ready:not(.is-lit) p {
+			transform: none;
+		}
 	}
 
 	@media (max-width: 700px) {

@@ -30,15 +30,18 @@ export const siteInfo = {
 export const footerQuickLinks = linkify([
 	{ label: 'Home', href: '/' },
 	{ label: 'About Us', href: '/about-us/' },
-	{ label: 'Design Partner', href: '/partner/' },
-	{ label: 'Blogs', href: '/blog/' },
+	{ label: 'Design Partner', href: '/design-partners/' },
+	{ label: 'Journal', href: '/blog/' },
 	{ label: 'Contact Us', href: '/schedule/' },
 ]);
 
+// Design Partner lives in Quick Links only (it used to appear here too as
+// "Partners"). Energy Management is intentionally unlinked site-wide.
 export const footerMenu = linkify([
-	{ label: 'Membership', href: '/technology-support-memebership/' },
-	{ label: 'Partners', href: '/design-partners/' },
+	{ label: 'Membership', href: '/technology-support-membership/' },
+	{ label: 'Success Stories', href: '/success-stories/' },
 	{ label: 'Inspiration', href: '/get-inspired/' },
+	{ label: 'Brands', href: '/brands/' },
 	{ label: 'HTA Budget Calculator', href: '/budget-calculator/' },
 ]);
 
@@ -46,3 +49,25 @@ export const legalLinks = linkify([
 	{ label: 'Privacy Policy', href: '/privacy-policy/' },
 	{ label: 'Terms & Conditions', href: '/terms-and-conditions/' },
 ]);
+
+/**
+ * Where the studio works, as schema.org places. Mirrors the business node's
+ * areaServed (research-luxury-seo.md §D) so every Service node can reuse it.
+ */
+export const areaServed = [
+	{ '@type': 'City', name: 'Los Angeles' },
+	{ '@type': 'City', name: 'Beverly Hills' },
+	{ '@type': 'City', name: 'Malibu' },
+	{ '@type': 'City', name: 'Manhattan Beach' },
+	{ '@type': 'City', name: 'Hermosa Beach' },
+	{ '@type': 'City', name: 'Palos Verdes Estates' },
+	{ '@type': 'City', name: 'Rolling Hills' },
+	{ '@type': 'City', name: 'Hidden Hills' },
+	{ '@type': 'City', name: 'Calabasas' },
+	{ '@type': 'City', name: 'Santa Monica' },
+	{ '@type': 'Place', name: 'Bel Air, Los Angeles' },
+	{ '@type': 'Place', name: 'Brentwood, Los Angeles' },
+	{ '@type': 'Place', name: 'Pacific Palisades, Los Angeles' },
+	{ '@type': 'Place', name: 'Holmby Hills, Los Angeles' },
+	{ '@type': 'AdministrativeArea', name: 'Los Angeles County' },
+];

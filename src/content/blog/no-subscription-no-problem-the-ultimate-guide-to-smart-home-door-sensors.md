@@ -1,7 +1,9 @@
 ---
 title: "No Subscription, No Problem: The Ultimate Guide to Smart Home Door Sensors"
+seoTitle: "Smart Home Door Sensors Without a Subscription"
 publishDate: 2026-07-17
 excerpt: "Discover how smart door sensors deliver no-subscription security, energy savings, and smart home automation with top models and easy setup."
+seoDescription: "Smart home door sensors without a subscription: how they work, Zigbee vs. Thread vs. WiFi, battery life, tamper protection and models from Aqara and SONOFF."
 coverImage: "/images/blog/no-subscription-no-problem-the-ultimate-guide-to-smart-home-door-sensors.webp"
 coverImageAlt: "Smart door and window sensor mounted on a white door frame"
 category: "Security"

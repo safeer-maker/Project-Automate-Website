@@ -1,53 +1,137 @@
 ---
 import { withBase } from '../../lib/paths.ts';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
 ---
 
-<section class="section philosophy">
+<section class="philosophy" data-philosophy>
 	<div class="container philosophy-grid">
-		<img src={withBase('/images/about-us/philosophy-keypad-and-view.webp')} alt="In-wall smart home keypad beside a living room with a sunset view" loading="lazy" />
+		<figure class="philosophy-media">
+			<img
+				src={withBase('/images/about-us/philosophy-keypad-and-view.webp')}
+				alt="Slim in-wall keypad beside a living room that opens onto a sunset view"
+				width="1312"
+				height="1199"
+				loading="lazy"
+				decoding="async"
+			/>
+		</figure>
 		<div class="philosophy-text">
-			<SectionHeading eyebrow="Our Philosophy" title="Technology, made invisible." />
-			<p>
+			<span class="eyebrow">Our Philosophy</span>
+			<h2>Technology, made invisible.</h2>
+			<p class="lede">
 				The best smart homes are not the ones that demand attention. They are the ones that
-				feel calm, intuitive, and naturally integrated into everyday living.
+				feel calm, intuitive, and naturally part of everyday living.
 			</p>
 			<p>
-				At PROJECT: automate, we believe technology should simplify routines, elevate comfort,
-				and blend beautifully into the architecture of the home. Every decision we make is
-				guided by clarity, precision, and long-term usability — one system, every experience
-				connected.
+				We believe technology should simplify routines, elevate comfort and blend into the
+				architecture of the home. Every decision is guided by clarity, precision and long-term
+				usability: one system, every experience connected.
 			</p>
 		</div>
 	</div>
 </section>
 
+<script>
+	// One-time reveal: the photo settles and the copy rises as the section enters.
+	document.querySelectorAll<HTMLElement>('[data-philosophy]').forEach((section) => {
+		if (!('IntersectionObserver' in window)) {
+			section.classList.add('is-revealed');
+			return;
+		}
+		const io = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				section.classList.add('is-revealed');
+				io.disconnect();
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		io.observe(section);
+	});
+</script>
+
 <style>
+	.philosophy {
+		padding-block: clamp(3rem, 7vw, 6rem) clamp(4.5rem, 10vw, 8.5rem);
+	}
+
 	.philosophy-grid {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: var(--space-12);
+		grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+		gap: clamp(2.5rem, 7vw, 7rem);
 		align-items: center;
 	}
 
-	.philosophy-grid img {
-		width: 100%;
-		aspect-ratio: 4 / 3;
-		object-fit: cover;
-		border-radius: var(--radius-lg);
+	.philosophy-media {
+		margin: 0;
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		aspect-ratio: 5 / 4;
+		background: var(--color-surface);
 	}
 
-	.philosophy-text :global(.section-heading) {
-		margin-bottom: var(--space-6);
+	.philosophy-media img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.philosophy-text h2 {
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.12;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+		text-wrap: balance;
 	}
 
 	.philosophy-text p {
-		margin-bottom: var(--space-4);
+		max-width: 34rem;
+		font-size: var(--text-base);
+		line-height: 1.75;
+	}
+
+	.philosophy-text .lede {
+		font-size: var(--text-body-lg);
+		color: var(--color-text);
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.philosophy-media img {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+		.philosophy-text > * {
+			opacity: 0;
+			transform: translateY(18px);
+			transition:
+				opacity 1000ms var(--ease-out-expo),
+				transform 1000ms var(--ease-out-expo);
+		}
+		.philosophy-text > :nth-child(2) {
+			transition-delay: 80ms;
+		}
+		.philosophy-text > :nth-child(3) {
+			transition-delay: 160ms;
+		}
+		.philosophy-text > :nth-child(4) {
+			transition-delay: 240ms;
+		}
+		.is-revealed .philosophy-media img {
+			transform: none;
+		}
+		.is-revealed .philosophy-text > * {
+			opacity: 1;
+			transform: none;
+		}
 	}
 
 	@media (max-width: 900px) {
 		.philosophy-grid {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.philosophy-media {
+			aspect-ratio: 4 / 3;
 		}
 	}
 </style>

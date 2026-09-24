@@ -1,5 +1,8 @@
 ---
 import { withBase } from '../lib/paths.ts';
+import PageLayout from './PageLayout.astro';
+import CtaBanner from '../components/ui/CtaBanner.astro';
+
 interface Props {
 	title: string;
 	excerpt: string;
@@ -8,93 +11,237 @@ interface Props {
 	category: string;
 	author: string;
 	publishDate: Date;
+	updatedDate?: Date;
+	/** Search title when the headline itself isn't the phrase people search for. */
+	seoTitle?: string;
+	/** Search snippet when the excerpt (also /blog/ card copy) isn't snippet-length. */
+	seoDescription?: string;
+	/** Keep an off-tone legacy post out of search results without deleting it. */
+	noindex?: boolean;
 }
 
-import PageLayout from './PageLayout.astro';
-
-const { title, excerpt, coverImage, coverImageAlt, category, author, publishDate } = Astro.props;
+const { title, excerpt, coverImage, coverImageAlt, category, author, publishDate, updatedDate, seoTitle, seoDescription, noindex = false } = Astro.props;
+// One description for the meta tag and the BlogPosting node, so search
+// snippets and structured data never disagree about what the post says.
+const description = seoDescription ?? excerpt;
 const formattedDate = publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 // coverImage comes from post frontmatter as a root-relative path
 const coverSrc = withBase(coverImage);
+
+// BlogPosting joins the page's @graph (BaseLayout). Author and publisher point
+// at nodes BaseLayout already defines — the founder for his own posts, the
+// studio for everything else — so the graph names each entity exactly once.
+const ORIGIN = 'https://projectautomate.com';
+const BUSINESS_REF = { '@id': `${ORIGIN}/#business` };
+const authorRef =
+	author === 'Joshua Trevithick'
+		? { '@id': `${ORIGIN}/#founder` }
+		: /project:\s*automate/i.test(author)
+			? BUSINESS_REF
+			: { '@type': 'Person', name: author, worksFor: BUSINESS_REF };
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const blogPosting = {
+	'@type': 'BlogPosting',
+	'@id': `${pageUrl}#article`,
+	headline: title,
+	description,
+	image: new URL(coverSrc, Astro.site).toString(),
+	datePublished: publishDate.toISOString(),
+	dateModified: (updatedDate ?? publishDate).toISOString(),
+	author: authorRef,
+	publisher: BUSINESS_REF,
+	mainEntityOfPage: pageUrl,
+	isPartOf: { '@id': `${ORIGIN}/#website` },
+	articleSection: category,
+	inLanguage: 'en-US',
+};
 ---
 
-<PageLayout title={title} description={excerpt} image={coverSrc} progress>
+<PageLayout
+	title={seoTitle ?? title}
+	description={description}
+	image={coverSrc}
+	imageAlt={coverImageAlt}
+	ogType="article"
+	publishedTime={publishDate}
+	modifiedTime={updatedDate ?? publishDate}
+	noindex={noindex}
+	schema={[blogPosting]}
+	breadcrumbs={[{ name: 'Journal', path: '/blog/' }]}
+	breadcrumbTitle={title}
+	progress
+>
 	<article class="post">
-		<header class="post-header container">
-			<a class="back-link" href={withBase('/blog/')}>&larr; Back to Blog</a>
+		<header class="post-header">
+			<a class="back-link" href={withBase('/blog/')}><span aria-hidden="true">&larr;</span> The Journal</a>
 			<span class="eyebrow">{category}</span>
 			<h1>{title}</h1>
-			<p class="meta">By {author} &middot; <time datetime={publishDate.toISOString()}>{formattedDate}</time></p>
+			<p class="meta">By {author} <span aria-hidden="true">&middot;</span> <time datetime={publishDate.toISOString()}>{formattedDate}</time></p>
 		</header>
 
-		<div class="post-cover">
-			<img src={coverSrc} alt={coverImageAlt} />
-		</div>
+		<figure class="post-cover">
+			{/* The cover is this page's LCP image: fetch it first. */}
+			<img src={coverSrc} alt={coverImageAlt} fetchpriority="high" decoding="async" />
+		</figure>
 
-		<div class="container post-content">
+		<div class="post-content">
 			<slot />
 		</div>
 	</article>
+
+	<CtaBanner />
 </PageLayout>
 
 <style>
+	/* One reading column (~68 characters) shared by header and body, so the
+	   headline, byline and first paragraph all hang from the same left edge. */
+	.post-header,
+	.post-content {
+		width: 100%;
+		max-width: calc(44rem + 2 * var(--page-gutter));
+		margin-inline: auto;
+		padding-inline: var(--page-gutter);
+	}
+
 	.post-header {
-		padding-block: var(--space-16) var(--space-8);
-		max-width: 760px;
+		padding-block: var(--space-24) var(--space-12);
 	}
 
 	.back-link {
-		display: block;
+		display: inline-flex;
+		gap: var(--space-2);
 		font-size: var(--text-sm);
+		letter-spacing: 0.02em;
+		color: var(--color-text-muted);
+		margin-bottom: var(--space-12);
+		transition: color var(--dur-fast) var(--ease-out-expo);
+	}
+
+	.back-link:hover,
+	.back-link:focus-visible {
 		color: var(--color-accent);
-		margin-bottom: var(--space-6);
+	}
+
+	.post-header .eyebrow {
+		display: block;
 	}
 
 	.post-header h1 {
-		font-size: var(--text-4xl);
+		font-size: var(--text-display-sm);
+		line-height: 1.1;
+		letter-spacing: -0.01em;
+		margin-bottom: var(--space-6);
+		text-wrap: balance;
 	}
 
 	.meta {
 		font-size: var(--text-sm);
+		letter-spacing: 0.02em;
 		margin: 0;
 	}
 
 	.post-cover {
-		max-width: var(--container-max);
-		margin: 0 auto var(--space-12);
-		padding-inline: var(--container-padding);
+		max-width: var(--page-max);
+		margin: 0 auto var(--space-16);
+		padding-inline: var(--page-gutter);
 	}
 
 	.post-cover img {
 		width: 100%;
 		aspect-ratio: 16 / 9;
 		object-fit: cover;
-		border-radius: var(--radius-lg);
+		border-radius: var(--radius-sm);
+		background: var(--color-surface);
 	}
 
 	.post-content {
-		max-width: 760px;
-		padding-bottom: var(--space-24);
+		padding-bottom: var(--space-32);
 	}
 
 	.post-content :global(h2) {
 		font-size: var(--text-2xl);
-		margin-top: var(--space-12);
+		line-height: 1.25;
+		margin: var(--space-16) 0 var(--space-4);
+		text-wrap: balance;
+	}
+
+	.post-content :global(h3) {
+		font-size: var(--text-xl);
+		margin: var(--space-12) 0 var(--space-3);
+	}
+
+	.post-content :global(p),
+	.post-content :global(li) {
+		font-size: var(--text-body-lg);
+		line-height: 1.75;
+		color: var(--color-text-muted);
 	}
 
 	.post-content :global(p) {
-		font-size: var(--text-base);
-		color: var(--color-text-muted);
+		margin-bottom: var(--space-6);
+	}
+
+	.post-content :global(a) {
+		color: var(--color-accent);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+		text-decoration-thickness: 1px;
+	}
+
+	.post-content :global(strong) {
+		color: var(--color-text);
+		font-weight: var(--fw-semibold);
+	}
+
+	.post-content :global(ul),
+	.post-content :global(ol) {
+		padding-left: var(--space-6);
+		margin-bottom: var(--space-6);
 	}
 
 	.post-content :global(ul) {
 		list-style: disc;
-		padding-left: var(--space-6);
-		margin-bottom: var(--space-4);
+	}
+
+	.post-content :global(ol) {
+		list-style: decimal;
 	}
 
 	.post-content :global(li) {
-		color: var(--color-text-muted);
 		margin-bottom: var(--space-2);
+	}
+
+	.post-content :global(li::marker) {
+		color: var(--color-accent);
+	}
+
+	.post-content :global(img) {
+		width: 100%;
+		height: auto;
+		border-radius: var(--radius-sm);
+		margin-block: var(--space-8);
+	}
+
+	@media (max-width: 800px) {
+		.post-header {
+			padding-block: var(--space-16) var(--space-8);
+		}
+
+		.back-link {
+			margin-bottom: var(--space-8);
+		}
+
+		.post-cover {
+			margin-bottom: var(--space-12);
+		}
+
+		.post-content {
+			padding-bottom: var(--space-24);
+		}
+
+		.post-content :global(p),
+		.post-content :global(li) {
+			font-size: var(--text-base);
+		}
 	}
 </style>

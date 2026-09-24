@@ -1,0 +1,59 @@
+---
+import { withBase } from '../../lib/paths.ts';
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Smart Power Monitoring',
+		description: "Real-time visibility into your home's energy usage, with individual circuit control, mobile app management and instant notifications.",
+		image: withBase('/images/solutions/energy-moment/feature-1.webp'),
+		imageAlt: 'Phone showing an energy dashboard with live power flow between solar, battery and the grid',
+	},
+	{
+		title: 'Intelligent Energy Control',
+		description: 'Compact and efficient, the Savant Power Energy System brings together power modules, a hybrid inverter, intelligent storage, and Level 2 EV charging.',
+		image: withBase('/images/solutions/energy-moment/feature-2.webp'),
+		imageAlt: 'Savant power storage cabinet, smart electrical panel and wall-mounted EV charger in a garage',
+	},
+	{
+		title: 'Intelligent Energy, Designed Around Your Lifestyle',
+		description: 'Modern luxury homes require more than reliable electricity — they need intelligent energy management that automatically balances power across critical systems.',
+		image: withBase('/images/solutions/energy-moment/feature-3.webp'),
+		imageAlt: 'Homeowner adjusting a wall-mounted touch panel in a bright kitchen',
+	},
+];
+
+const scenes = [
+	{ title: 'Morning', description: 'Panels begin producing as the household wakes, with power quietly routed to where it is needed most.' },
+	{ title: 'Peak Demand', description: 'Smart load balancing shifts non-essential circuits automatically, keeping critical systems running without a spike in cost.' },
+	{ title: 'EV Charging', description: 'The Savant Power Level 2 EV charger tops up overnight, timed to draw from stored or off-peak energy.' },
+	{ title: 'Outage', description: 'Battery backup engages instantly, keeping essential circuits powered and the household notified in real time.' },
+];
+---
+
+<ServiceLayout
+	title="Home Energy Management, Los Angeles"
+	description="Solar, battery and EV charging brought under one intelligent system for Los Angeles residences, with circuit-level monitoring and automation that runs quietly."
+	serviceName="Home Energy Management"
+	serviceType="Residential energy management and solar, battery and EV charging integration"
+	heroImage={withBase('/images/solutions/energy-moment/hero.webp')}
+	eyebrow="Energy Management"
+	heroTitle="Smarter Energy. Greater Independence."
+	heroSubtitle="Take control of your home's energy with intelligent systems that monitor, optimize, and automate power usage — from solar integration and battery backup to EV charging and circuit management."
+>
+	<CapabilityList eyebrow="Smart Power Monitoring" title="See Every Watt. Control Every Circuit." items={capabilities} />
+
+	<DailyExperience eyebrow="Daily Experience" title="One system. Every experience connected." scenes={scenes} />
+
+	<section class="section power-system">
+		<div class="container">
+			<SectionHeading eyebrow="A Smarter Power System" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
+		</div>
+	</section>
+
+	<CtaBanner />
+</ServiceLayout>

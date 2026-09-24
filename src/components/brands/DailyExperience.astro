@@ -1,4 +1,10 @@
 ---
+// "A day in the home" scenes. Without a photo the scenes run as a quiet
+// four-column row; with one (a plain `image` URL or a library `imageId`) the
+// photo holds its place beside the scenes as they scroll past.
+import Picture from '../ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
+
 interface Scene {
 	title: string;
 	description: string;
@@ -7,67 +13,221 @@ interface Scene {
 interface Props {
 	eyebrow: string;
 	title: string;
-	scenes: Scene[];
+	scenes: readonly Scene[];
+	image?: string;
+	imageId?: LibraryImageId;
+	imageAlt?: string;
 }
 
-const { eyebrow, title, scenes } = Astro.props;
+const { eyebrow, title, scenes, image, imageId, imageAlt = '' } = Astro.props;
+const hasMedia = Boolean(imageId || image);
 ---
 
-<section class="section daily-experience">
-	<div class="container">
-		<div class="heading">
-			<span class="eyebrow">{eyebrow}</span>
-			<h2>{title}</h2>
+<section class:list={['section', 'daily-experience', { 'has-media': hasMedia }]} data-daily-experience>
+	<div class="container daily-inner">
+		{hasMedia && (
+			<div class="media">
+				<div class="media-frame">
+					{imageId ? (
+						<Picture id={imageId} alt={imageAlt} sizes="(max-width: 900px) 100vw, 46vw" />
+					) : (
+						<img src={image} alt={imageAlt} loading="lazy" decoding="async" />
+					)}
+				</div>
+			</div>
+		)}
+		<div class="content">
+			<div class="heading">
+				<span class="eyebrow">{eyebrow}</span>
+				<h2>{title}</h2>
+			</div>
+			<ol class="scenes">
+				{scenes.map((scene, i) => (
+					<li style={`--i:${i}`}>
+						<span class="scene-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+						<h3>{scene.title}</h3>
+						<p>{scene.description}</p>
+					</li>
+				))}
+			</ol>
 		</div>
-		<ul class="scenes">
-			{scenes.map((scene) => (
-				<li>
-					<h3>{scene.title}</h3>
-					<p>{scene.description}</p>
-				</li>
-			))}
-		</ul>
 	</div>
 </section>
 
+<script>
+	// Scenes fade up once, in sequence, when the list first comes into view.
+	document.querySelectorAll<HTMLElement>('[data-daily-experience]').forEach((section) => {
+		const list = section.querySelector('.scenes');
+		if (!list) return;
+		if (!('IntersectionObserver' in window)) {
+			section.classList.add('is-revealed');
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (!entries.some((entry) => entry.isIntersecting)) return;
+				section.classList.add('is-revealed');
+				io.disconnect();
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		io.observe(list);
+	});
+</script>
+
 <style>
+	.daily-experience {
+		background: var(--color-surface);
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+	}
+
 	.heading {
-		max-width: 600px;
-		margin-bottom: var(--space-12);
+		max-width: 48rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.heading h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
 	}
 
 	.scenes {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: var(--space-6);
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: var(--space-8) clamp(1.5rem, 3vw, 3rem);
 	}
 
 	.scenes li {
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-md);
-		padding: var(--space-6);
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.scene-index {
+		display: block;
+		margin-bottom: var(--space-6);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		color: var(--color-accent);
+		font-variant-numeric: tabular-nums;
 	}
 
 	.scenes h3 {
-		font-size: var(--text-lg);
-		color: var(--color-accent);
-		margin-bottom: var(--space-2);
+		margin-bottom: var(--space-3);
+		font-size: var(--text-2xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.25;
+		letter-spacing: -0.005em;
 	}
 
 	.scenes p {
-		font-size: var(--text-sm);
 		margin: 0;
+		font-size: var(--text-base);
+		line-height: 1.65;
+	}
+
+	/* ---- With a photo: image holds on one side, scenes stack on the other ---- */
+
+	.has-media .daily-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 11fr) minmax(0, 10fr);
+		gap: clamp(2.5rem, 7vw, 7rem);
+		align-items: start;
+	}
+
+	.has-media .media {
+		position: sticky;
+		top: calc(var(--header-height, 96px) + var(--space-8));
+	}
+
+	.media-frame {
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		background: var(--color-surface-2);
+	}
+
+	.media-frame img,
+	.media-frame :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 5;
+		max-height: calc(100vh - var(--header-height, 96px) - var(--space-16));
+		object-fit: cover;
+	}
+
+	.has-media .scenes {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0;
+	}
+
+	.has-media .scenes li {
+		display: grid;
+		grid-template-columns: 3.5rem minmax(0, 1fr);
+		column-gap: var(--space-4);
+		padding-block: var(--space-8);
+	}
+
+	.has-media .scenes li:last-child {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.has-media .scene-index {
+		grid-row: span 2;
+		margin: 0;
+		padding-top: 0.45em;
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.scenes li {
+			opacity: 0;
+			transform: translateY(20px);
+			transition:
+				opacity 900ms var(--ease-out-expo),
+				transform 900ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 110ms);
+		}
+
+		.is-revealed .scenes li {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.scenes {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
 
 	@media (max-width: 900px) {
-		.scenes {
-			grid-template-columns: repeat(2, 1fr);
+		.has-media .daily-inner {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.has-media .media {
+			position: static;
+		}
+		.media-frame img,
+		.media-frame :global(img) {
+			aspect-ratio: 3 / 2;
+			max-height: none;
 		}
 	}
+
 	@media (max-width: 560px) {
 		.scenes {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-6);
+		}
+		.scene-index {
+			margin-bottom: var(--space-3);
+		}
+		.has-media .scenes li {
+			grid-template-columns: 2.75rem minmax(0, 1fr);
+			padding-block: var(--space-6);
 		}
 	}
 </style>

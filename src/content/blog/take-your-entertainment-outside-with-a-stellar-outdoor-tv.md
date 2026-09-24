@@ -2,6 +2,7 @@
 title: "Take Your Entertainment Outside with a Stellar Outdoor TV"
 publishDate: 2025-06-26
 excerpt: "A true outdoor TV, like the Samsung Terrace, brings ultra-bright, glare-resistant picture quality outside so movie nights and game days hold up against direct sun."
+seoDescription: "Outdoor TV installation with the Samsung Terrace: 4K at up to 2,000 nits, adaptive brightness and anti-glare technology, built for movie nights in full sun."
 coverImage: "/images/blog/take-your-entertainment-outside-with-a-stellar-outdoor-tv.webp"
 coverImageAlt: "Outdoor patio with a weatherproof television mounted for entertaining"
 category: "Outdoor Living"

@@ -1,0 +1,32 @@
+---
+// Responsive <img> for photos in the library (scripts/image-manifest.mjs).
+// Always pass `sizes` that match the slot, e.g. "100vw" for full-bleed or
+// "(max-width: 800px) 100vw, 40vw" for a tile, so the browser picks the
+// smallest rendition that stays sharp.
+import type { HTMLAttributes } from 'astro/types';
+import { imageSrcset, imageUrl, libraryEntry, type LibraryImageId } from '../../lib/images.ts';
+
+interface Props extends Omit<HTMLAttributes<'img'>, 'src' | 'srcset' | 'width' | 'height'> {
+	id: LibraryImageId;
+	alt: string;
+	sizes?: string;
+	/** Above-the-fold images: eager + high fetch priority. */
+	priority?: boolean;
+}
+
+const { id, alt, sizes = '100vw', priority = false, ...rest } = Astro.props;
+const { width, height } = libraryEntry(id);
+---
+
+<img
+	src={imageUrl(id, 1600)}
+	srcset={imageSrcset(id)}
+	sizes={sizes}
+	width={width}
+	height={height}
+	alt={alt}
+	loading={priority ? 'eager' : 'lazy'}
+	fetchpriority={priority ? 'high' : undefined}
+	decoding={priority ? 'sync' : 'async'}
+	{...rest}
+/>

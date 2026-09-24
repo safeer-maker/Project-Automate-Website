@@ -1,5 +1,5 @@
 ---
-import { withBase } from '../../lib/paths.ts';
+import { ogImageUrl } from '../../lib/images.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 import HeroSection from './_HeroSection.astro';
@@ -8,9 +8,10 @@ import GallerySection from './_GallerySection.astro';
 ---
 
 <PageLayout
-	title="Get Inspired"
-	description="Get inspired by PROJECT: automate residences — real smart-home lighting, shading, and control installed throughout Los Angeles' most refined homes."
-	image={withBase('/images/get-inspired/kitchen-lighting.webp')}
+	title="Luxury Home Technology Inspiration"
+	description="A visual journal of Los Angeles interiors where architectural lighting, concealed audio, motorized shades and refined keypads complement the design."
+	image={ogImageUrl('residences/palm-drive-estate')}
+	breadcrumbTitle="Inspiration"
 >
 	<HeroSection />
 	<StoriesSection />

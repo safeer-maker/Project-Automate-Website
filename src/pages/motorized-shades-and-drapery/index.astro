@@ -3,52 +3,58 @@ import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 
 const capabilities = [
 	{
 		title: 'Automated Window Treatments',
-		description: 'Enjoy effortless control of natural light throughout your home. Raise, lower or adjust individual shades — or every window at once — from your phone, keypad, touch panel or voice assistant.',
-		image: withBase('/images/solutions/motorized-shades-and-drapery/feature-1.webp'),
+		description:
+			'Effortless control of daylight throughout the home. Raise, lower or adjust a single shade, or every window at once, from your phone, a keypad, a touch panel or your voice.',
+		// The site's own shade photograph (the former hero), kept at its full 1920px.
+		image: withBase('/images/solutions/motorized-shades-and-drapery/hero.webp'),
+		imageAlt: 'A bright living room with sheer roller shades lowered partway across tall windows',
 	},
 	{
 		title: 'Motorized Drapery',
-		description: 'Motorized drapery adds softness, elegance and functionality to living rooms, bedrooms, dining spaces and media rooms. Hidden tracks and whisper-quiet motors create smooth, graceful movement while preserving the clean aesthetic of your interiors.',
-		image: withBase('/images/solutions/motorized-shades-and-drapery/feature-2.webp'),
+		description:
+			'Drapery brings softness and grace to living rooms, bedrooms, dining rooms and media rooms. Hidden tracks and whisper-quiet motors move it smoothly while keeping the interior clean and uncluttered.',
+		imageId: 'solutions/control-panel-living',
+		imageAlt: 'A living room with floor-to-ceiling glass onto a forest, and a control panel on the wall',
 	},
 	{
 		title: 'Smarter Living',
-		description: 'Automatically adjust shades throughout the day to reduce glare, protect furnishings, improve privacy and help maintain comfortable indoor temperatures — no daily adjustments required.',
-		image: withBase('/images/solutions/motorized-shades-and-drapery/feature-3.webp'),
+		description:
+			'Shades adjust through the day on their own, to soften glare, protect art and furnishings, preserve privacy and keep interiors comfortable, with no daily attention required.',
+		imageId: 'solutions/control-great-room',
+		imageAlt: 'A sunlit great room with walls of glass and a slim control panel beside the windows',
 	},
-];
+] as const;
 
 const scenes = [
-	{ title: 'Morning', description: 'Shades rise gently with the sunrise, letting in soft natural light on your schedule.' },
-	{ title: 'Midday', description: 'Automated adjustments reduce glare and UV exposure while protecting furnishings from fading.' },
-	{ title: 'Evening', description: 'Drapery and shades close together for privacy, all from one touch or a voice command.' },
-	{ title: 'Away', description: 'Scheduled movement keeps your home comfortable and looking lived-in, even when you are not there.' },
+	{ title: 'Morning', description: 'Shades rise gently with the sun, letting in soft light on your schedule.' },
+	{ title: 'Midday', description: 'Quiet adjustments ease glare and UV, protecting art and furnishings from fading.' },
+	{ title: 'Evening', description: 'Drapery and shades close together for privacy, with one touch or a word.' },
+	{ title: 'Away', description: 'Scheduled movement keeps the home comfortable and looking lived-in while you are gone.' },
 ];
 ---
 
 <ServiceLayout
-	title="Motorized Shades and Drapery"
-	description="Motorized shades and drapery from PROJECT: automate — smart window treatments that balance light, privacy and energy efficiency in one elegant, whisper-quiet solution."
-	heroImage={withBase('/images/solutions/motorized-shades-and-drapery/hero.webp')}
-	eyebrow="Smart Window Treatments"
-	heroTitle="Smart Window Treatments, Designed For Modern Living"
-	heroSubtitle="Motorized shades bring together convenience, comfort, privacy and energy efficiency in one elegant solution. Adjust instantly with a remote, mobile app, voice assistant or automated schedules."
+	title="Motorized Shades & Drapery, Los Angeles"
+	description="Whisper-quiet motorized shades and drapery for Los Angeles homes, timed to the sun and concealed in the architecture to protect art, views and privacy."
+	heroImageId="solutions/shades-glass-wall"
+	heroAlt="A bright, minimalist interior with floor-to-ceiling glass opening onto a garden"
+	heroPosition="55% 50%"
+	eyebrow="Motorized Shades & Drapery"
+	heroTitle="Motorized Shades and Drapery, Moving With the Sun"
+	heroSubtitle="Whisper-quiet shades and drapery that balance daylight, privacy and comfort, timed to the sun and concealed in the architecture."
+	intro="Walls of glass are one of the great pleasures of a Los Angeles home. Motorized shading lets the light in when you want it, softens it when you don't, and protects art, furnishings and privacy without a second thought."
+	serviceName="Motorized Shades & Drapery"
+	serviceType="Motorized shade and drapery design and installation"
+	related={['lighting-control-systems', 'hvac-and-climate-integration', 'control-systems']}
 >
-	<CapabilityList eyebrow="Beautifully Balanced Light and Privacy" title="One system. Every experience connected." items={capabilities} />
+	<CapabilityList eyebrow="Light and Privacy, Balanced" title="Window treatments that keep time with the day." items={capabilities} />
 
-	<DailyExperience eyebrow="Daily Experience" title="Comfort that changes with the day." scenes={scenes} />
+	<DailyExperience eyebrow="Daily Experience" title="Comfort that changes with the light." scenes={scenes} />
 
-	<section class="section power-system">
-		<div class="container">
-			<SectionHeading eyebrow="A Softer Way To Live" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
-		</div>
-	</section>
-
-	<CtaBanner />
+	<CtaBanner slot="closing" />
 </ServiceLayout>

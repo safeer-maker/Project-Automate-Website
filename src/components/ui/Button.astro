@@ -46,12 +46,14 @@ const Tag = href ? 'a' : 'button';
 		font-size: var(--text-base);
 	}
 
+	/* The fill bronze keeps the white label at 4.5:1; hover deepens rather
+	   than lightens, since a lighter bronze would drop the label below AA. */
 	.btn-primary {
-		background: var(--color-accent);
+		background: var(--color-bronze-fill);
 		color: var(--color-white);
 	}
 	.btn-primary:hover {
-		background: var(--color-accent-hover);
+		background: var(--color-bronze-fill-hover);
 	}
 
 	.btn-outline {

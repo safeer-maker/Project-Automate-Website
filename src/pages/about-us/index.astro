@@ -1,5 +1,4 @@
 ---
-import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 import PhilosophySection from './_PhilosophySection.astro';
@@ -9,20 +8,23 @@ import ProcessSection from './_ProcessSection.astro';
 ---
 
 <ServiceLayout
-	title="About Us"
-	description="PROJECT: automate is a Manhattan Beach-based luxury smart home integrator led by founder Joshua Trevithick — intelligent living, designed with purpose."
-	heroImage={withBase('/images/about-us/hero-smart-home-control.webp')}
+	title="About Our Los Angeles Smart Home Studio"
+	description="Meet the Manhattan Beach team behind 400+ Los Angeles residences: CEDIA and HTA certified, led by founder Joshua Trevithick, devoted to quiet technology."
+	breadcrumbTitle="About Us"
+	heroImageId="residences/stone-estate-wide"
+	heroPosition="50% 60%"
 	eyebrow="About PROJECT: automate"
 	heroTitle="Intelligent Living, Designed With Purpose."
-	heroSubtitle="We create intelligent environments where every detail works in harmony — quietly, beautifully, completely."
+	heroSubtitle="We create intelligent environments where every detail works in harmony: quietly, beautifully, completely."
+	intro="From our studio in Manhattan Beach, we design and integrate the technology inside some of Los Angeles’ most considered residences, then stay on to care for it."
 >
 	<PhilosophySection />
-
-	<ExperienceSection />
 
 	<FounderSection />
 
 	<ProcessSection />
 
-	<CtaBanner />
+	<ExperienceSection />
+
+	<CtaBanner slot="closing" />
 </ServiceLayout>

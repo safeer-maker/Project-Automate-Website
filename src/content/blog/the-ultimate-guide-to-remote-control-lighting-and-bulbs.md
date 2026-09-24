@@ -2,6 +2,7 @@
 title: "The Ultimate Guide to Remote Control Lighting and Bulbs"
 publishDate: 2026-07-11
 excerpt: "Discover how a remote control bulb transforms your lighting with smart features, easy setup, and energy savings for modern homes."
+seoDescription: "Remote control lighting and bulbs explained: IR, RF, WiFi and Zigbee, tunable white and color, dimmer pitfalls, and when to move to a whole-home system."
 coverImage: "/images/blog/the-ultimate-guide-to-remote-control-lighting-and-bulbs.webp"
 coverImageAlt: "Remote control smart light bulb next to a handheld remote"
 category: "Lighting"

@@ -2,6 +2,7 @@
 title: "Ultimate Checklist for Home Theater Installation"
 publishDate: 2026-07-16
 excerpt: "Plan your ultimate home theater installation with expert tips on acoustics, equipment, and pro AV integration for luxury results."
+seoDescription: "Home theater installation checklist: room shape and acoustics, projector vs. OLED, Dolby Atmos layouts, pre-wiring, calibration and California wiring standards."
 coverImage: "/images/blog/ultimate-checklist-for-home-theater-installation.webp"
 coverImageAlt: "Custom home theater room set up for a screening"
 category: "Home Theater"

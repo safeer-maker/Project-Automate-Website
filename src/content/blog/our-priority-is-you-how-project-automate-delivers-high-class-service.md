@@ -1,5 +1,6 @@
 ---
 title: "Our Priority Is You! How PROJECT: automate Delivers High-Class Service"
+seoTitle: "How PROJECT: automate Delivers High-Class Service"
 publishDate: 2026-06-07
 excerpt: "For more than 20 years, PROJECT: automate has focused on one thing: delivering high-class technological upgrades to homes and businesses across Los Angeles."
 coverImage: "/images/blog/our-priority-is-you-how-project-automate-delivers-high-class-service.webp"

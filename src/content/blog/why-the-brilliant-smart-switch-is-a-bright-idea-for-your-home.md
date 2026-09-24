@@ -5,6 +5,7 @@ excerpt: "Discover why the Brilliant Smart Switch transforms your home with touc
 coverImage: "/images/blog/why-the-brilliant-smart-switch-is-a-bright-idea-for-your-home.webp"
 coverImageAlt: "Brilliant smart switch touchscreen panel in a modern home interior"
 category: "Lighting"
+noindex: true
 author: "Joshua Trevithick"
 ---
 

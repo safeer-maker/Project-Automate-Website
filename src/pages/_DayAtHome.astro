@@ -1,0 +1,453 @@
+---
+// "A day at home": four moments, one photograph each. On desktop the image
+// column is CSS-sticky and crossfades as each caption crosses the middle of
+// the screen. The page scrolls normally throughout: no second pin, no
+// scroll-jacking. Below 800px it is a plain stack of image + caption cards.
+//
+// One set of images serves both layouts: on mobile the sticky wrappers become
+// display: contents and `order` interleaves each image with its caption, so
+// nothing is duplicated in the DOM or downloaded twice.
+import Picture from '../components/ui/Picture.astro';
+import type { LibraryImageId } from '../lib/images.ts';
+
+interface Scene {
+	time: string;
+	caption: string;
+	image: LibraryImageId;
+	alt: string;
+	/** object-position for the near-square desktop crop of a landscape photo. */
+	focus: string;
+}
+
+const scenes: Scene[] = [
+	{
+		time: 'Morning',
+		caption: 'The shades rise with the sun, and the house is already warm.',
+		image: 'solutions/control-panel-living',
+		alt: 'A sunlit living room that opens onto the trees, with a slim control panel on the wall beside it',
+		focus: '18% 50%',
+	},
+	{
+		time: 'Afternoon',
+		caption: 'Music follows you out to the pool, from speakers you never notice.',
+		image: 'solutions/audio-poolside',
+		alt: 'A poolside lounger with a speaker built discreetly into its frame',
+		focus: '46% 50%',
+	},
+	{
+		time: 'Evening',
+		caption: 'Guests arrive to a lit path, low music, and a table held in warm light.',
+		image: 'residences/hidden-hills-courtyard',
+		alt: 'A pool courtyard at dusk, lit by path lights, string lights and a fire table',
+		focus: '58% 50%',
+	},
+	{
+		time: 'Night',
+		caption: 'One touch at the door. Lights settle, the gates close, and the house keeps watch.',
+		image: 'solutions/security-estate-gate',
+		alt: 'Estate gates opening onto a lantern-lit, palm-lined drive at night',
+		focus: '50% 55%',
+	},
+];
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+// The desktop frame is roughly square and every photo is ~16:9, so object-fit
+// cover renders each one about 1.8x the frame's height wide, not the column's
+// width. Sizing by column width alone picked a rendition that got upscaled.
+const shotSizes = '(max-width: 799px) 100vw, calc((100vh - 96px) * 1.8)';
+---
+
+<section class="day" aria-labelledby="day-title" data-day>
+	<div class="day-grid">
+		<div class="day-media">
+			<div class="day-frame">
+				{scenes.map((scene, i) => (
+					<div
+						class:list={['day-shot', { 'is-active': i === 0 }]}
+						data-shot
+						style={`--order:${i * 2 + 1};--focus:${scene.focus}`}
+					>
+						<Picture id={scene.image} alt={scene.alt} sizes={shotSizes} />
+					</div>
+				))}
+				<p class="day-counter" aria-hidden="true">
+					<span data-day-counter>01</span>
+					<span class="day-counter-total">/ {pad(scenes.length)}</span>
+				</p>
+			</div>
+		</div>
+
+		<div class="day-copy">
+			<header class="day-intro">
+				<span class="eyebrow">A Day at Home</span>
+				<h2 id="day-title">The day, composed.</h2>
+				<p>
+					Every system plays its part at the right moment, so the home simply feels right from
+					first light to last.
+				</p>
+			</header>
+
+			{scenes.map((scene, i) => (
+				<article
+					class:list={['scene', { 'is-active': i === 0 }]}
+					data-scene
+					style={`--order:${i * 2 + 2}`}
+				>
+					<h3 class="scene-time">
+						<span class="scene-num" aria-hidden="true">{pad(i + 1)}</span>
+						<span class="scene-rule" aria-hidden="true"></span>
+						{scene.time}
+					</h3>
+					<p class="scene-caption">{scene.caption}</p>
+				</article>
+			))}
+		</div>
+	</div>
+</section>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-day]');
+
+	if (root) {
+		const shots = [...root.querySelectorAll<HTMLElement>('[data-shot]')];
+		const scenes = [...root.querySelectorAll<HTMLElement>('[data-scene]')];
+		const counter = root.querySelector<HTMLElement>('[data-day-counter]');
+		let active = 0;
+
+		const show = (index: number) => {
+			if (index < 0 || index === active) return;
+			active = index;
+			shots.forEach((el, i) => el.classList.toggle('is-active', i === index));
+			scenes.forEach((el, i) => el.classList.toggle('is-active', i === index));
+			if (counter) counter.textContent = String(index + 1).padStart(2, '0');
+		};
+
+		// The caption that has crossed the middle of the screen owns the image.
+		// Read from positions rather than an IntersectionObserver band, so the
+		// answer is right after any jump (an anchor link, a reload mid-page),
+		// not only after scrolling through each caption in turn: above the
+		// first caption Morning shows, past the last one Night stays up.
+		let queued = false;
+		const pick = () => {
+			queued = false;
+			const middle = window.innerHeight / 2;
+			let index = 0;
+			scenes.forEach((scene, i) => {
+				if (scene.getBoundingClientRect().top <= middle) index = i;
+			});
+			show(index);
+		};
+		const onScroll = () => {
+			if (queued) return;
+			queued = true;
+			requestAnimationFrame(pick);
+		};
+
+		// Only listen to scroll while the section is on screen.
+		new IntersectionObserver(([entry]) => {
+			if (entry.isIntersecting) {
+				window.addEventListener('scroll', onScroll, { passive: true });
+				window.addEventListener('resize', onScroll);
+				pick();
+			} else {
+				window.removeEventListener('scroll', onScroll);
+				window.removeEventListener('resize', onScroll);
+			}
+		}).observe(root);
+
+		// One-time reveal for the stacked mobile cards (CSS only applies it
+		// below 800px; on desktop the classes are inert).
+		const reveal = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-seen');
+					reveal.unobserve(entry.target);
+				});
+			},
+			{ threshold: 0.2 }
+		);
+		[...shots, ...scenes].forEach((el) => reveal.observe(el));
+
+		// Dimming and hidden-until-revealed states are keyed to this, so
+		// without JS every caption and image simply shows.
+		root.dataset.ready = '';
+	}
+</script>
+
+<style>
+	.day {
+		/* Crossfade length; the outgoing image holds underneath for exactly
+		   this long so the cream background never shows through mid-fade. */
+		--xfade: 1.1s;
+		background: var(--color-bg);
+	}
+
+	.day-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+	}
+
+	/* Full-bleed to the left edge; the frame sticks directly under the
+	   header bar and releases as the last caption lands. */
+	.day-frame {
+		position: sticky;
+		top: var(--header-height, 96px);
+		height: calc(100vh - var(--header-height, 96px));
+		overflow: hidden;
+		background: var(--color-charcoal);
+	}
+
+	.day-shot {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transition: opacity 0s linear var(--xfade);
+	}
+
+	.day-shot.is-active {
+		z-index: 1;
+		opacity: 1;
+		transition: opacity var(--xfade) var(--ease-in-out-soft);
+	}
+
+	.day-shot :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: var(--focus, 50% 50%);
+		transform: scale(1.05);
+		transition: transform 0s linear var(--xfade);
+	}
+
+	/* Each incoming photograph settles very slightly as it fades up. */
+	.day-shot.is-active :global(img) {
+		transform: scale(1);
+		transition: transform 2.4s var(--ease-out-expo);
+	}
+
+	.day-frame::after {
+		content: '';
+		position: absolute;
+		inset: auto 0 0;
+		z-index: 2;
+		height: 28%;
+		background: linear-gradient(0deg, rgba(10, 10, 10, 0.45), rgba(10, 10, 10, 0));
+		pointer-events: none;
+	}
+
+	.day-counter {
+		position: absolute;
+		z-index: 3;
+		left: var(--page-gutter);
+		bottom: clamp(1.5rem, 4vh, 2.5rem);
+		display: flex;
+		gap: 0.5em;
+		margin: 0;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		letter-spacing: 0.12em;
+		font-variant-numeric: tabular-nums;
+		color: var(--color-white);
+	}
+
+	.day-counter-total {
+		color: rgba(255, 255, 255, 0.6);
+	}
+
+	.day-copy {
+		padding-inline: clamp(2.5rem, 6vw, 6.5rem)
+			max(var(--page-gutter), calc((100vw - var(--page-max)) / 2 + var(--page-gutter)));
+	}
+
+	.day-intro {
+		padding-block: clamp(5rem, 16vh, 10rem) clamp(1rem, 4vh, 3rem);
+	}
+
+	.day-intro h2 {
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+	}
+
+	.day-intro p {
+		margin: 0;
+		max-width: 36ch;
+		font-size: var(--text-body-lg);
+		line-height: 1.65;
+		color: var(--color-text-muted);
+		text-wrap: pretty;
+	}
+
+	.scene {
+		min-height: 72vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding-block: var(--space-12);
+	}
+
+	/* As tall as the frame, so the last caption sits mid-frame at the moment
+	   the image releases rather than trailing after it. */
+	.scene:last-child {
+		min-height: calc(100vh - var(--header-height, 96px));
+	}
+
+	.scene-time {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		margin: 0 0 var(--space-4);
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		line-height: 1.2;
+		text-transform: uppercase;
+		color: var(--color-bronze-text);
+	}
+
+	.scene-num {
+		font-variant-numeric: tabular-nums;
+		letter-spacing: 0.08em;
+		color: var(--color-text-muted);
+	}
+
+	.scene-rule {
+		width: 2.5rem;
+		height: 1px;
+		background: currentColor;
+		opacity: 0.6;
+		transform-origin: left;
+	}
+
+	.scene-caption {
+		margin: 0;
+		max-width: 23ch;
+		font-size: clamp(1.5rem, 2.36vw, 2.125rem);
+		font-weight: var(--fw-medium);
+		line-height: 1.3;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	/* Desktop reading state: the caption that owns the image is at full
+	   strength, the others recede. They recede by colour, not opacity: at
+	   0.26 the waiting captions fell to under 2:1, and they still have to be
+	   readable. Muted brown holds 6:1 while the drawn rule and the charcoal
+	   caption mark the active moment. */
+	@media (min-width: 800px) {
+		.day[data-ready] .scene-caption {
+			color: var(--color-text-muted);
+			transition: color 0.7s var(--ease-out-expo);
+		}
+		.day[data-ready] .scene.is-active .scene-caption {
+			color: var(--color-text);
+		}
+		.day[data-ready] .scene-rule {
+			transform: scaleX(0.35);
+			transition: transform 0.9s var(--ease-out-expo);
+		}
+		.day[data-ready] .scene.is-active .scene-rule {
+			transform: scaleX(1);
+		}
+	}
+
+	@media (max-width: 799px) {
+		.day {
+			padding-block: clamp(4rem, 16vw, 6rem);
+		}
+
+		.day-grid {
+			grid-template-columns: minmax(0, 1fr);
+			padding-inline: var(--page-gutter);
+		}
+
+		.day-media,
+		.day-frame,
+		.day-copy {
+			display: contents;
+		}
+
+		.day-frame::after,
+		.day-counter {
+			display: none;
+		}
+
+		.day-intro {
+			order: 0;
+			padding: 0 0 var(--space-12);
+		}
+
+		.day-shot,
+		.day-shot.is-active {
+			position: relative;
+			order: var(--order);
+			z-index: auto;
+			opacity: 1;
+			aspect-ratio: 4 / 3;
+			border-radius: var(--radius-lg);
+			overflow: hidden;
+			transition: none;
+		}
+
+		.day-shot :global(img),
+		.day-shot.is-active :global(img) {
+			transform: none;
+			transition: none;
+		}
+
+		.scene,
+		.scene:last-child {
+			order: var(--order);
+			min-height: 0;
+			padding: var(--space-6) 0 var(--space-16);
+		}
+
+		.scene:last-child {
+			padding-bottom: 0;
+		}
+
+		.scene-caption {
+			font-size: 1.375rem;
+		}
+	}
+
+	@media (max-width: 799px) and (prefers-reduced-motion: no-preference) {
+		.day[data-ready] .day-shot,
+		.day[data-ready] .scene {
+			opacity: 0;
+			transform: translateY(1.5rem);
+			transition:
+				opacity 0.9s var(--ease-out-expo),
+				transform 0.9s var(--ease-out-expo);
+		}
+		.day[data-ready] .day-shot.is-seen,
+		.day[data-ready] .scene.is-seen {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	/* The crossfade is a change of light, not movement, so it stays, only
+	   shorter; the scale settle and the rule draw go. */
+	@media (prefers-reduced-motion: reduce) {
+		.day {
+			--xfade: 0.4s;
+		}
+		.day-shot :global(img),
+		.day-shot.is-active :global(img) {
+			transform: none;
+			transition: none;
+		}
+		.day[data-ready] .scene-rule,
+		.day[data-ready] .scene.is-active .scene-rule {
+			transform: none;
+			transition: none;
+		}
+	}
+</style>

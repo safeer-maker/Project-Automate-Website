@@ -1,20 +1,117 @@
 ---
-import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Picture from '../../components/ui/Picture.astro';
 ---
 
-<section class="section hero">
+<section class="gi-hero">
+	<div class="container hero-grid">
+		<div class="hero-head">
+			<span class="eyebrow">Inspiration</span>
+			<h1>Inspiration for the Intelligent Home</h1>
+		</div>
+		<p class="hero-lede">
+			A visual journal of residences where light, sound and shade are designed into the
+			architecture, and the technology itself stays quietly out of sight.
+		</p>
+	</div>
 	<div class="container">
-		<SectionHeading
-			eyebrow="West Hollywood — Haslam Terrace"
-			title="Get Inspired"
-			subtitle="For our Haslam Terrace project, we designed a state-of-the-art smart home with a strong emphasis on advanced lighting, security illumination, and automated shading. The result is a residence that delivers a top-tier impression — whether admired from the outside or experienced from within."
-			align="center"
-		/>
+		<figure class="hero-media">
+			<Picture
+				id="residences/palm-drive-estate"
+				alt="Palm-lined drive leading to a softly lit modern residence at dusk"
+				sizes="(max-width: 1280px) 100vw, 1232px"
+				priority
+			/>
+		</figure>
 	</div>
 </section>
 
 <style>
-	.hero {
-		padding-bottom: 0;
+	.gi-hero {
+		padding-top: clamp(4rem, 10vw, 8rem);
+	}
+
+	.hero-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		gap: var(--space-6) clamp(2rem, 6vw, 6rem);
+		align-items: end;
+		margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+	}
+
+	.hero-head > * {
+		animation: gi-rise 1100ms var(--ease-out-expo) both;
+	}
+
+	.hero-head h1 {
+		margin: 0;
+		font-size: var(--text-display-lg);
+		font-weight: var(--fw-medium);
+		line-height: 1.08;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+		text-wrap: balance;
+		animation-delay: 90ms;
+	}
+
+	.hero-lede {
+		margin: 0;
+		max-width: 32rem;
+		font-size: var(--text-body-lg);
+		line-height: 1.65;
+		animation: gi-rise 1100ms var(--ease-out-expo) 180ms both;
+	}
+
+	.hero-media {
+		margin: 0;
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		aspect-ratio: 21 / 9;
+		background: var(--color-charcoal);
+	}
+
+	.hero-media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		/* One slow settle on arrival, never replayed. */
+		animation: gi-settle 2400ms var(--ease-out-expo) both;
+	}
+
+	@keyframes gi-rise {
+		from {
+			opacity: 0;
+			transform: translateY(18px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@keyframes gi-settle {
+		from {
+			transform: scale(1.06);
+		}
+		to {
+			transform: scale(1);
+		}
+	}
+
+	@media (max-width: 900px) {
+		.hero-grid {
+			grid-template-columns: minmax(0, 1fr);
+			align-items: start;
+		}
+		.hero-media {
+			aspect-ratio: 4 / 3;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-head > *,
+		.hero-lede,
+		.hero-media :global(img) {
+			animation: none;
+		}
 	}
 </style>

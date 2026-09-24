@@ -5,6 +5,7 @@ excerpt: "Explore the Brilliant Light Switch models, features, wiring, and smart
 coverImage: "/images/blog/flipping-the-switch-on-the-brilliant-light-switch.webp"
 coverImageAlt: "Brilliant smart home touchscreen control panel mounted on a wall"
 category: "Lighting"
+noindex: true
 ---
 
 The Brilliant Smart Home Control panel replaces a standard wall switch with a 5-inch touchscreen that controls lighting, music, cameras, locks, and climate from one place, with no separate hub required. For anyone tired of juggling multiple apps and voice assistants, that's an appealing pitch. Whether it's the right fit depends heavily on your home's wiring, your budget, and how much you value an all-in-one interface versus a fully invisible one.

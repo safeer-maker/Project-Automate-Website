@@ -5,6 +5,7 @@ excerpt: "Transform your home with Brilliant Home Control—unify smart devices,
 coverImage: "/images/blog/how-to-turn-your-house-into-a-genius-with-brilliant-home-control.webp"
 coverImageAlt: "Brilliant home control touchscreen panel mounted in a hallway"
 category: "Control Systems"
+noindex: true
 author: "Joshua Trevithick"
 ---
 

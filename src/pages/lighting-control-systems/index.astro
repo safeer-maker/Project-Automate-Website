@@ -1,54 +1,58 @@
 ---
-import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 
 const capabilities = [
 	{
 		title: 'Intelligent Lighting Control',
-		description: 'One system. Every experience connected — from a single switch to whole-home architectural lighting.',
-		image: withBase('/images/solutions/lighting/feature-1.webp'),
+		description:
+			'From a single room to the entire estate, every fixture is drawn into one system, so an evening is set with a single touch rather than a wall of switches.',
+		imageId: 'solutions/lighting-living-room',
+		imageAlt: 'A warm living room softly lit by cove lighting, with a slim control panel on the wall',
 	},
 	{
 		title: 'Architectural Lighting Control',
-		description: 'Elegant control, perfectly tuned to the architecture and mood of every room.',
-		image: withBase('/images/solutions/lighting/feature-2.webp'),
+		description:
+			'Scenes are tuned to the architecture and mood of every space, inside and out, from the glow across a stone wall at dusk to a hallway lit just enough at night.',
+		imageId: 'residences/malibu-stone-court',
+		imageAlt: 'A modern residence at blue hour, its stone garden wall washed in warm light',
 	},
 	{
 		title: 'Effortless Lighting Control',
-		description: 'Light that moves with your life — automated scenes that adapt as your day changes.',
-		image: withBase('/images/solutions/lighting/why-choose-us.webp'),
+		description:
+			'Automated scenes follow the day as it changes, while refined keypads keep every adjustment simple for family and guests alike.',
+		imageId: 'solutions/control-keypad',
+		imageAlt: 'A finger on a minimalist lighting keypad beside a living room lit with warm pendants',
 	},
-];
+] as const;
 
 const scenes = [
-	{ title: 'Morning', description: 'Lights rise gently, shades open and your home prepares naturally for the day ahead.' },
-	{ title: 'Entertaining', description: 'One touch creates the ideal atmosphere through coordinated lighting, music and climate.' },
-	{ title: 'Relaxing', description: 'The room softens, the shades close and your favourite playlist begins effortlessly.' },
-	{ title: 'Goodnight', description: 'Lights, entertainment and selected home functions shut down through one simple scene.' },
+	{ title: 'Morning', description: 'Light rises gently, the shades open and the home wakes naturally with you.' },
+	{ title: 'Entertaining', description: 'One touch brings light, music and climate into balance for guests.' },
+	{ title: 'Relaxing', description: 'The room softens, the shades close and a favorite playlist begins.' },
+	{ title: 'Goodnight', description: 'Lights, entertainment and selected systems settle with a single scene.' },
 ];
 ---
 
 <ServiceLayout
-	title="Lighting Control Systems"
-	description="Intelligent, architectural lighting control from PROJECT: automate — elegant light that moves with your life."
-	heroImage={withBase('/images/solutions/lighting/hero.webp')}
-	eyebrow="Elegant Light Control"
-	heroTitle="Light That Moves With Your Life"
-	heroSubtitle="Key features of an intelligent lighting control system, tuned to the architecture and rhythm of your home."
+	title="Luxury Lighting Control in Los Angeles"
+	description="Architectural lighting control for Los Angeles residences: Lutron and Ketra scenes, circadian tuning and elegant keypads that let light follow the day."
+	heroImageId="solutions/lighting-kitchen"
+	heroAlt="A dark, dramatic kitchen lit by pendants and warm under-shelf lighting"
+	heroPosition="60% 50%"
+	eyebrow="Lighting Control"
+	heroTitle="Lighting Control That Moves With Your Life"
+	heroSubtitle="Architectural lighting, tuned to the rooms, the materials and the rhythm of your day."
+	intro="Light shapes how a home feels more than anything else in it. We design Lutron and Ketra lighting control that follows the day, flatters the architecture and answers to a single, elegant keypad."
+	serviceName="Luxury Lighting Control"
+	serviceType="Lighting control system design and installation"
+	related={['control-systems', 'motorized-shades-and-drapery', 'outdoor-lighting-audio']}
 >
-	<CapabilityList eyebrow="Key Features" title="Intelligent lighting that enhances comfort, architecture, and everyday living." items={capabilities} />
+	<CapabilityList eyebrow="Key Features" title="Light that honors the architecture and everyday living." items={capabilities} />
 
-	<DailyExperience eyebrow="Daily Experience" title="Technology that becomes part of the way you live." scenes={scenes} />
+	<DailyExperience eyebrow="Daily Experience" title="Light that follows the day, from first light to last." scenes={scenes} />
 
-	<section class="section power-system">
-		<div class="container">
-			<SectionHeading eyebrow="A Smarter Power System" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
-		</div>
-	</section>
-
-	<CtaBanner />
+	<CtaBanner slot="closing" />
 </ServiceLayout>

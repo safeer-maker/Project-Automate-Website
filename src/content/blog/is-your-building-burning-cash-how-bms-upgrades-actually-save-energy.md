@@ -1,7 +1,9 @@
 ---
 title: "Is Your Building Burning Cash? How BMS Upgrades Actually Save Energy"
+seoTitle: "How BMS Upgrades Save Energy in Your Building"
 publishDate: 2026-07-04
 excerpt: "Unlock building management system energy savings with smart BMS upgrades that cut costs and carbon—see real ROI fast."
+seoDescription: "BMS upgrades that save energy: setpoint optimization, airflow reduction and occupancy scheduling, real payback figures, and how to keep savings from drifting."
 coverImage: "/images/blog/is-your-building-burning-cash-how-bms-upgrades-actually-save-energy.webp"
 coverImageAlt: "Building management system energy dashboard in a commercial office"
 category: "Energy Management"

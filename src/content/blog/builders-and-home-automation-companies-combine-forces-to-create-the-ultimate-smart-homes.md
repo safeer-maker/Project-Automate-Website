@@ -1,7 +1,9 @@
 ---
 title: "Builders and Home Automation Companies Combine Forces to Create the Ultimate Smart Homes"
+seoTitle: "Builders and Home Automation: Creating Smarter Homes"
 publishDate: 2026-06-07
 excerpt: "See how builders and home automation companies work together to create smarter, more desirable luxury homes through centralized control, low-voltage prewiring, and long-term support."
+seoDescription: "How builders and home automation companies work together: low-voltage prewiring, one control platform for every system, and 24/7 support long after handover."
 coverImage: "/images/blog/builders-and-home-automation-companies-combine-forces-to-create-the-ultimate-smart-homes.webp"
 coverImageAlt: "Builder and home automation integrator reviewing plans for a luxury smart home"
 category: "Builders"

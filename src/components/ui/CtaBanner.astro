@@ -1,15 +1,24 @@
 ---
 import { withBase } from '../../lib/paths.ts';
+import { siteInfo } from '../../data/site.ts';
+
 interface Props {
-	/** Full-height video treatment, as used at the bottom of the homepage. */
+	/**
+	 * `feature`: the homepage coda, a full-height film with its own copy.
+	 * `compact` (default): the short closing band used across the inner pages.
+	 */
 	variant?: 'feature' | 'compact';
 }
 
 const { variant = 'compact' } = Astro.props;
+const isFeature = variant === 'feature';
+
+const phone = siteInfo.phones[0];
+const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 ---
 
-<section class:list={['cta', `cta-${variant}`]}>
-	{variant === 'feature' && (
+<section class:list={['cta', `cta-${variant}`]} data-cta={variant}>
+	{isFeature && (
 		<div
 			class="cta-media"
 			style={`background-image:url(${withBase('/images/home/hero/poster.webp')})`}
@@ -32,11 +41,28 @@ const { variant = 'compact' } = Astro.props;
 		</div>
 	)}
 
-	<div class="page cta-inner">
-		<h2>Design your<br />Living Experience</h2>
-		<p>Intelligent technology, designed around your lifestyle.</p>
-		<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Schedule a Consultation</a>
-	</div>
+	{isFeature ? (
+		<div class="page cta-inner" data-cta-copy>
+			<h2>Your home, composed.</h2>
+			<p class="cta-body">Intelligent technology, designed around the way you live.</p>
+			<div class="cta-actions">
+				<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Schedule a Consultation</a>
+				<a class="cta-phone" href={phoneHref}>
+					or call the studio <span>{phone}</span>
+				</a>
+			</div>
+			<p class="cta-note">
+				Already a client? Our concierge team is here:{' '}
+				<a href={withBase('/technology-support-membership/')}>Technology Support<span aria-hidden="true"> →</span></a>
+			</p>
+		</div>
+	) : (
+		<div class="page cta-inner">
+			<h2>Design your<br />Living Experience</h2>
+			<p class="cta-body">Intelligent technology, designed around your lifestyle.</p>
+			<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Schedule a Consultation</a>
+		</div>
+	)}
 </section>
 
 <script>
@@ -61,6 +87,26 @@ const { variant = 'compact' } = Astro.props;
 		);
 		io.observe(video);
 	}
+
+	// The coda's copy fades up once. Armed from here, so it is never hidden
+	// when the script doesn't run or motion is reduced.
+	const copy = document.querySelector<HTMLElement>('[data-cta-copy]');
+	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (copy && !reduce && 'IntersectionObserver' in window) {
+		copy.setAttribute('data-armed', '');
+		const reveal = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					copy.classList.add('is-visible');
+					reveal.disconnect();
+				});
+			},
+			{ threshold: 0.35 }
+		);
+		reveal.observe(copy);
+	}
 </script>
 
 <style>
@@ -77,9 +123,11 @@ const { variant = 'compact' } = Astro.props;
 
 	.cta-feature {
 		min-height: 100vh;
+		min-height: 100svh;
 		display: flex;
 		align-items: center;
 		background: var(--color-black);
+		padding-block: clamp(5rem, 12vw, 8rem);
 	}
 
 	.cta-media {
@@ -126,7 +174,7 @@ const { variant = 'compact' } = Astro.props;
 		color: var(--color-text-on-dark);
 	}
 
-	.cta p {
+	.cta-body {
 		margin: 0 0 var(--space-6);
 		max-width: 34rem;
 		font-size: var(--text-body-lg);
@@ -138,7 +186,8 @@ const { variant = 'compact' } = Astro.props;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--color-accent-hover);
+		/* White on the lighter gold is only 3.25:1; the fill bronze clears 4.5. */
+		background: var(--color-bronze-fill);
 		color: var(--color-white);
 		font-size: var(--text-base);
 		font-weight: var(--fw-medium);
@@ -148,6 +197,104 @@ const { variant = 'compact' } = Astro.props;
 	}
 
 	.cta-btn:hover {
-		background: var(--color-accent);
+		background: var(--color-bronze-fill-hover);
+	}
+
+	/* ---------- Feature (homepage coda) ---------- */
+
+	/* The last line of the page: larger and tighter than a section heading. */
+	.cta-feature h2 {
+		margin-bottom: var(--space-6);
+		font-size: clamp(2.5rem, 5.2vw, 4.75rem);
+		line-height: 1.04;
+		letter-spacing: -0.02em;
+		text-shadow: 0 2px 40px rgba(0, 0, 0, 0.35);
+	}
+
+	.cta-feature .cta-body {
+		margin-bottom: clamp(2rem, 4vw, 2.75rem);
+		font-size: clamp(1.125rem, 1.4vw, 1.3rem);
+	}
+
+	.cta-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-4) var(--space-8);
+	}
+
+	.cta-feature .cta-btn {
+		padding: 0.85rem 1.9rem;
+	}
+
+	.cta-phone {
+		font-size: var(--text-base);
+		color: var(--color-text-on-dark-muted);
+		transition: color var(--dur-fast) var(--ease-in-out-soft);
+	}
+
+	.cta-phone span {
+		color: var(--color-text-on-dark);
+		font-weight: var(--fw-medium);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+		padding-bottom: 2px;
+		transition: border-color var(--dur-fast) var(--ease-in-out-soft);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.cta-phone:hover span {
+		border-color: var(--color-accent-hover);
+	}
+
+	.cta-note {
+		margin: clamp(3rem, 7vw, 4.5rem) 0 0;
+		padding-top: var(--space-6);
+		max-width: 34rem;
+		border-top: 1px solid var(--color-border-on-dark);
+		font-size: var(--text-sm);
+		line-height: 1.6;
+		color: var(--color-text-on-dark-muted);
+	}
+
+	.cta-note a {
+		color: var(--color-text-on-dark);
+		font-weight: var(--fw-medium);
+		white-space: nowrap;
+		transition: color var(--dur-fast) var(--ease-in-out-soft);
+	}
+
+	.cta-note a:hover {
+		color: var(--color-accent-hover);
+	}
+
+	.cta-inner[data-armed] > * {
+		opacity: 0;
+		transform: translateY(1rem);
+		transition:
+			opacity 1100ms var(--ease-out-expo),
+			transform 1100ms var(--ease-out-expo);
+	}
+
+	.cta-inner[data-armed] > :nth-child(2) {
+		transition-delay: 120ms;
+	}
+
+	.cta-inner[data-armed] > :nth-child(3) {
+		transition-delay: 240ms;
+	}
+
+	.cta-inner[data-armed] > :nth-child(4) {
+		transition-delay: 380ms;
+	}
+
+	.cta-inner[data-armed].is-visible > * {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (max-width: 599px) {
+		.cta-scrim {
+			background: linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.72) 100%);
+		}
 	}
 </style>

@@ -106,8 +106,17 @@ textarea {
 	font-weight: var(--fw-semibold);
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
-	color: var(--color-accent);
+	/* Small caps on cream need the darker text bronze to clear 4.5:1. */
+	color: var(--color-bronze-text);
 	margin-bottom: var(--space-3);
+}
+
+/* The one default-coloured eyebrow on a black section (_TechnicalSilence):
+   the text bronze is too dark there (4.05:1), the light gold is 6.09:1.
+   Belongs in that component's own styles; kept here so the darker text
+   bronze above doesn't regress it in the meantime. */
+.silence .eyebrow {
+	color: var(--color-gold-light);
 }
 
 .visually-hidden {

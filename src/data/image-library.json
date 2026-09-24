@@ -1,0 +1,471 @@
+{
+	"residences/malibu-cliffside": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1316
+	},
+	"residences/malibu-stone-court": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1350
+	},
+	"residences/malibu-coastal": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1340
+	},
+	"residences/hidden-hills-pool": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1350
+	},
+	"residences/hidden-hills-courtyard": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1340
+	},
+	"residences/manhattan-beach": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1339
+	},
+	"residences/stone-estate-wide": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 900
+	},
+	"residences/palm-drive-estate": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1345
+	},
+	"process/understand": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/design": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/design-studio": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/design-plans": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/design-collaboration": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/design-team": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/design-review": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/integrate": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/integrate-site": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"process/deliver": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 1067
+	},
+	"solutions/control-wall-panel": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1018
+	},
+	"solutions/control-keypad": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1371
+	},
+	"solutions/control-panel-living": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1345
+	},
+	"solutions/control-touch": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1340
+	},
+	"solutions/control-great-room": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1340
+	},
+	"solutions/lighting-living-room": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1357
+	},
+	"solutions/lighting-kitchen": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1029
+	},
+	"solutions/landscape-path": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1200
+	},
+	"solutions/landscape-hillside": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1345
+	},
+	"solutions/landscape-water-wall": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1152
+	},
+	"solutions/landscape-cascade": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1152
+	},
+	"solutions/landscape-installation": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1371
+	},
+	"solutions/audio-pergola": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1340
+	},
+	"solutions/audio-poolside": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1371
+	},
+	"solutions/audio-garden-speaker": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1600
+		],
+		"width": 1600,
+		"height": 900
+	},
+	"solutions/audio-bollard": {
+		"widths": [
+			480,
+			800,
+			873
+		],
+		"width": 873,
+		"height": 1090
+	},
+	"solutions/audio-terrace": {
+		"widths": [
+			480,
+			800,
+			1200,
+			1293
+		],
+		"width": 1293,
+		"height": 969
+	},
+	"solutions/cinema-tiered": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1345
+	},
+	"solutions/cinema-garden": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1340
+	},
+	"solutions/cinema-midnight": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1642
+	},
+	"solutions/cinema-media-room": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1333
+	},
+	"solutions/cinema-starlight": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1808
+	},
+	"solutions/cinema-outdoor": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1340
+	},
+	"solutions/shades-glass-wall": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1429
+	},
+	"solutions/security-estate-gate": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1343
+	},
+	"solutions/security-driveway-gate": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1309
+	},
+	"solutions/security-camera": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1610
+	},
+	"solutions/security-smart-lock": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1340
+	},
+	"solutions/access-lit-gate": {
+		"widths": [
+			640,
+			1024,
+			1600,
+			2400
+		],
+		"width": 2400,
+		"height": 1309
+	}
+}

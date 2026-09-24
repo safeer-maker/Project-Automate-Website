@@ -1,7 +1,9 @@
 ---
 title: "House Surveillance Cameras: The Ultimate Guide to Smart Home Security"
+seoTitle: "House Surveillance Cameras: A Smart Home Security Guide"
 publishDate: 2026-07-10
 excerpt: "Discover how house surveillance cameras boost smart home security with expert tips on features, installation, and system choices."
+seoDescription: "House surveillance cameras explained: types, PoE vs. battery power, 4K and HDR, local NVR storage without subscriptions, and placement that avoids blind spots."
 coverImage: "/images/blog/house-surveillance-cameras-the-ultimate-guide-to-smart-home-security.webp"
 coverImageAlt: "High-end outdoor surveillance camera mounted on a home exterior"
 category: "Security"

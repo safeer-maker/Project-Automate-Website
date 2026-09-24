@@ -2,6 +2,7 @@
 title: "An Essential Guide to Energy Management Basics"
 publishDate: 2026-07-10
 excerpt: "Master energy management basics to cut costs, boost sustainability, and achieve ESG goals with smart systems and proven strategies."
+seoDescription: "Energy management basics for homes and buildings: smart panels, automated shading, battery backup and load shedding, plus Title 24 and NEM 3.0 in California."
 coverImage: "/images/blog/an-essential-guide-to-energy-management-basics.webp"
 coverImageAlt: "Energy management smart home dashboard"
 category: "Energy Management"

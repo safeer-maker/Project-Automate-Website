@@ -1,7 +1,9 @@
 ---
 title: "How Ketra Lighting Design Can Radically Change Your Indoor Experience"
+seoTitle: "How Ketra Lighting Design Transforms Your Interiors"
 publishDate: 2025-06-28
 excerpt: "Ketra's tunable, full-spectrum lighting goes beyond simple on/off control, letting you shape color and warmth throughout the day to change how a room actually feels."
+seoDescription: "Ketra lighting design: Vibrancy tunes white light to bring out art and texture, while full-spectrum warm dimming shifts color and warmth through the day."
 coverImage: "/images/blog/how-ketra-lighting-design-can-radically-change-your-indoor-experience.webp"
 coverImageAlt: "Warmly lit modern interior with Ketra tunable lighting"
 category: "Lighting"

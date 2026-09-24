@@ -2,6 +2,7 @@
 title: "Why Interior Designers Love Basalte"
 publishDate: 2026-06-07
 excerpt: "Basalte pairs whole-home control with minimalist, premium-material interfaces, which is why interior designers keep specifying it for luxury smart home projects."
+seoDescription: "Basalte for interior designers: minimalist wall panels in premium materials that control lighting, climate, shades and whole-home audio from one interface."
 coverImage: "/images/blog/why-interior-designers-love-basalte.webp"
 coverImageAlt: "Basalte wall panel and lighting control interface in a modern living space"
 category: "Design Partners"

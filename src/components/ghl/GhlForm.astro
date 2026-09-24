@@ -15,33 +15,48 @@ interface Props {
 	 * the form loads itself as it nears the viewport.
 	 */
 	deferLoad?: boolean;
+	/**
+	 * The form is the point of the page (/schedule/, /get-started/, landing
+	 * pages). Its src is written straight into the HTML so the browser starts
+	 * fetching it while the page is still parsing, instead of waiting for a
+	 * script — and the popup stands down on that page (see GhlFormModal).
+	 */
+	primary?: boolean;
 }
 
-const { instance = 'inline', deferLoad = false } = Astro.props;
+const { instance = 'inline', deferLoad = false, primary = false } = Astro.props;
 const id = instance === 'inline' ? `inline-${ghl.formId}` : `inline-${ghl.formId}-${instance}`;
 ---
 
-<iframe
-	class="ghl-form"
-	data-src={ghlFormUrl}
-	data-ghl-manual-load={deferLoad ? '' : undefined}
-	style={`height:${ghl.formHeight}px`}
-	id={id}
-	data-layout="{'id':'INLINE'}"
-	data-trigger-type="alwaysShow"
-	data-trigger-value=""
-	data-activation-type="alwaysActivated"
-	data-activation-value=""
-	data-deactivation-type="neverDeactivate"
-	data-deactivation-value=""
-	data-form-name={ghl.formName}
-	data-height={ghl.formHeight}
-	data-layout-iframe-id={id}
-	data-form-id={ghl.formId}
-	data-cookie-consent="true"
-	data-cookie-consent-provider="ghl_cookie"
-	title={ghl.formName}
-></iframe>
+<div class="ghl-form-shell" data-ghl-shell style={`--ghl-form-height:${ghl.formHeight}px`}>
+	<div class="ghl-form-loading" aria-hidden="true">
+		<span class="ghl-form-loading-bar"></span>
+		<span class="ghl-form-loading-label">Preparing your private consultation form…</span>
+	</div>
+	<iframe
+		class="ghl-form"
+		src={primary ? ghlFormUrl : undefined}
+		data-src={ghlFormUrl}
+		data-ghl-manual-load={deferLoad ? '' : undefined}
+		data-ghl-primary={primary ? '' : undefined}
+		style={`height:${ghl.formHeight}px`}
+		id={id}
+		data-layout="{'id':'INLINE'}"
+		data-trigger-type="alwaysShow"
+		data-trigger-value=""
+		data-activation-type="alwaysActivated"
+		data-activation-value=""
+		data-deactivation-type="neverDeactivate"
+		data-deactivation-value=""
+		data-form-name={ghl.formName}
+		data-height={ghl.formHeight}
+		data-layout-iframe-id={id}
+		data-form-id={ghl.formId}
+		data-cookie-consent="true"
+		data-cookie-consent-provider="ghl_cookie"
+		title={ghl.formName}
+	></iframe>
+</div>
 
 <script>
 	// Why not loading="lazy": form_embed.js parks an iframe off-screen until it
@@ -52,23 +67,123 @@ const id = instance === 'inline' ? `inline-${ghl.formId}` : `inline-${ghl.formId
 		(entries) => {
 			entries.forEach((entry) => {
 				if (!entry.isIntersecting) return;
-				const frame = entry.target as HTMLIFrameElement;
-				frame.src = frame.dataset.src!;
-				io.unobserve(frame);
+				const frame = entry.target.querySelector<HTMLIFrameElement>('iframe.ghl-form')!;
+				if (!frame.getAttribute('src')) frame.src = frame.dataset.src!;
+				io.unobserve(entry.target);
 			});
 		},
-		{ rootMargin: '800px 0px' }
+		// Generous: the form takes 1–2s to arrive, so start well before it is on screen.
+		{ rootMargin: '1400px 0px' }
 	);
-	document
-		.querySelectorAll<HTMLIFrameElement>('iframe.ghl-form[data-src]:not([data-ghl-manual-load])')
-		.forEach((frame) => io.observe(frame));
+
+	document.querySelectorAll<HTMLElement>('[data-ghl-shell]').forEach((shell) => {
+		const frame = shell.querySelector<HTMLIFrameElement>('iframe.ghl-form');
+		if (!frame) return;
+		// Observe the shell, not the iframe: form_embed.js moves the iframe
+		// off-screen while it loads, so the iframe itself may never intersect.
+		if (!frame.hasAttribute('data-ghl-manual-load') && !frame.getAttribute('src')) io.observe(shell);
+		// The placeholder (and the space it reserves) stays until the form is
+		// actually in place. form_embed.js parks the iframe off-screen with
+		// position:absolute while it boots, and the iframe's load event can fire
+		// while it's still parked — releasing the reserved height then collapsed
+		// the page for a beat and jumped it back (a large layout shift).
+		const parked = () => frame.style.position === 'absolute';
+		const revealed = () => !parked() && (frame.style.visibility === 'visible' || frame.style.opacity === '1');
+		const done = () => {
+			shell.classList.add('is-loaded');
+			reveal.disconnect();
+		};
+		const reveal = new MutationObserver(() => {
+			if (revealed()) done();
+		});
+		reveal.observe(frame, { attributes: true, attributeFilter: ['style'] });
+		// Fallback for when form_embed.js never runs (blocked): the iframe then
+		// renders unparked and its load event is the only signal. The grace
+		// period lets a late-arriving form_embed.js (it's async) park the frame
+		// first, in which case the observer above takes over.
+		frame.addEventListener('load', () => {
+			setTimeout(() => {
+				if (!parked()) done();
+			}, 2000);
+		});
+		// A primary form can be revealed before this script runs.
+		if (revealed()) done();
+	});
 </script>
 
 <style>
+	/* Holds the form's space while form_embed.js has the iframe parked
+	   off-screen, so nothing below jumps when it arrives. */
+	.ghl-form-shell {
+		position: relative;
+		scroll-margin-top: calc(var(--header-height, 96px) + var(--space-6));
+	}
+
+	.ghl-form-shell:not(.is-loaded) {
+		min-height: var(--ghl-form-height);
+	}
+
 	.ghl-form {
+		position: relative;
 		display: block;
 		width: 100%;
 		border: none;
 		border-radius: var(--radius-md);
+	}
+
+	/* Sits behind the iframe (which form_embed.js keeps transparent until the
+	   form is ready), so the slot reads as "arriving" rather than empty. */
+	.ghl-form-loading {
+		position: absolute;
+		inset: 0 0 auto;
+		display: grid;
+		gap: var(--space-4);
+		padding-top: var(--space-6);
+		transition: opacity var(--dur-base) var(--ease-in-out-soft);
+		pointer-events: none;
+	}
+
+	.ghl-form-shell.is-loaded .ghl-form-loading {
+		opacity: 0;
+	}
+
+	.ghl-form-loading-bar {
+		position: relative;
+		display: block;
+		height: 1px;
+		overflow: hidden;
+		background: var(--color-border);
+	}
+
+	.ghl-form-loading-bar::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		width: 40%;
+		background: var(--color-accent);
+		animation: ghl-loading 1.6s var(--ease-in-out-soft) infinite;
+	}
+
+	.ghl-form-loading-label {
+		font-size: var(--text-sm);
+		letter-spacing: 0.04em;
+		color: var(--color-text-muted);
+	}
+
+	@keyframes ghl-loading {
+		from {
+			transform: translateX(-100%);
+		}
+		to {
+			transform: translateX(250%);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ghl-form-loading-bar::after {
+			animation: none;
+			width: 100%;
+			opacity: 0.4;
+		}
 	}
 </style>

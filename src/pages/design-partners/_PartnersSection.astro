@@ -1,0 +1,173 @@
+---
+import Picture from '../../components/ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
+
+const partners: { title: string; description: string; image: LibraryImageId; alt: string }[] = [
+	{
+		title: 'Architects',
+		description:
+			'From concept through construction, we help translate technology requirements into the architectural plan — not bolt it on after the fact.',
+		image: 'process/design',
+		alt: 'White architectural model of a residence on a design desk',
+	},
+	{
+		title: 'Design Build Firms',
+		description:
+			'One coordinated technology scope from design development through final walkthrough, so trades stay aligned and timelines stay intact.',
+		image: 'process/design-team',
+		alt: 'Design team gathered around architectural drawings, seen from above',
+	},
+	{
+		title: 'Interior Designers',
+		description: 'Every keypad, panel, and speaker is placed to support the design — never to compete with it.',
+		image: 'process/understand',
+		alt: 'Homeowners and a designer reviewing material samples at a kitchen table',
+	},
+	{
+		title: 'General Contractors',
+		description:
+			'Coordinated rough-in and trim schedules that keep low-voltage work moving in step with the rest of the site.',
+		image: 'process/integrate-site',
+		alt: 'Site lead reviewing drawings beside a pool',
+	},
+];
+---
+
+<section class="partners" id="partners" aria-labelledby="partners-heading">
+	<div class="container">
+		<header class="partners-head">
+			<span class="eyebrow">Who We Partner With</span>
+			<h2 id="partners-heading">Seamless from concept through completion.</h2>
+		</header>
+
+		<ul class="grid" data-partners>
+			{partners.map((partner, i) => (
+				<li class="partner" style={`--i: ${i % 2}`}>
+					<figure class="partner-media">
+						<Picture id={partner.image} alt={partner.alt} sizes="(max-width: 700px) 100vw, (max-width: 1280px) 50vw, 600px" />
+					</figure>
+					<div class="partner-copy">
+						<h3>{partner.title}</h3>
+						<p>{partner.description}</p>
+					</div>
+				</li>
+			))}
+		</ul>
+	</div>
+</section>
+
+<script>
+	// Each card settles once as it enters; nothing replays.
+	document.querySelectorAll<HTMLElement>('[data-partners]').forEach((grid) => {
+		const items = grid.querySelectorAll<HTMLElement>('.partner');
+		if (!('IntersectionObserver' in window)) {
+			items.forEach((item) => item.classList.add('is-revealed'));
+			return;
+		}
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
+		);
+		items.forEach((item) => io.observe(item));
+	});
+</script>
+
+<style>
+	.partners {
+		padding-block: clamp(4.5rem, 10vw, 8.5rem);
+		/* Lands below the sticky header when reached from the hero link. */
+		scroll-margin-top: var(--header-height, 96px);
+	}
+
+	.partners-head {
+		max-width: 40rem;
+		margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+	}
+
+	.partners-head h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.12;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 3vw, 2.5rem);
+	}
+
+	.partner-media {
+		margin: 0 0 var(--space-6);
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		aspect-ratio: 3 / 2;
+		background: var(--color-surface);
+	}
+
+	.partner-media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.partner-copy {
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.partner-copy h3 {
+		margin: 0 0 var(--space-3);
+		font-size: var(--text-tile);
+		font-weight: var(--fw-medium);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+	}
+
+	.partner-copy p {
+		margin: 0;
+		max-width: 32rem;
+		line-height: 1.7;
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.partner {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 1000ms var(--ease-out-expo),
+				transform 1000ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 110ms);
+		}
+		.partner-media :global(img) {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
+		}
+		.partner.is-revealed {
+			opacity: 1;
+			transform: none;
+		}
+		.partner.is-revealed .partner-media :global(img) {
+			transform: none;
+		}
+	}
+
+	@media (max-width: 700px) {
+		.grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.partner {
+			transition-delay: 0ms;
+		}
+	}
+</style>

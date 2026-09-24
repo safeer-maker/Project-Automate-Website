@@ -5,6 +5,7 @@ excerpt: "Discover how the eMylo smart switch enables budget-friendly home autom
 coverImage: "/images/blog/unboxing-the-budget-friendly-emylo-smart-switch.webp"
 coverImageAlt: "eMylo smart switch unboxing and installation"
 category: "Product Reviews"
+noindex: true
 ---
 
 The eMylo smart switch is a compact WiFi relay module that lets you control lights and appliances remotely using a smartphone app, voice commands, or an RF remote. It's one of the most popular entry points into budget smart home automation — over three million people worldwide use eMylo products, with the brand shipping more than seven million units across 137 countries.

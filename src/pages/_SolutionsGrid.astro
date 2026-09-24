@@ -1,86 +1,145 @@
 ---
+import Picture from '../components/ui/Picture.astro';
 import { withBase } from '../lib/paths.ts';
-// Tile widths mirror the live site's asymmetric rows at 1440px:
-// row 1: 464 / 732 · row 2: 708 / 488 · row 3: full · row 4: 488 / 708
-const rows = [
-	[
-		{
-			title: 'Security Solution',
-			description: 'Integrated security that keeps your home protected and connected.',
-			image: withBase('/images/home/experience/security.webp'),
-			href: withBase('/security-systems/'),
-			span: 38,
-		},
-		{
-			title: 'Cinema Rooms & Media Spaces',
-			description: 'Cinematic sound and vision, built into the architecture of the room.',
-			image: withBase('/images/home/experience/cinema.webp'),
-			href: withBase('/home-cinama/'),
-			span: 60,
-		},
-	],
+import { libraryEntry, type LibraryImageId } from '../lib/images.ts';
+
+// Seven disciplines in the asymmetric mosaic, rows 2 / 2 / 1 / 2. The wide
+// tile zig-zags left, right, full, left so the eye keeps moving down the page.
+// Wide tiles take the ultra-wide photographs; `focus` keeps each subject in
+// frame when a landscape image is cropped into a near-square narrow tile.
+interface Tile {
+	title: string;
+	description: string;
+	image: LibraryImageId;
+	alt: string;
+	href: string;
+	span: number;
+	focus?: string;
+}
+
+const rows: Tile[][] = [
 	[
 		{
 			title: 'Smart Home Automation',
-			description: 'Every system, every room — answered with a single, intuitive gesture.',
-			image: withBase('/images/home/experience/automation.webp'),
-			href: withBase('/control-systems/'),
-			span: 58,
+			description: 'Every system, every room, answered with a single, intuitive gesture.',
+			image: 'solutions/control-wall-panel',
+			alt: 'A wall-mounted control panel in a calm, light-filled living room',
+			href: '/control-systems/',
+			span: 60,
+			focus: '30% 50%',
 		},
 		{
 			title: 'Lighting Control',
-			description: 'Light that shifts with the hour, the season, and the occasion.',
-			image: withBase('/images/home/experience/lighting.webp'),
-			href: withBase('/lighting-control-systems/'),
-			span: 40,
+			description: 'Light that shifts with the hour, the season and the occasion.',
+			image: 'solutions/lighting-kitchen',
+			alt: 'A dark kitchen lit by low pendants and warm under-shelf light',
+			href: '/lighting-control-systems/',
+			span: 38,
+			focus: '62% 50%',
 		},
 	],
 	[
 		{
-			title: 'Audio Solutions',
-			description: 'Immersive sound that blends beautifully into every living space.',
-			image: withBase('/images/home/experience/audio.webp'),
-			href: withBase('/audio-video-solutions/'),
-			span: 100,
-		},
-	],
-	[
-		{
-			title: 'Energy Management',
-			description: 'Power monitored, balanced and stored — quietly, in the background.',
-			image: withBase('/images/home/experience/energy.webp'),
-			href: withBase('/energy-moment/'),
+			title: 'Landscape & Outdoor Lighting',
+			description: 'Gardens, paths and pools, drawn softly in light after dark.',
+			image: 'solutions/landscape-hillside',
+			alt: 'A hillside home at dusk with its gardens and trees softly uplit',
+			href: '/outdoor-lighting-audio/',
 			span: 40,
+			focus: '48% 50%',
 		},
 		{
-			title: 'Motorized Shades and Draperies',
-			description: 'Privacy, shade and daylight, adjusted without lifting a finger.',
-			image: withBase('/images/home/experience/shades.webp'),
-			href: withBase('/motorized-shades-and-drapery/'),
+			title: 'Private Cinema',
+			description: 'Reference picture and sound, built into the architecture of the room.',
+			image: 'solutions/cinema-tiered',
+			alt: 'A tiered private cinema with warm light washing each step',
+			href: '/home-theater/',
 			span: 58,
+		},
+	],
+	[
+		{
+			title: 'Whole-Home & Outdoor Audio',
+			description: 'Music in every room and across the terrace, with no speaker in sight.',
+			image: 'solutions/audio-pergola',
+			alt: 'Outdoor speakers mounted under a white pergola beside a pool and fire table',
+			href: '/audio-video-solutions/',
+			span: 100,
+			focus: '50% 42%',
+		},
+	],
+	[
+		{
+			title: 'Motorized Shades & Drapery',
+			description: 'Privacy, shade and daylight, adjusted without lifting a finger.',
+			image: 'solutions/shades-glass-wall',
+			alt: 'A bright minimalist living space with floor-to-ceiling glass onto a garden',
+			href: '/motorized-shades-and-drapery/',
+			span: 58,
+		},
+		{
+			title: 'Security & Access Control',
+			description: 'Gates, cameras and doors that protect quietly and answer to one interface.',
+			image: 'solutions/security-driveway-gate',
+			alt: 'A modern sliding driveway gate with a lit intercom post at night',
+			href: '/security-systems/',
+			span: 40,
+			focus: '58% 50%',
 		},
 	],
 ];
 
-// Flat index across all rows so the reveal staggers down the mosaic rather
-// than restarting at every row.
-let tileIndex = 0;
+// The width each photo actually renders at, for `sizes`. object-fit: cover
+// scales a photo to whichever is larger of the slot's width and its height
+// times the photo's aspect, so a narrow tile holding an ultra-wide photo
+// renders far wider than the slot (Lighting Control: 35vw slot, 77vw photo).
+// Content is ~89vw wide (5.5vw gutters) up to 1440px, then caps at 1280px;
+// tiles are 33vw tall (480px cap) on desktop and 4:3 on mobile. Gaps are
+// small enough to ignore.
+const tileSizes = (row: Tile[], tile: Tile) => {
+	const share = tile.span / row.reduce((sum, t) => sum + t.span, 0);
+	const { width, height } = libraryEntry(tile.image);
+	const aspect = width / height;
+	const mobile = Math.round(89 * Math.max(1, 0.75 * aspect));
+	const wide = Math.round(Math.max(1280 * share, 480 * aspect));
+	const mid = Math.round(Math.max(89 * share, 33 * aspect));
+	return `(max-width: 800px) ${mobile}vw, (min-width: 1440px) ${wide}px, ${mid}vw`;
+};
 ---
 
-<section class="experience">
+<section class="solutions" aria-labelledby="solutions-title">
 	<div class="page">
-		<!-- "The Experience" belongs to the pillars section directly above; two
-		     adjacent sections sharing an eyebrow was the mistake this rebuild
-		     already had to fix once at Technical Silence. -->
-		<span class="eyebrow">Our Solutions</span>
-		<h2>Every system,<br />Working as one.</h2>
+		<div class="solutions-head">
+			<div>
+				<span class="eyebrow">Our Solutions</span>
+				<h2 id="solutions-title">One system, every room.</h2>
+			</div>
+			<div class="solutions-aside">
+				<p>Seven disciplines designed together and controlled as one.</p>
+				<a class="text-link" href={withBase('/control-systems/')}>
+					<span>Explore all solutions</span>
+					<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+						<path
+							d="M3 8h10M9 4l4 4-4 4"
+							stroke="currentColor"
+							stroke-width="1.3"
+							stroke-linecap="round"
+							stroke-linejoin="round"></path>
+					</svg>
+				</a>
+			</div>
+		</div>
 
 		<div class="tiles" data-tiles>
 			{rows.map((row) => (
 				<div class="row" style={`--cols:${row.map((t) => `${t.span}fr`).join(' ')}`}>
-					{row.map((tile) => (
-						<a class="tile" href={tile.href} style={`--tile-index:${tileIndex++}`}>
-							<img src={tile.image} alt="" loading="lazy" />
+					{row.map((tile, i) => (
+						<a
+							class="tile"
+							href={withBase(tile.href)}
+							style={`--tile-index:${i};--focus:${tile.focus ?? '50% 50%'}`}
+						>
+							<Picture id={tile.image} alt={tile.alt} sizes={tileSizes(row, tile)} />
 							<span class="tile-scrim"></span>
 							<span class="tile-foot">
 								<span class="tile-text">
@@ -102,18 +161,80 @@ let tileIndex = 0;
 </section>
 
 <style>
-	.experience {
+	.solutions {
 		background: var(--color-bg);
-		padding-block: clamp(4rem, 9vw, 7.5rem);
+		padding-block: clamp(5rem, 10vw, 9rem);
 	}
 
-	.experience h2 {
-		margin: 0 0 clamp(2rem, 5vw, 3.5rem);
+	.solutions-head {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: var(--space-8) clamp(2rem, 6vw, 6rem);
+		margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.solutions-head h2 {
+		margin: 0;
 		font-size: var(--text-display-md);
 		font-weight: var(--fw-medium);
-		line-height: 1.4;
+		line-height: 1.15;
 		letter-spacing: -0.01em;
 		color: var(--color-text);
+		text-wrap: balance;
+	}
+
+	.solutions-aside {
+		flex: 0 1 22rem;
+		padding-bottom: 0.4rem;
+	}
+
+	.solutions-aside p {
+		margin: 0 0 var(--space-4);
+		font-size: var(--text-body-lg);
+		line-height: 1.6;
+		color: var(--color-text-muted);
+	}
+
+	.text-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		min-height: 44px;
+		font-size: var(--text-base);
+		font-weight: var(--fw-medium);
+		color: var(--color-text);
+		transition: color var(--dur-fast) ease;
+	}
+
+	.text-link span {
+		padding-bottom: 3px;
+		border-bottom: 1px solid rgba(154, 114, 57, 0.45);
+		transition: border-color var(--dur-fast) ease;
+	}
+
+	.text-link svg {
+		width: 15px;
+		height: 15px;
+		color: var(--color-accent);
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	/* Text bronze, not the brand bronze: 16px type on cream needs 4.5:1. */
+	.text-link:hover {
+		color: var(--color-bronze-text);
+	}
+	.text-link:hover span {
+		border-color: var(--color-accent);
+	}
+	.text-link:hover svg {
+		transform: translateX(3px);
+	}
+
+	.text-link:focus-visible,
+	.tile:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 4px;
 	}
 
 	.tiles {
@@ -138,35 +259,52 @@ let tileIndex = 0;
 		border-radius: 20px;
 		overflow: hidden;
 		isolation: isolate;
-		clip-path: inset(0 0 100% 0);
-		transition: clip-path 900ms var(--ease-out-expo);
-		transition-delay: calc(var(--tile-index) * 70ms);
+		background: var(--color-charcoal);
 	}
 
-	.tiles.is-visible .tile {
-		clip-path: inset(0);
+	/* Rows wipe in one at a time as each reaches the viewport. The row is
+	   what gets observed: IntersectionObserver honours a target's own
+	   clip-path, so a fully clipped tile would never report as visible. The
+	   hidden state waits for the script so tiles never stay clipped without JS. */
+	.tiles[data-ready] .tile {
+		clip-path: inset(0 0 100% 0 round 20px);
+		transition: clip-path 1s var(--ease-out-expo);
+		transition-delay: calc(var(--tile-index) * 90ms);
 	}
 
-	.tile img {
+	.tiles[data-ready] .row.is-visible .tile {
+		clip-path: inset(0 round 20px);
+	}
+
+	.tile :global(img) {
 		position: absolute;
 		inset: 0;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+		object-position: var(--focus);
+		transition: transform 1.2s var(--ease-out-expo);
 	}
 
-	.tile:hover img {
-		transform: scale(1.04);
+	.tile:hover :global(img),
+	.tile:focus-visible :global(img) {
+		transform: scale(1.03);
 	}
 
 	/* Rests light so the photography leads, deepens on hover so the label and
-	   its description can be read. */
+	   its description can be read. The top third is left untouched; the
+	   weight sits in the lower band where the white title lands, which a
+	   single 40%→100% ramp left at ~3:1 over bright photographs. */
 	.tile-scrim {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.62) 100%);
-		opacity: 0.55;
+		background: linear-gradient(
+			180deg,
+			rgba(0, 0, 0, 0) 35%,
+			rgba(0, 0, 0, 0.48) 65%,
+			rgba(0, 0, 0, 0.78) 100%
+		);
+		opacity: 0.85;
 		transition: opacity var(--dur-base) var(--ease-in-out-soft);
 	}
 
@@ -184,7 +322,7 @@ let tileIndex = 0;
 		align-items: flex-end;
 		justify-content: space-between;
 		gap: var(--space-4);
-		padding: clamp(1rem, 2vw, 1.5rem);
+		padding: clamp(1.125rem, 2vw, 1.75rem);
 	}
 
 	.tile-text {
@@ -204,6 +342,7 @@ let tileIndex = 0;
 		line-height: 1.2;
 		color: var(--color-white);
 		text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+		text-wrap: balance;
 	}
 
 	/* Gives the hover state something to say. 0fr→1fr keeps the collapsed
@@ -215,9 +354,10 @@ let tileIndex = 0;
 		max-width: 34ch;
 		font-size: var(--text-base);
 		line-height: 1.5;
-		color: rgba(255, 255, 255, 0.82);
+		color: rgba(255, 255, 255, 0.84);
 		text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
-		transition: grid-template-rows var(--dur-base) var(--ease-out-expo),
+		transition:
+			grid-template-rows var(--dur-base) var(--ease-out-expo),
 			opacity var(--dur-base) var(--ease-out-expo),
 			padding-top var(--dur-base) var(--ease-out-expo);
 	}
@@ -244,7 +384,9 @@ let tileIndex = 0;
 		border-radius: 6px;
 		border: 1px solid rgba(255, 255, 255, 0.55);
 		color: var(--color-white);
-		transition: background-color var(--transition-base), border-color var(--transition-base);
+		transition:
+			background-color var(--transition-base),
+			border-color var(--transition-base);
 	}
 
 	.tile-arrow svg {
@@ -252,14 +394,42 @@ let tileIndex = 0;
 		height: 18px;
 	}
 
-	.tile:hover .tile-arrow {
+	.tile:hover .tile-arrow,
+	.tile:focus-visible .tile-arrow {
 		background: var(--color-accent-hover);
 		border-color: var(--color-accent-hover);
 	}
 
+	@media (max-width: 900px) {
+		.solutions-head {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.solutions-aside {
+			flex: none;
+			max-width: 32rem;
+			padding-bottom: 0;
+		}
+	}
+
 	@media (max-width: 800px) {
+		.tiles,
+		.row {
+			gap: 1rem;
+		}
 		.row {
 			grid-template-columns: 1fr;
+		}
+		.tile {
+			height: auto;
+			aspect-ratio: 4 / 3;
+			border-radius: var(--radius-lg);
+		}
+		.tiles[data-ready] .tile {
+			clip-path: inset(0 0 100% 0 round var(--radius-lg));
+		}
+		.tiles[data-ready] .row.is-visible .tile {
+			clip-path: inset(0 round var(--radius-lg));
 		}
 		/* No hover on touch, so the description would never be reachable. */
 		.tile-desc {
@@ -267,37 +437,54 @@ let tileIndex = 0;
 			opacity: 1;
 			padding-top: var(--space-2);
 		}
+		/* Title and description are always shown here and climb to half the
+		   tile's height, so the scrim holds ~0.7 across that whole band. */
 		.tile-scrim {
+			background: linear-gradient(
+				180deg,
+				rgba(0, 0, 0, 0) 15%,
+				rgba(0, 0, 0, 0.72) 60%,
+				rgba(0, 0, 0, 0.8) 100%
+			);
 			opacity: 1;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.tile {
-			clip-path: inset(0);
+		.tiles[data-ready] .tile,
+		.tiles[data-ready] .row.is-visible .tile {
+			clip-path: none;
 			transition: none;
 		}
+		.tile :global(img),
 		.tile-text,
 		.tile-desc,
 		.tile-scrim {
 			transition: none;
 		}
+		.tile:hover :global(img),
+		.tile:focus-visible :global(img),
+		.tile:hover .tile-text,
+		.tile:focus-visible .tile-text {
+			transform: none;
+		}
 	}
 </style>
 
 <script>
-	const tiles = document.querySelector('[data-tiles]');
+	const tiles = document.querySelector<HTMLElement>('[data-tiles]');
 	if (tiles) {
 		const io = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry) => {
 					if (!entry.isIntersecting) return;
-					tiles.classList.add('is-visible');
-					io.disconnect();
+					entry.target.classList.add('is-visible');
+					io.unobserve(entry.target);
 				});
 			},
-			{ threshold: 0.1 }
+			{ threshold: 0.15 }
 		);
-		io.observe(tiles);
+		tiles.querySelectorAll('.row').forEach((row) => io.observe(row));
+		tiles.dataset.ready = '';
 	}
 </script>

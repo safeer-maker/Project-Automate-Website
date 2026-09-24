@@ -2,54 +2,146 @@
 import { withBase } from '../../lib/paths.ts';
 ---
 
-<section class="section founder">
+<section class="founder" data-founder>
 	<div class="container founder-grid">
-		<img src={withBase('/images/about-us/founder-joshua-trevithick.webp')} alt="Joshua Trevithick, Founder and CEO of PROJECT: automate" loading="lazy" />
+		<figure class="founder-portrait">
+			<img
+				src={withBase('/images/about-us/founder-joshua-trevithick.webp')}
+				alt="Joshua Trevithick, Founder and CEO of PROJECT: automate"
+				width="562"
+				height="839"
+				loading="lazy"
+				decoding="async"
+			/>
+		</figure>
 		<div class="founder-text">
 			<span class="eyebrow">Founder &amp; CEO</span>
 			<h2>Joshua Trevithick</h2>
+			<p class="lede">
+				Joshua built PROJECT: automate on a simple belief: technology should simplify daily
+				routines, elevate comfort, and blend seamlessly into the architecture of every home.
+			</p>
 			<p>
 				With nearly three decades of personal experience in the AV and home automation
-				industry, Joshua has built PROJECT: automate on a simple belief: technology should
-				simplify daily routines, elevate comfort, and blend seamlessly into the architecture of
-				every home. Every system is designed with clarity, precision, and long-term usability
-				in mind.
+				industry, he leads every project with clarity, precision and long-term usability in
+				mind, from the first conversation to the care that follows handover.
 			</p>
 		</div>
 	</div>
 </section>
 
+<script>
+	// One-time reveal as the section enters.
+	document.querySelectorAll<HTMLElement>('[data-founder]').forEach((section) => {
+		if (!('IntersectionObserver' in window)) {
+			section.classList.add('is-revealed');
+			return;
+		}
+		const io = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				section.classList.add('is-revealed');
+				io.disconnect();
+			},
+			{ rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+		);
+		io.observe(section);
+	});
+</script>
+
 <style>
+	.founder {
+		background: var(--color-surface);
+		border-block: 1px solid var(--color-border);
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+	}
+
 	.founder-grid {
 		display: grid;
-		grid-template-columns: 320px 1fr;
-		gap: var(--space-12);
+		grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+		gap: clamp(2.5rem, 7vw, 7rem);
 		align-items: center;
 	}
 
-	.founder-grid img {
+	.founder-portrait {
+		margin: 0;
+		max-width: 420px;
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		aspect-ratio: 4 / 5;
+		background: var(--color-surface-2);
+	}
+
+	.founder-portrait img {
 		width: 100%;
-		aspect-ratio: 3 / 4;
+		height: 100%;
 		object-fit: cover;
-		border-radius: var(--radius-lg);
+		/* Crop from the bottom so his face stays in frame at every width. */
+		object-position: top;
 	}
 
 	.founder-text h2 {
-		margin-bottom: var(--space-4);
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.12;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
 	}
 
 	.founder-text p {
-		font-size: var(--text-lg);
+		max-width: 38rem;
+		font-size: var(--text-base);
+		line-height: 1.75;
+	}
+
+	.founder-text .lede {
+		font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+		line-height: 1.5;
+		color: var(--color-text);
+		text-wrap: pretty;
+	}
+
+	.founder-text p:last-child {
 		margin: 0;
 	}
 
-	@media (max-width: 900px) {
-		.founder-grid {
-			grid-template-columns: 1fr;
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.founder-portrait img {
+			transform: scale(1.06);
+			transition: transform 1600ms var(--ease-out-expo);
 		}
+		.founder-text > * {
+			opacity: 0;
+			transform: translateY(18px);
+			transition:
+				opacity 1000ms var(--ease-out-expo),
+				transform 1000ms var(--ease-out-expo);
+		}
+		.founder-text > :nth-child(2) {
+			transition-delay: 80ms;
+		}
+		.founder-text > :nth-child(3) {
+			transition-delay: 160ms;
+		}
+		.founder-text > :nth-child(4) {
+			transition-delay: 240ms;
+		}
+		.is-revealed .founder-portrait img {
+			transform: none;
+		}
+		.is-revealed .founder-text > * {
+			opacity: 1;
+			transform: none;
+		}
+	}
 
-		.founder-grid img {
-			max-width: 320px;
+	@media (max-width: 800px) {
+		.founder-grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.founder-portrait {
+			max-width: 360px;
 		}
 	}
 </style>

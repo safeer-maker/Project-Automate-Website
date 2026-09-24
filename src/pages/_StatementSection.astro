@@ -1,17 +1,19 @@
 ---
-// Copy wraps naturally inside the measure below. An earlier version hard-coded
-// four "display lines", but they were wider than the measure and wrapped again,
-// which orphaned single words onto their own line.
+// The belief line, directly under the hero. Copy wraps naturally inside the
+// measure below. An earlier version hard-coded four "display lines", but they
+// were wider than the measure and wrapped again, which orphaned single words
+// onto their own line. id="approach" is the hero's "Discover the approach"
+// target.
 const statement =
-	'We create intelligent living environments where comfort, control and design work seamlessly as one, enhancing everyday life with clarity, simplicity, and precision.';
+	'A great home does not ask to be operated. Light, climate, sound and security simply respond, then step quietly out of sight.';
 
 const words = statement.split(' ');
 ---
 
-<section class="statement">
+<section class="statement" id="approach" aria-labelledby="approach-title">
 	<div class="page">
 		<span class="eyebrow">Our Approach</span>
-		<h2 data-reveal>
+		<h2 id="approach-title" data-reveal>
 			{words.map((word) => (
 				<span class="word">{word}&nbsp;</span>
 			))}
@@ -89,6 +91,9 @@ const words = statement.split(' ');
 	.statement {
 		background: var(--color-bg);
 		padding-block: clamp(5rem, 12vw, 10rem);
+		/* Landing from the hero's "Discover the approach": clears the sticky
+		   header by a comfortable margin at every width. */
+		scroll-margin-top: calc(var(--header-height, 96px) * 0.5);
 	}
 
 	.statement h2 {

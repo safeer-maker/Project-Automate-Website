@@ -12,7 +12,8 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	<div class="container header-inner">
 		<a href={withBase('/')} class="logo-hover" aria-label="Go to PROJECT: automate home">
 			<img class="logo-static" src={withBase('/images/logo/logo-static.webp')} alt="PROJECT: automate logo" width="150" height="84" />
-			<img class="logo-gif" src={withBase('/images/logo/logo-animated.webp')} alt="" aria-hidden="true" width="150" height="84" loading="lazy" />
+			{/* 1.46MB and only seen on hover/focus — src is set on first intent, see script. */}
+			<img class="logo-gif" data-src={withBase('/images/logo/logo-animated.webp')} alt="" aria-hidden="true" width="150" height="84" decoding="async" />
 		</a>
 
 		<nav class="primary-nav" aria-label="Primary">
@@ -39,7 +40,8 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 						))}
 					</ul>
 					<div class="mega-preview">
-						<img data-mega-preview src={megaMenuDefaultImage} alt="" width="4" height="3" />
+						{/* No src until the menu first opens — the desktop nav is display:none on phones. */}
+						<img data-mega-preview data-src={megaMenuDefaultImage} alt="" width="4" height="3" decoding="async" />
 					</div>
 				</div>
 			</div>
@@ -49,7 +51,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		</nav>
 
 		<div class="header-actions">
-			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" class="cta-schedule">Schedule Consultation</Button>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" class="cta-schedule" aria-label="Schedule Consultation"><span class="cta-schedule-verb">Schedule</span>Consultation</Button>
 			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
 				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
 					<path d="M1.41602 5.66666H32.5827V8.62318H1.41602V5.66666ZM1.41602 25.3768H32.5827V28.3333H1.41602V25.3768ZM1.41602 15.5217H32.5827V18.4783H1.41602V15.5217Z" fill="currentColor"></path>
@@ -60,7 +62,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	<div class="scroll-progress" data-scroll-progress aria-hidden="true"></div>
 </header>
 
-<div class="offcanvas" id="site-offcanvas" role="dialog" aria-modal="true" aria-label="Site menu" data-offcanvas>
+<div class="offcanvas" id="site-offcanvas" role="dialog" aria-modal="true" aria-label="Site menu" data-offcanvas data-lenis-prevent>
 	<div class="offcanvas-overlay" data-menu-close></div>
 	<nav class="offcanvas-panel">
 		<button class="offcanvas-close" data-menu-close aria-label="Close menu">&times;</button>
@@ -84,13 +86,16 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 
 		<div class="offcanvas-concierge">
 			<a class="concierge-phone" href={phoneHref}>{phone}</a>
+			{/* Badges and clip sit in a hidden panel on every page — their sources are
+			    attached the first time the menu opens (see setOpen), not on page load.
+			    The clip renders ≤ ~372px wide, so the mobile encodes are plenty. */}
 			<div class="concierge-badges">
-				<img src={withBase('/images/badges/cedia-certified.webp')} alt="CEDIA Certified" loading="lazy" width="96" height="48" />
-				<img src={withBase('/images/badges/cert-level-luxury.webp')} alt="Certified Luxury Level" loading="lazy" width="96" height="48" />
+				<img data-src={withBase('/images/badges/cedia-certified.webp')} alt="CEDIA Certified" width="96" height="48" decoding="async" />
+				<img data-src={withBase('/images/badges/cert-level-luxury.webp')} alt="Certified Luxury Level" width="96" height="48" decoding="async" />
 			</div>
-			<video class="concierge-clip" autoplay muted loop playsinline aria-hidden="true" tabindex="-1">
-				<source src={withBase('/videos/hero.webm')} type="video/webm" />
-				<source src={withBase('/videos/hero.mp4')} type="video/mp4" />
+			<video class="concierge-clip" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+				<source data-src={withBase('/videos/hero-mobile.mp4')} type="video/mp4" />
+				<source data-src={withBase('/videos/hero-mobile.webm')} type="video/webm" />
 			</video>
 		</div>
 
@@ -151,12 +156,14 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		opacity: 0;
 		z-index: 1;
 	}
-	.logo-hover:hover .logo-static,
-	.logo-hover:focus-visible .logo-static {
+	/* Gated on [data-gif-ready] (set once the lazily fetched animation has
+	   decoded) so the first hover never fades the static mark out to nothing. */
+	.logo-hover[data-gif-ready]:hover .logo-static,
+	.logo-hover[data-gif-ready]:focus-visible .logo-static {
 		opacity: 0;
 	}
-	.logo-hover:hover .logo-gif,
-	.logo-hover:focus-visible .logo-gif {
+	.logo-hover[data-gif-ready]:hover .logo-gif,
+	.logo-hover[data-gif-ready]:focus-visible .logo-gif {
 		opacity: 1;
 	}
 
@@ -278,14 +285,35 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		flex-shrink: 0;
 	}
 
-	:global(.cta-schedule) {
+	.header-actions :global(.cta-schedule) {
+		gap: 0;
 		white-space: nowrap;
 	}
 
+	.header-actions :global(.cta-schedule-verb) {
+		margin-right: 0.3em;
+	}
+
+	/* The verb carries its own trailing space (margin), so it can drop out on
+	   narrow phones without leaving a stray one.
+	   Scoped through .header-actions so it outranks Button's own size classes,
+	   which otherwise keep the desktop padding and push the bar past 375px. */
 	@media (max-width: 480px) {
-		:global(.cta-schedule) {
+		.header-inner {
+			gap: var(--space-3);
+		}
+		.header-actions {
+			gap: var(--space-2);
+		}
+		.header-actions :global(.cta-schedule) {
 			padding: 0.6rem 1rem;
 			font-size: var(--text-xs);
+		}
+	}
+
+	@media (max-width: 400px) {
+		.header-actions :global(.cta-schedule-verb) {
+			display: none;
 		}
 	}
 
@@ -412,19 +440,30 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		color: var(--color-accent);
 	}
 
-	/* grid-template-rows 0fr → 1fr is the only pure-CSS way to animate to auto height */
+	/* grid-template-rows 0fr → 1fr is the only pure-CSS way to animate to auto height.
+	   Collapsed, it's also visibility: hidden so its links leave the tab order —
+	   flipped only after the collapse has played out, and instantly on open. */
 	.submenu {
 		display: grid;
 		grid-template-rows: 0fr;
 		overflow: hidden;
 		opacity: 0;
-		transition: grid-template-rows var(--dur-base) var(--ease-in-out-soft), opacity var(--dur-fast) ease;
+		visibility: hidden;
+		transition:
+			grid-template-rows var(--dur-base) var(--ease-in-out-soft),
+			opacity var(--dur-fast) ease,
+			visibility 0s linear var(--dur-base);
 	}
 
 	.submenu[data-open='true'] {
 		grid-template-rows: 1fr;
 		opacity: 1;
+		visibility: visible;
 		margin: var(--space-2) 0;
+		transition:
+			grid-template-rows var(--dur-base) var(--ease-in-out-soft),
+			opacity var(--dur-fast) ease,
+			visibility 0s linear 0s;
 	}
 
 	.submenu-list {
@@ -491,22 +530,108 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 </style>
 
 <script>
-	const offcanvas = document.querySelector('[data-offcanvas]');
-	const openBtn = document.querySelector('[data-menu-open]');
+	// Animated logo: fetched on the first sign of intent rather than on every
+	// page load. Hover only counts on devices that really hover — a tap on a
+	// phone is a navigation, not a request to preview the animation.
+	const logoLink = document.querySelector<HTMLElement>('.logo-hover');
+	const logoGif = logoLink?.querySelector<HTMLImageElement>('.logo-gif[data-src]');
+	if (logoLink && logoGif) {
+		const loadGif = () => {
+			if (logoGif.getAttribute('src')) return;
+			logoGif.addEventListener('load', () => logoLink.setAttribute('data-gif-ready', ''), { once: true });
+			logoGif.src = logoGif.dataset.src!;
+		};
+		logoLink.addEventListener('pointerenter', () => {
+			if (matchMedia('(hover: hover)').matches) loadGif();
+		});
+		// The crossfade only runs on :focus-visible, so skip the pointer-focus a tap causes.
+		logoLink.addEventListener('focusin', () => {
+			if (logoLink.matches(':focus-visible')) loadGif();
+		});
+	}
+
+	const offcanvas = document.querySelector<HTMLElement>('[data-offcanvas]');
+	const offcanvasPanel = offcanvas?.querySelector<HTMLElement>('.offcanvas-panel');
+	const offcanvasClose = offcanvas?.querySelector<HTMLElement>('.offcanvas-close');
+	const openBtn = document.querySelector<HTMLElement>('[data-menu-open]');
 	const closeEls = document.querySelectorAll('[data-menu-close]');
+	const conciergeClip = offcanvas?.querySelector<HTMLVideoElement>('.concierge-clip');
+	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+	const isMenuOpen = () => offcanvas?.getAttribute('data-open') === 'true';
+
+	// The concierge badges + clip only ever show inside the menu, so their
+	// sources are attached on its first open instead of downloading on every page.
+	let conciergeLoaded = false;
+	function loadConciergeMedia() {
+		if (conciergeLoaded || !offcanvas) return;
+		conciergeLoaded = true;
+		offcanvas.querySelectorAll<HTMLImageElement | HTMLSourceElement>('.offcanvas-concierge [data-src]').forEach((el) => {
+			el.src = el.dataset.src!;
+			el.removeAttribute('data-src');
+		});
+		if (conciergeClip) {
+			// Under reduced motion it's shown as a still: fetch just enough for the first frame.
+			if (reducedMotion.matches) conciergeClip.preload = 'metadata';
+			conciergeClip.load();
+		}
+	}
+
+	// Everything behind the dialog goes inert while it's open: the offcanvas is a
+	// sibling of main/footer and of .header-inner (it sits after the header, not
+	// inside it), so this takes the page out of the tab order and the a11y tree.
+	// The cookie notice is a body-level sibling too, so it joins them.
+	const inertTargets = () =>
+		document.querySelectorAll<HTMLElement>('main, .site-footer, .header-inner, [data-cookie-notice]');
 
 	function setOpen(open: boolean) {
 		if (!offcanvas) return;
+		const wasOpen = isMenuOpen();
 		offcanvas.setAttribute('data-open', String(open));
 		openBtn?.setAttribute('aria-expanded', String(open));
+		// SmoothScroll.astro watches this to stop/start Lenis — keep it.
 		document.body.style.overflow = open ? 'hidden' : '';
+		inertTargets().forEach((el) => el.toggleAttribute('inert', open));
+
+		if (open) {
+			loadConciergeMedia();
+			if (conciergeClip && !reducedMotion.matches) {
+				// Muted + playsinline, so autoplay policy allows it; a rejection
+				// (e.g. closed again before it started) is harmless.
+				conciergeClip.play().catch(() => {});
+			}
+			offcanvasClose?.focus({ preventScroll: true });
+		} else {
+			conciergeClip?.pause();
+			// Only hand focus back when this actually closed the menu — the GHL
+			// CTA handler and stray Escapes call this while it's already shut.
+			if (wasOpen) openBtn?.focus({ preventScroll: true });
+		}
 	}
 
 	openBtn?.addEventListener('click', () => setOpen(true));
 	closeEls.forEach((el) => el.addEventListener('click', () => setOpen(false)));
-	document.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape') setOpen(false);
-	});
+
+	// inert covers the page, but Tab past the last control would still leave for
+	// the browser chrome — wrap it so focus cycles within the panel.
+	function trapTab(e: KeyboardEvent) {
+		if (!offcanvasPanel) return;
+		const focusables = offcanvasPanel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+		if (!focusables.length) return;
+		const first = focusables[0];
+		const last = focusables[focusables.length - 1];
+		const active = document.activeElement;
+		if (!offcanvasPanel.contains(active)) {
+			e.preventDefault();
+			(e.shiftKey ? last : first).focus();
+		} else if (e.shiftKey && active === first) {
+			e.preventDefault();
+			last.focus();
+		} else if (!e.shiftKey && active === last) {
+			e.preventDefault();
+			first.focus();
+		}
+	}
 
 	const submenuTrigger = document.querySelector('[data-submenu-trigger]');
 	const submenu = document.querySelector('[data-submenu]');
@@ -518,16 +643,36 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 
 	// Desktop mega menu — hover-driven, with click/keyboard support for touch + a11y.
 	const megaMenu = document.querySelector<HTMLElement>('[data-mega-menu]');
-	const megaTrigger = megaMenu?.querySelector('.mega-trigger');
+	const megaTrigger = megaMenu?.querySelector<HTMLElement>('.mega-trigger');
 	const megaLinks = megaMenu?.querySelectorAll<HTMLAnchorElement>('.mega-link');
 	const megaPreviewImg = megaMenu?.querySelector<HTMLImageElement>('[data-mega-preview]');
-	const defaultPreview = megaPreviewImg?.getAttribute('src') ?? '';
+	const defaultPreview = megaPreviewImg?.getAttribute('data-src') ?? '';
+
+	const isMegaOpen = () => megaMenu?.getAttribute('data-open') === 'true';
+
+	// Fetch the seven 800w previews — and the default one, which has no src in
+	// the markup so phones (where this nav is display:none) never download it —
+	// the first time the menu opens, so hovering down the list swaps images
+	// without a blank frame.
+	let previewsWarmed = false;
+	function warmPreviews() {
+		if (previewsWarmed) return;
+		previewsWarmed = true;
+		if (megaPreviewImg && defaultPreview) megaPreviewImg.src = defaultPreview;
+		megaLinks?.forEach((link) => {
+			const src = link.getAttribute('data-preview');
+			if (src) new Image().src = src;
+		});
+	}
 
 	function setMegaOpen(open: boolean) {
 		if (!megaMenu) return;
+		if (open) warmPreviews();
 		megaMenu.setAttribute('data-open', String(open));
 		megaTrigger?.setAttribute('aria-expanded', String(open));
-		if (!open && megaPreviewImg) megaPreviewImg.setAttribute('src', defaultPreview);
+		// Reset to the default only once it's been loaded — a focusout that never
+		// opened the menu shouldn't start the download.
+		if (!open && previewsWarmed && megaPreviewImg) megaPreviewImg.setAttribute('src', defaultPreview);
 	}
 
 	// A short close delay absorbs fast/diagonal mouse movement between the
@@ -546,8 +691,21 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	megaMenu?.addEventListener('focusout', (e) => {
 		if (!megaMenu.contains(e.relatedTarget as Node)) setMegaOpen(false);
 	});
-	megaMenu?.addEventListener('keydown', (e) => {
-		if (e instanceof KeyboardEvent && e.key === 'Escape') setMegaOpen(false);
+
+	// One Escape/Tab handler for both menus. Escape also dismisses a hover-opened
+	// mega menu (WCAG 1.4.13); focus only moves back to its trigger when it was
+	// inside the menu, so a hover-dismiss doesn't yank focus from elsewhere.
+	document.addEventListener('keydown', (e) => {
+		if (isMenuOpen()) {
+			if (e.key === 'Escape') setOpen(false);
+			else if (e.key === 'Tab') trapTab(e);
+			return;
+		}
+		if (e.key === 'Escape' && isMegaOpen()) {
+			const hadFocus = megaMenu?.contains(document.activeElement) ?? false;
+			setMegaOpen(false);
+			if (hadFocus) megaTrigger?.focus();
+		}
 	});
 
 	megaLinks?.forEach((link) => {

@@ -1,0 +1,68 @@
+---
+import { withBase } from '../../../lib/paths.ts';
+import BrandLayout from '../../../layouts/BrandLayout.astro';
+import FeatureList from '../../../components/brands/FeatureList.astro';
+import DailyExperience from '../../../components/brands/DailyExperience.astro';
+import CtaBanner from '../../../components/ui/CtaBanner.astro';
+import FeaturedInstallSection from './_FeaturedInstallSection.astro';
+
+const features = [
+	{
+		title: 'Personalized Profiles',
+		description:
+			'Create individual profiles, favorite rooms, custom scenes, and interfaces tailored to each person in the home.',
+	},
+	{
+		title: 'One Cohesive Platform',
+		description:
+			'Control lighting, climate, entertainment, security, shades, and other connected systems from one cohesive platform.',
+	},
+	{
+		title: 'Natural Control',
+		description:
+			'Use the Savant App, touchscreens, keypads, remotes, or supported voice integrations to manage your home naturally.',
+	},
+	{
+		title: 'Scalable Systems',
+		description:
+			'Savant Hosts support projects ranging from focused room automation to highly customized whole-property systems.',
+	},
+];
+
+const scenes = [
+	{
+		title: 'Morning',
+		description: 'Lights gradually brighten, shades open, and the temperature adjusts as your home prepares for the day ahead.',
+	},
+	{
+		title: 'Entertaining',
+		description: 'Activate a personalized scene to coordinate music, lighting, climate, and outdoor spaces for your guests.',
+	},
+	{
+		title: 'Movie Night',
+		description: 'Dim the lights, lower the shades, start the entertainment system, and prepare the room with one touch.',
+	},
+	{
+		title: 'Goodnight',
+		description: 'Lights, entertainment, and selected home functions shut down through one simple scene.',
+	},
+];
+---
+
+<BrandLayout
+	brandName="Savant"
+	seoTitle="Savant Integrator in Los Angeles"
+	logo={withBase('/images/brands/savant/savant-logo.svg')}
+	heroImage={withBase('/images/brands/savant/hero.webp')}
+	heroTitle="Savant, Personalized Around You"
+	heroSubtitle="Savant brings lighting, climate, entertainment and security into one personal experience, shaped around each person who lives in your home."
+	description="Certified Savant integrator in Los Angeles. Personalized scenes for lighting, climate, audio and security on one app, designed and supported by our team."
+>
+	<FeatureList eyebrow="Why Savant" title="Intelligent living without unnecessary complexity." features={features} />
+
+	<DailyExperience eyebrow="Daily Experience" title="A home that adapts to every moment." scenes={scenes} />
+
+	<FeaturedInstallSection />
+
+	<CtaBanner />
+</BrandLayout>

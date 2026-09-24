@@ -33,8 +33,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # GitHub Pages is the staging host (sweb.projectautomate.com): PUBLIC_NOINDEX
+      # makes Seo.astro emit robots noindex on every page so it never competes
+      # with the production site in search results.
       - name: Build
         run: npm run build
+        env:
+          PUBLIC_NOINDEX: '1'
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

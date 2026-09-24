@@ -1,54 +1,58 @@
 ---
-import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 
 const capabilities = [
 	{
 		title: 'One Touch, Every Room',
-		description: 'Control your entire home from a single elegant interface — lights, shades, climate, audio, video, and security respond instantly through touch panels, mobile apps, voice commands, or custom keypads designed around the way you live.',
-		image: withBase('/images/solutions/control-systems/feature-1.webp'),
+		description:
+			'Lights, shades, climate, music, video and security respond as one, from a touch panel, your phone, your voice or a custom keypad placed exactly where your hand expects it.',
+		imageId: 'solutions/control-keypad',
+		imageAlt: 'A finger resting on a minimalist wall keypad beside a softly lit living room',
 	},
 	{
 		title: 'Scenes That Fit Your Day',
-		description: 'Create effortless moments with personalized scenes for morning, evening, entertaining, relaxing, or away mode. With one tap, your home adjusts the lights, sets the temperature, lowers the shades, and starts the music.',
-		image: withBase('/images/solutions/control-systems/feature-2.webp'),
+		description:
+			'Morning, evening, entertaining, away. A single tap sets the light, the temperature, the shades and the music, exactly the way you like them.',
+		imageId: 'solutions/control-touch',
+		imageAlt: 'Hands on a wall-mounted home control touchscreen showing lighting, climate and security',
 	},
 	{
 		title: 'Technology That Disappears',
-		description: 'The best smart home systems are powerful without feeling complicated. We integrate advanced technology quietly into the architecture of your home, keeping every system clean, reliable, and easy to use.',
-		image: withBase('/images/solutions/control-systems/feature-3.webp'),
+		description:
+			'Powerful never needs to feel complicated. Equipment is concealed within the architecture, and every interface is kept clean, reliable and effortless to use.',
+		imageId: 'solutions/control-great-room',
+		imageAlt: 'A bright great room with floor-to-ceiling windows and a slim control panel on the wall',
 	},
-];
+] as const;
 
 const scenes = [
-	{ title: 'Morning', description: 'Lights rise, shades open and the home prepares itself as the day begins.' },
-	{ title: 'Entertaining', description: 'One tap sets lighting, music and climate to the perfect atmosphere for guests.' },
-	{ title: 'Relaxing', description: 'The room softens, shades lower and your favorite playlist begins automatically.' },
-	{ title: 'Away', description: 'Lights, climate and access settle into place the moment you leave for the day.' },
+	{ title: 'Morning', description: 'Lights rise, shades open and the house is ready before you are.' },
+	{ title: 'Entertaining', description: 'One touch sets light, music and climate for an evening with guests.' },
+	{ title: 'Relaxing', description: 'The room softens, the shades lower and a favorite playlist begins.' },
+	{ title: 'Away', description: 'Lights, climate and access settle into place the moment you leave.' },
 ];
 ---
 
 <ServiceLayout
-	title="Control Systems"
-	description="Custom smart home control systems from PROJECT: automate — one elegant interface connecting lighting, climate, shades, entertainment and security."
-	heroImage={withBase('/images/solutions/control-systems/hero.webp')}
-	eyebrow="Smart Living, Simplified"
-	heroTitle="One Touch, Every Room"
-	heroSubtitle="Custom smart home automation systems that connect lighting, climate, shades, entertainment, security and control into one seamless experience."
+	title="Whole-Home Control Systems, Los Angeles"
+	description="One elegant interface for lighting, climate, shades, entertainment and security. Custom Savant, Crestron and Control4 home automation for Los Angeles estates."
+	heroImageId="solutions/control-wall-panel"
+	heroAlt="A slim touch panel set into a warm plaster wall, opening onto a serene, light-filled living room"
+	heroPosition="30% 50%"
+	eyebrow="Smart Home Automation"
+	heroTitle="Whole-Home Control. One Touch, Every Room."
+	heroSubtitle="Lighting, climate, shades, entertainment and security, drawn into one quiet interface designed around the way you live."
+	intro="The finest control system is the one you barely notice. We design Savant, Crestron and Control4 systems that bring every part of the residence together, then keep the technology itself out of sight."
+	serviceName="Whole-Home Control Systems"
+	serviceType="Home automation and control system integration"
+	related={['lighting-control-systems', 'motorized-shades-and-drapery', 'security-systems']}
 >
-	<CapabilityList eyebrow="Intuitive Control" title="Control your entire home from a single elegant interface." items={capabilities} />
+	<CapabilityList eyebrow="Intuitive Control" title="One elegant interface for the entire residence." items={capabilities} />
 
 	<DailyExperience eyebrow="Daily Experience" title="Technology that becomes part of the way you live." scenes={scenes} />
 
-	<section class="section power-system">
-		<div class="container">
-			<SectionHeading eyebrow="Seamless Integration" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
-		</div>
-	</section>
-
-	<CtaBanner />
+	<CtaBanner slot="closing" />
 </ServiceLayout>

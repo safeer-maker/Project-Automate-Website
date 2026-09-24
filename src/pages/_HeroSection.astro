@@ -1,6 +1,6 @@
 ---
-// Desktop sources are re-encoded from /videos/Homepage/project-automate-hero-1080.mp4,
-// mobile sources from /videos/Homepage/project-automate-hero-720.mp4 (both raw
+// Desktop sources are re-encoded from media-src/videos/project-automate-hero-1080.mp4,
+// mobile sources from media-src/videos/project-automate-hero-720.mp4 (both raw
 // source clips, kept for reference/regeneration). Poster is a still pulled from
 // the desktop clip at 3s.
 //
@@ -23,11 +23,17 @@
 //   (repeat at scale=960:-2 for hero-mobile.mp4 crf 28/maxrate 900k, and
 //   hero-mobile.webm crf 37/b:v 700k)
 import { withBase } from "../lib/paths.ts";
+
+const poster = withBase("/images/home/hero/poster.webp");
 ---
 
-<section class="hero">
+<section class="hero" aria-labelledby="hero-title">
 	<div class="scroll-sentinel" data-hero-sentinel aria-hidden="true"></div>
 	<div class="hero-media">
+		<!-- The poster is the page's LCP image, and `poster` can't take
+		     fetchpriority. A body-level preload (rel=preload is allowed in
+		     <body>) asks for it at high priority as soon as the markup streams. -->
+		<link rel="preload" as="image" href={poster} fetchpriority="high" />
 		<video
 			class="hero-video"
 			autoplay
@@ -35,7 +41,7 @@ import { withBase } from "../lib/paths.ts";
 			loop
 			playsinline
 			preload="auto"
-			poster={withBase("/images/home/hero/poster.webp")}
+			poster={poster}
 			aria-hidden="true"
 			tabindex="-1"
 		>
@@ -52,30 +58,47 @@ import { withBase } from "../lib/paths.ts";
 			<source src={withBase("/videos/hero.mp4")} type="video/mp4" />
 			<source src={withBase("/videos/hero.webm")} type="video/webm" />
 		</video>
+		<span class="hero-scrim"></span>
 	</div>
 
 	<div class="hero-inner">
 		<div class="hero-box">
-			<h1 class="hero-title">
-				<span>Tailored Luxury</span>
-				<span>Technologies</span>
+			<p class="hero-eyebrow">
+				<span>Luxury Home Automation</span>
+				<span class="hero-eyebrow-dot" aria-hidden="true">·</span>
+				<span>Los Angeles</span>
+			</p>
+			<!-- Each line sits in its own overflow mask so it can rise into view.
+			     The literal space between them keeps the heading's text (and its
+			     accessible name) "Technology for", not "Technologyfor". -->
+			<h1 class="hero-title" id="hero-title">
+				<span class="line"><span>Tailored Luxury Technology</span></span>
+				{" "}
+				<span class="line"><span>for Los Angeles Residences</span></span>
 			</h1>
 			<p class="hero-lede">
-				<span>Lighting, climate, sound and security,</span>
-				<span>designed to work as one, and to disappear.</span>
+				Lighting, climate, sound and security, designed to work as one, and to disappear.
 			</p>
 			<div class="hero-actions">
 				<a
-					class="hero-btn hero-btn-primary"
+					class="hero-btn"
 					href={withBase("/schedule/")}
-					data-ghl-form-open>Book a Consultation</a
+					data-ghl-form-open>Book a Private Consultation</a
 				>
+				<!-- Lenis (anchors: true) glides this to the statement below. -->
+				<a class="hero-link" href="#approach">
+					<span>Discover the approach</span>
+					<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+						<path
+							d="M8 3v10M4 9l4 4 4-4"
+							stroke="currentColor"
+							stroke-width="1.3"
+							stroke-linecap="round"
+							stroke-linejoin="round"></path>
+					</svg>
+				</a>
 			</div>
 		</div>
-	</div>
-
-	<div class="hero-cue" aria-hidden="true">
-		<span class="hero-cue-line"></span>
 	</div>
 </section>
 
@@ -98,6 +121,9 @@ import { withBase } from "../lib/paths.ts";
 		   reveals the video instead of the cream page background. */
 		margin-top: calc(-1 * var(--header-height, 96px));
 		min-height: 100vh;
+		/* Mobile browsers: size to the viewport with the URL bar showing, so
+		   the CTA isn't hidden under it on first load. */
+		min-height: 100svh;
 		display: flex;
 		align-items: flex-end;
 		overflow: hidden;
@@ -131,6 +157,25 @@ import { withBase } from "../lib/paths.ts";
 		pointer-events: none;
 	}
 
+	/* The film moves between bright aerial daylight and dusk, so the copy
+	   can't rely on text-shadow alone. A low, warm-black falloff under the
+	   copy plus a band behind the transparent header, nothing mid-frame. The
+	   band holds ~0.55 across the header's own height (white nav over bright
+	   sky was 2.6:1 at 0.42) and is gone by a quarter of the way down. */
+	.hero-scrim {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background:
+			linear-gradient(
+				180deg,
+				rgba(10, 10, 10, 0.62) 0%,
+				rgba(10, 10, 10, 0.55) var(--header-height, 96px),
+				rgba(10, 10, 10, 0) 26%
+			),
+			linear-gradient(0deg, rgba(10, 10, 10, 0.74) 0%, rgba(10, 10, 10, 0.4) 36%, rgba(10, 10, 10, 0) 64%);
+	}
+
 	.hero-inner {
 		position: relative;
 		z-index: 1;
@@ -138,43 +183,119 @@ import { withBase } from "../lib/paths.ts";
 		max-width: var(--page-max);
 		margin-inline: auto;
 		padding-inline: var(--page-gutter);
-		padding-bottom: clamp(4rem, 9vh, 6.5rem);
+		padding-bottom: clamp(3.5rem, 10vh, 7rem);
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;
 	}
 
 	/* The block sits right, but the type inside reads left-to-right like any
-	   other English copy — a right-aligned ragged edge fought the reading order. */
+	   other English copy — a right-aligned ragged edge fought the reading order.
+	   It shrink-wraps the headline so its right edge always lands on the page
+	   gutter, whatever size the type resolves to. */
 	.hero-box {
-		width: min(34rem, 100%);
+		position: relative;
+		width: fit-content;
+		max-width: 100%;
 		text-align: left;
 	}
 
+	/* The copy lands on the white house and pool deck, where the low falloff
+	   has all but faded. A soft pool of shade that travels with the copy,
+	   rather than a heavier full-width band, keeps the rest of the frame
+	   bright. Wide enough that its edge never reads as a shape. */
+	.hero-box::before {
+		content: '';
+		position: absolute;
+		inset: -9rem -5rem -5rem -12rem;
+		z-index: -1;
+		pointer-events: none;
+		background: radial-gradient(
+			closest-side,
+			rgba(10, 10, 10, 0.55),
+			rgba(10, 10, 10, 0.45) 55%,
+			rgba(10, 10, 10, 0)
+		);
+	}
+
+	/* A hairline leads the eyebrow in: the bronze of the brand without asking
+	   bronze text to hold its own against a moving image. Full white, since
+	   at 12px the eyebrow has no size to lean on. */
+	.hero-eyebrow {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-2) var(--space-3);
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-xs);
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--color-white);
+		text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
+		animation: fade-in 1s var(--ease-out-expo) 0.3s both;
+	}
+
+	/* If the line has to wrap it breaks between the two phrases, never
+	   inside one. */
+	.hero-eyebrow span {
+		white-space: nowrap;
+	}
+
+	.hero-eyebrow-dot {
+		color: var(--color-accent-hover);
+	}
+
+	.hero-eyebrow::before {
+		content: '';
+		flex: none;
+		width: 2rem;
+		height: 1px;
+		background: var(--color-accent-hover);
+	}
+
 	.hero-title {
-		margin: 0 0 var(--space-4);
-		font-size: clamp(2rem, 3.9vw, 3.5rem);
+		margin: 0 0 var(--space-6);
+		font-size: clamp(2.125rem, 3.6vw, 3.25rem);
 		font-weight: var(--fw-medium);
-		line-height: 1.15;
-		letter-spacing: 0.01em;
+		line-height: 1.12;
+		letter-spacing: -0.01em;
 		color: var(--color-text-on-dark);
-		text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+	}
+
+	/* The mask. Padding + matching negative margin gives descenders and the
+	   soft shadow room inside the clip without changing the line spacing. */
+	.hero-title .line {
+		display: block;
+		overflow: hidden;
+		padding: 0.08em 0.4em 0.14em;
+		margin: -0.08em -0.4em -0.14em;
 	}
 
 	/* The 0.4s head start lets the video settle out of its poster before any
 	   type moves, so the sequence reads video → words rather than both at once. */
-	.hero-title span {
+	.hero-title .line > span {
 		display: block;
-		animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+		text-shadow: 0 1px 14px rgba(0, 0, 0, 0.28);
+		animation: mask-rise 0.9s var(--ease-out-expo) 0.4s both;
 	}
-	.hero-title span:nth-child(2) {
+	.hero-title .line:nth-of-type(2) > span {
 		animation-delay: 0.52s;
 	}
 
-	@keyframes rise {
+	@keyframes mask-rise {
+		from {
+			transform: translateY(105%);
+		}
+		to {
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes fade-in {
 		from {
 			opacity: 0;
-			transform: translateY(0.6em);
+			transform: translateY(0.5rem);
 		}
 		to {
 			opacity: 1;
@@ -183,100 +304,127 @@ import { withBase } from "../lib/paths.ts";
 	}
 
 	.hero-lede {
-		margin: 0 0 var(--space-6);
-		font-size: clamp(1rem, 1.35vw, 1.1875rem);
+		max-width: 34ch;
+		margin: 0 0 var(--space-8);
+		font-size: clamp(1rem, 1.3vw, 1.1875rem);
 		font-weight: var(--fw-regular);
-		line-height: 1.55;
-		color: var(--color-text-on-dark);
-		text-shadow: 0 1px 16px rgba(0, 0, 0, 0.5);
+		line-height: 1.6;
+		color: rgba(255, 255, 255, 0.86);
+		text-shadow: 0 1px 16px rgba(0, 0, 0, 0.4);
+		text-wrap: pretty;
 		/* Trails the second headline line, which lands at 0.52s + 0.9s. */
-		animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
-	}
-
-	.hero-lede span {
-		display: block;
+		animation: fade-in 1s var(--ease-out-expo) 0.75s both;
 	}
 
 	.hero-actions {
 		display: flex;
-		gap: var(--space-3);
+		align-items: center;
 		flex-wrap: wrap;
-		justify-content: flex-start;
+		gap: var(--space-4) var(--space-8);
+		animation: fade-in 1s var(--ease-out-expo) 0.9s both;
 	}
 
 	.hero-btn {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		min-height: 48px;
 		font-size: var(--text-base);
 		font-weight: var(--fw-medium);
-		padding: 0.7rem 1.4rem;
+		padding: 0.75rem 1.5rem;
 		border-radius: var(--radius-sm);
-		border: 1px solid transparent;
+		/* White on the lighter gold was 3.25:1; the fill bronze clears 4.5. */
+		background: var(--color-bronze-fill);
+		color: var(--color-white);
 		white-space: nowrap;
-		transition:
-			background-color var(--transition-base),
-			border-color var(--transition-base);
+		transition: background-color var(--transition-base);
+	}
+	.hero-btn:hover {
+		background: var(--color-bronze-fill-hover);
 	}
 
-	.hero-btn-primary {
-		background: var(--color-accent-hover);
+	/* Quiet by design: the consultation is the one action, this is a way to
+	   keep reading. A faint hairline underline that brightens on hover. */
+	.hero-link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		min-height: 44px;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-medium);
+		letter-spacing: 0.02em;
+		color: rgba(255, 255, 255, 0.86);
+		transition: color var(--dur-fast) ease;
+	}
+
+	.hero-link span {
+		padding-bottom: 3px;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.38);
+		transition: border-color var(--dur-fast) ease;
+	}
+
+	.hero-link svg {
+		width: 14px;
+		height: 14px;
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.hero-link:hover {
 		color: var(--color-white);
 	}
-	.hero-btn-primary:hover {
-		background: var(--color-accent);
+	.hero-link:hover span {
+		border-color: var(--color-accent-hover);
+	}
+	.hero-link:hover svg {
+		transform: translateY(2px);
 	}
 
-	/* 100vh with no indication of more content below is a bounce risk. */
-	.hero-cue {
-		position: absolute;
-		z-index: 1;
-		bottom: clamp(1.25rem, 3vh, 2rem);
-		left: 50%;
-		translate: -50% 0;
-		width: 1px;
-		height: 56px;
-		overflow: hidden;
-		background: rgba(255, 255, 255, 0.22);
-	}
-
-	.hero-cue-line {
-		display: block;
-		width: 100%;
-		height: 100%;
-		background: var(--color-accent-hover);
-		transform-origin: top;
-		animation: cue-draw 2s var(--ease-in-out-soft) 1.6s infinite;
-	}
-
-	@keyframes cue-draw {
-		0% {
-			transform: translateY(-100%);
-		}
-		45%,
-		100% {
-			transform: translateY(100%);
-		}
+	.hero-btn:focus-visible,
+	.hero-link:focus-visible {
+		outline: 2px solid var(--color-accent-hover);
+		outline-offset: 4px;
 	}
 
 	@media (max-width: 700px) {
+		/* On a tall phone crop the copy climbs to ~60% of the frame, right
+		   over the bright white house, so the falloff has to hold ~0.65
+		   up to the eyebrow. The max() stops keep that true on short phones
+		   too, where the same copy reaches higher up the frame. */
+		.hero-scrim {
+			background:
+				linear-gradient(180deg, rgba(10, 10, 10, 0.5) 0%, rgba(10, 10, 10, 0) 18%),
+				linear-gradient(
+					0deg,
+					rgba(10, 10, 10, 0.82) 0%,
+					rgba(10, 10, 10, 0.65) max(62%, 36rem),
+					rgba(10, 10, 10, 0) max(90%, 48rem)
+				);
+		}
 		.hero-inner {
 			align-items: flex-start;
 		}
-		.hero-cue {
+		.hero-title {
+			font-size: clamp(2rem, 8.6vw, 2.5rem);
+		}
+		.hero-eyebrow {
+			letter-spacing: 0.14em;
+		}
+		/* No lead-in hairline on a phone, and no shade pool: the scrim
+		   above already sits under the whole copy block. */
+		.hero-eyebrow::before,
+		.hero-box::before {
 			display: none;
 		}
-		/* Forced line breaks stop earning their keep once the column is narrow
-		   enough that each one wraps anyway. */
-		.hero-lede span {
-			display: inline;
+		.hero-actions {
+			gap: var(--space-3) var(--space-6);
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.hero-title span,
+		.hero-eyebrow,
+		.hero-title .line > span,
 		.hero-lede,
-		.hero-cue-line {
+		.hero-actions {
 			animation: none;
 		}
 	}

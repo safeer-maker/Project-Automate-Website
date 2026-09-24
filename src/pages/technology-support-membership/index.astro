@@ -1,0 +1,86 @@
+---
+import { siteInfo, areaServed } from '../../data/site.ts';
+import { ogImageUrl } from '../../lib/images.ts';
+import PageLayout from '../../layouts/PageLayout.astro';
+import FeatureList from '../../components/brands/FeatureList.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+import HeroSection from './_HeroSection.astro';
+import IntroSection from './_IntroSection.astro';
+import PlansSection from './_PlansSection.astro';
+import HowItWorksSection from './_HowItWorksSection.astro';
+import FaqSection from './_FaqSection.astro';
+import { faqs, plans } from './_data.ts';
+
+const title = 'Concierge Smart Home Support, LA';
+const description =
+	'Concierge care for your home technology: 24/7 support, guaranteed response times and priority on-site service from the team at PROJECT: automate.';
+const ogImage = ogImageUrl('process/deliver');
+
+const benefits = [
+	{ title: 'Priority Service', description: 'Members move to the front of the queue whenever the home needs attention.' },
+	{ title: 'Guaranteed Response', description: 'Clearly defined response times, set out and guaranteed by your membership.' },
+	{ title: 'Remote Assistance', description: 'Many requests are resolved remotely, without waiting for a visit.' },
+	{ title: 'Ongoing Care', description: 'Your technology kept performing as it did on the day it was handed over.' },
+];
+
+// Service + FAQPage nodes for the page's @graph (BaseLayout merges them).
+// FAQPage no longer earns a rich result, but still describes the page cleanly.
+const site = Astro.site ?? new URL(siteInfo.url);
+const pageUrl = new URL(Astro.url.pathname, site).toString();
+const schema = [
+	{
+		'@type': 'Service',
+		'@id': `${pageUrl}#service`,
+		name: 'Technology Support Membership',
+		serviceType: 'Home technology support and maintenance',
+		description,
+		url: pageUrl,
+		image: new URL(ogImage, site).toString(),
+		provider: { '@id': 'https://projectautomate.com/#business' },
+		areaServed,
+		offers: plans.map((plan) => ({
+			'@type': 'Offer',
+			name: plan.name,
+			priceCurrency: 'USD',
+			price: plan.price,
+			priceSpecification: {
+				'@type': 'UnitPriceSpecification',
+				price: plan.price,
+				priceCurrency: 'USD',
+				unitCode: 'MON',
+			},
+		})),
+	},
+	{
+		'@type': 'FAQPage',
+		'@id': `${pageUrl}#faq`,
+		mainEntity: faqs.map((item) => ({
+			'@type': 'Question',
+			name: item.q,
+			acceptedAnswer: { '@type': 'Answer', text: item.a },
+		})),
+	},
+];
+---
+
+<PageLayout
+	title={title}
+	description={description}
+	image={ogImage}
+	schema={schema}
+	breadcrumbTitle="Technology Support Membership"
+>
+	<HeroSection />
+
+	<IntroSection />
+
+	<FeatureList eyebrow="Why Become a Member" title="Care that goes beyond a service call." features={benefits} />
+
+	<PlansSection />
+
+	<HowItWorksSection />
+
+	<FaqSection />
+
+	<CtaBanner />
+</PageLayout>

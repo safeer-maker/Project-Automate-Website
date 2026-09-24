@@ -2,6 +2,7 @@
 title: "Barco Projectors Reinvent Residential Home Entertainment"
 publishDate: 2026-06-07
 excerpt: "Discover how Barco projectors redefine residential entertainment with cinema-grade 4K projection, rich color accuracy, powerful laser performance, and immersive CinemaScope viewing."
+seoDescription: "Barco projectors for the home theater: hand-built 4K laser models like the Thor+, CinemaScope with automatic aspect ratio detection, and art installations."
 coverImage: "/images/blog/barco-projectors-reinvent-residential-home-entertainment.webp"
 coverImageAlt: "Barco projector delivering cinema-grade 4K projection in a home theater"
 category: "Home Theater"

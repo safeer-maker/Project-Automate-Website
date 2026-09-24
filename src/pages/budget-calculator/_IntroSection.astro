@@ -1,48 +1,90 @@
 ---
-import SectionHeading from '../../components/ui/SectionHeading.astro';
+const steps = ['Describe the residence', 'Choose the systems and level of experience', 'Review a considered planning range'];
 ---
 
-<section class="section intro">
+<section class="intro" aria-labelledby="calculator-title">
 	<div class="container">
-		<SectionHeading
-			eyebrow="How the Estimator Helps"
-			title="Plan with confidence before the project begins."
-			subtitle="This calculator turns your project requirements into a practical planning range — helping you understand the likely level of investment before speaking with a qualified technology integrator."
-		/>
+		<div class="intro-head">
+			<span class="eyebrow">HTA Investment Calculator</span>
+			<h1 id="calculator-title">Plan with confidence, before the project begins.</h1>
+			<p class="intro-lede">
+				Describe the residence and the systems you have in mind. The calculator returns a considered planning range, so you
+				have a clear sense of the investment before your first conversation with an integrator.
+			</p>
+		</div>
 		<ol class="steps">
-			<li><span class="step-num">1</span>Describe the property and project type</li>
-			<li><span class="step-num">2</span>Select the systems and experience level</li>
-			<li><span class="step-num">3</span>Review an informed planning range</li>
+			{steps.map((step, i) => (
+				<li>
+					<span class="step-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+					<span>{step}</span>
+				</li>
+			))}
 		</ol>
 	</div>
 </section>
 
 <style>
+	.intro {
+		padding-block: clamp(4rem, 9vw, 7.5rem) clamp(3rem, 6vw, 5rem);
+	}
+
+	.intro-head {
+		max-width: 46rem;
+	}
+
+	h1 {
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-lg);
+		font-weight: var(--fw-medium);
+		line-height: 1.08;
+		letter-spacing: -0.015em;
+		text-wrap: balance;
+	}
+
+	.intro-lede {
+		max-width: 38rem;
+		margin: 0;
+		font-size: var(--text-body-lg);
+		line-height: 1.7;
+		text-wrap: pretty;
+	}
+
 	.steps {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-8);
-		margin-top: var(--space-8);
-		font-size: var(--text-lg);
-		font-weight: var(--fw-semibold);
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: var(--space-6) clamp(1.5rem, 3vw, 3rem);
+		margin-top: clamp(3rem, 6vw, 4.5rem);
 	}
 
 	.steps li {
 		display: flex;
-		align-items: center;
+		flex-direction: column;
 		gap: var(--space-3);
+		padding-top: var(--space-4);
+		border-top: 1px solid var(--color-border);
+		font-size: var(--text-lg);
+		font-weight: var(--fw-medium);
+		line-height: 1.4;
+		color: var(--color-text);
 	}
 
 	.step-num {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 2rem;
-		height: 2rem;
-		border-radius: 50%;
-		border: 1px solid var(--color-border);
-		color: var(--color-accent);
 		font-size: var(--text-sm);
-		flex-shrink: 0;
+		font-weight: var(--fw-semibold);
+		letter-spacing: 0.12em;
+		color: var(--color-accent);
+		font-variant-numeric: tabular-nums;
+	}
+
+	@media (max-width: 800px) {
+		.steps {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.steps li {
+			flex-direction: row;
+			align-items: baseline;
+			gap: var(--space-4);
+		}
 	}
 </style>

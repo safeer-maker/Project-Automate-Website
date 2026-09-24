@@ -1,39 +1,13 @@
 ---
-import { withBase } from '../../lib/paths.ts';
+import { ogImageUrl } from '../../lib/images.ts';
 import PageLayout from '../../layouts/PageLayout.astro';
-import CapabilityList from '../../components/brands/CapabilityList.astro';
 import FeatureList from '../../components/brands/FeatureList.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
 import HeroSection from './_HeroSection.astro';
+import PartnersSection from './_PartnersSection.astro';
 import ProgramSection from './_ProgramSection.astro';
 import CredentialsSection from './_CredentialsSection.astro';
 import ClosingSection from './_ClosingSection.astro';
-
-const partners = [
-	{
-		title: 'Architects',
-		description:
-			'From concept through construction, we help translate technology requirements into the architectural plan — not bolt it on after the fact.',
-		image: withBase('/images/design-partners/design-partners-architects.webp'),
-	},
-	{
-		title: 'Design Build Firms',
-		description:
-			'One coordinated technology scope from design development through final walkthrough, so trades stay aligned and timelines stay intact.',
-		image: withBase('/images/design-partners/design-partners-design-build-firms.webp'),
-	},
-	{
-		title: 'Interior Designers',
-		description: 'Every keypad, panel, and speaker is placed to support the design — never to compete with it.',
-		image: withBase('/images/design-partners/design-partners-interior-designers.webp'),
-	},
-	{
-		title: 'General Contractors',
-		description:
-			'Coordinated rough-in and trim schedules that keep low-voltage work moving in step with the rest of the site.',
-		image: withBase('/images/design-partners/design-partners-general-contractors.webp'),
-	},
-];
 
 const education = [
 	{
@@ -44,18 +18,20 @@ const education = [
 	{
 		title: 'Custom Courses',
 		description:
-			'Take part in our own custom-tailored courses, giving you knowledge of the common problems smart home installers and dealers deal with every day.',
+			'Take part in our own custom-tailored courses, covering the coordination questions that arise on every high-end residential project, from rough-in to handover.',
 	},
 ];
 ---
 
 <PageLayout
-	title="Design Partners"
-	description="PROJECT: automate's Design Partner Program — CEDIA-certified technology integration for architects, interior designers, general contractors, and design-build firms, backed by 17+ industry certifications."
+	title="For Architects, Designers & Builders"
+	description="A CEDIA-certified technology partner for Los Angeles architects, interior designers and builders: early coordination, concealed infrastructure, clean handover."
+	image={ogImageUrl('process/design-collaboration')}
+	breadcrumbTitle="Design Partners"
 >
 	<HeroSection />
 
-	<CapabilityList eyebrow="Who We Partner With" title="Seamless from concept through completion." items={partners} />
+	<PartnersSection />
 
 	<ProgramSection />
 

@@ -1,0 +1,64 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import CapabilityList from '../../components/brands/CapabilityList.astro';
+import DailyExperience from '../../components/brands/DailyExperience.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
+
+const capabilities = [
+	{
+		title: 'Immersive Audio',
+		description:
+			'Sound that places you inside the scene. Custom-calibrated Dolby Atmos and DTS:X systems, with high-fidelity speakers that disappear into the architecture while filling the room with clear, effortless sound.',
+		imageId: 'solutions/cinema-midnight',
+		imageAlt: 'A deep blue private cinema with leather recliners facing a wide mountain scene on screen',
+	},
+	{
+		title: 'Cinematic Visuals',
+		description:
+			'Ultra-high-definition projection and large-format displays with deep blacks and rich, accurate color. Motorized screens, concealed projectors and ambient lighting make the room itself part of the picture.',
+		imageId: 'solutions/cinema-garden',
+		imageAlt: 'A private cinema with a large projection screen and recliners, opening onto a tropical garden and pool',
+	},
+	{
+		title: 'Intelligent Control & Lighting',
+		description:
+			'Preset scenes transform the room in a moment: lights dim, shades close, the screen descends and the system wakes. Everything answers to an elegant touch panel, your voice or a single app.',
+		imageId: 'solutions/cinema-starlight',
+		imageAlt: 'A tiered theater under a starlit fiber-optic ceiling, with softly lit steps and velvet drapery',
+	},
+] as const;
+
+const scenes = [
+	{ title: 'Movie Night', description: 'One preset dims the lights, lowers the screen and wakes the room in calibrated Dolby Atmos.' },
+	{ title: 'The Big Game', description: 'Every seat gets room-filling sound and a vivid, large-format picture.' },
+	{ title: 'Family Matinee', description: 'Ambient light and motorized shades set the mood on their own, no remotes required.' },
+	{ title: 'Late Night', description: 'One touch brings it all down, screen up and lights restored, as easily as it began.' },
+];
+---
+
+<ServiceLayout
+	title="Private Home Theater Design, Los Angeles"
+	description="Private cinemas and media rooms for Los Angeles estates: reference projection, immersive audio, acoustic design and one-touch control, Malibu to Bel Air."
+	heroImageId="solutions/cinema-tiered"
+	heroAlt="A tiered private cinema with warm step lighting and a sunset scene on the screen"
+	heroPosition="60% 50%"
+	eyebrow="Private Cinema"
+	heroTitle="A Private Cinema Worthy of the Film"
+	heroSubtitle="Reference picture, immersive sound and one-touch control, designed and installed for Los Angeles residences."
+	intro="A great film deserves a room that matches it. We design private cinemas and media rooms where picture, sound, acoustics, seating and light are considered together, and the technology disappears the moment the lights go down."
+	serviceName="Private Home Theater Design"
+	serviceType="Home theater design and installation"
+	related={['audio-video-solutions', 'lighting-control-systems', 'control-systems']}
+>
+	<CapabilityList eyebrow="The Experience" title="Picture, sound and light, composed as one." items={capabilities} />
+
+	<DailyExperience
+		eyebrow="Daily Experience"
+		title="One touch, and the room is ready."
+		scenes={scenes}
+		imageId="solutions/cinema-media-room"
+		imageAlt="A media room lined in warm wood slats, with a deep sofa facing a large screen"
+	/>
+
+	<CtaBanner slot="closing" />
+</ServiceLayout>

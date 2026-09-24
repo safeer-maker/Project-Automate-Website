@@ -1,34 +1,292 @@
 ---
 import { withBase } from '../lib/paths.ts';
+import { libraryEntry, ogImageUrl, type LibraryImageId } from '../lib/images.ts';
+import { siteInfo, areaServed } from '../data/site.ts';
 import PageLayout from './PageLayout.astro';
 import Button from '../components/ui/Button.astro';
+import Picture from '../components/ui/Picture.astro';
+
+/**
+ * Solution pages link sideways to their neighbours so the site reads as one
+ * system. Titles and lines follow the homepage "One system, every room" grid.
+ * Energy Management is deliberately absent (unlinked by design).
+ */
+const SOLUTIONS = {
+	'control-systems': {
+		title: 'Smart Home Automation',
+		href: '/control-systems/',
+		line: 'Every system, every room, answered with a single, intuitive gesture.',
+	},
+	'lighting-control-systems': {
+		title: 'Lighting Control',
+		href: '/lighting-control-systems/',
+		line: 'Light that shifts with the hour, the season and the occasion.',
+	},
+	'outdoor-lighting-audio': {
+		title: 'Landscape Lighting & Outdoor Audio',
+		href: '/outdoor-lighting-audio/',
+		line: 'Gardens, paths and pools, drawn softly in light after dark.',
+	},
+	'outdoor-living': {
+		title: 'Outdoor Living',
+		href: '/outdoor-living/',
+		line: 'Terraces, pools and gardens, as connected as the rooms inside.',
+	},
+	'home-theater': {
+		title: 'Private Cinema',
+		href: '/home-theater/',
+		line: 'Reference picture and sound, built into the architecture of the room.',
+	},
+	'audio-video-solutions': {
+		title: 'Whole-Home Audio & Video',
+		href: '/audio-video-solutions/',
+		line: 'Music in every room and across the terrace, with no speaker in sight.',
+	},
+	'motorized-shades-and-drapery': {
+		title: 'Motorized Shades & Drapery',
+		href: '/motorized-shades-and-drapery/',
+		line: 'Privacy, shade and daylight, adjusted without lifting a finger.',
+	},
+	'security-systems': {
+		title: 'Security & Access Control',
+		href: '/security-systems/',
+		line: 'Gates, cameras and doors that protect quietly and answer to one interface.',
+	},
+	// The security family's sub-pages: linked from each other and the hub.
+	'surveillance-systems': {
+		title: 'Surveillance Systems',
+		href: '/surveillance-systems/',
+		line: 'High-resolution cameras, intelligent alerts and secure remote viewing.',
+	},
+	'access-control-and-intercom': {
+		title: 'Access Control & Intercom',
+		href: '/access-control-and-intercom/',
+		line: 'Gate, door and guest access, with video intercom and mobile entry.',
+	},
+	'intrusion-detection-systems': {
+		title: 'Intrusion Detection',
+		href: '/intrusion-detection-systems/',
+		line: 'Perimeter and interior sensors that stay invisible until needed.',
+	},
+	'hvac-and-climate-integration': {
+		title: 'Climate Control',
+		href: '/hvac-and-climate-integration/',
+		line: 'Quiet, room-by-room comfort, in step with the shades and the sun.',
+	},
+} as const;
+
+export type RelatedSolution = keyof typeof SOLUTIONS;
+
+/**
+ * The hero photo is object-fit: cover inside .service-hero, whose height is a
+ * clamp() on the viewport height. Whenever the viewport is narrower than the
+ * photo's aspect at that height (every phone, most tablets, and the wide
+ * library crops on desktop), the photo renders wider than the screen with its
+ * sides cropped, so sizes="100vw" picks a rendition far too small. These bands
+ * mirror the .service-hero min-height rules below (keep them in step): for
+ * each one, `sizes` gives the rendered width, hero height x photo aspect,
+ * wherever that exceeds the viewport width. `vh` is used for the CSS's `svh`:
+ * it is never smaller, so the estimate can only err toward sharper.
+ */
+const HERO_BANDS = [
+	{ media: '(max-width: 600px)', maxViewportWidth: 600, minPx: 540, vh: 86, maxPx: 760 },
+	{ media: '', maxViewportWidth: Infinity, minPx: 560, vh: 88, maxPx: 960 },
+];
+
+function coverSizes(aspect: number): string {
+	const out: string[] = [];
+	for (const { media, maxViewportWidth, minPx, vh, maxPx } of HERO_BANDS) {
+		const when = (query: string) => (media ? `${media} and ${query}` : query);
+		// Short viewports pin the hero at its minimum height, tall ones at its maximum.
+		const pinned: [string, number][] = [
+			[`(max-height: ${Math.floor((minPx * 100) / vh)}px)`, minPx],
+			[`(min-height: ${Math.ceil((maxPx * 100) / vh)}px)`, maxPx],
+		];
+		for (const [heightQuery, heightPx] of pinned) {
+			const coverWidth = Math.ceil(heightPx * aspect);
+			if (coverWidth >= maxViewportWidth) out.push(`${when(heightQuery)} ${coverWidth}px`);
+			else out.push(`${when(heightQuery)} and (max-width: ${coverWidth}px) ${coverWidth}px`, `${when(heightQuery)} 100vw`);
+		}
+		// In between, height is vh% of the viewport: cropped while the viewport's
+		// aspect is under (vh / 100) x the photo's.
+		out.push(`${when(`(max-aspect-ratio: ${Math.round(vh * aspect * 10)}/1000)`)} ${(vh * aspect).toFixed(1)}vh`);
+		if (media) out.push(`${media} 100vw`);
+	}
+	out.push('100vw');
+	return out.join(', ');
+}
 
 interface Props {
+	/** Page title without the brand suffix (Seo.astro appends it). */
 	title: string;
 	description: string;
-	heroImage: string;
+	/** Legacy hero: a plain image URL. Optional once `heroImageId` is used. */
+	heroImage?: string;
+	/** Library hero photo, rendered responsively as the page's LCP image. */
+	heroImageId?: LibraryImageId;
+	/** Alt text for the hero photo; empty (decorative) by default because the H1 carries the meaning. */
+	heroAlt?: string;
+	/** object-position for the hero crop, e.g. "30% 50%" to keep a subject in frame on phones. */
+	heroPosition?: string;
 	eyebrow: string;
 	heroTitle: string;
 	heroSubtitle?: string;
+	/** Hero button label. Defaults to the site-wide consultation CTA. */
+	ctaLabel?: string;
+	/**
+	 * In-page target for the hero button, e.g. '#consultation' on a landing page
+	 * with its own form. Set, the button is a plain anchor (Lenis glides to it);
+	 * unset, it opens the consultation popup.
+	 */
+	ctaHref?: string;
+	/** Short editorial paragraph under the hero, set with the studio's credentials. */
+	intro?: string;
+	/** Emits a schema.org Service node for this page. */
+	serviceName?: string;
+	/** Service.serviceType; falls back to `serviceName`. */
+	serviceType?: string;
+	/** Sibling solutions to cross-link above the closing CTA. */
+	related?: RelatedSolution[];
+	/** Eyebrow and heading for the related row (e.g. "The Security Suite" on the security family). */
+	relatedEyebrow?: string;
+	relatedTitle?: string;
+	/** Short last breadcrumb ("Security Systems") when the SEO title reads long in the trail. */
+	breadcrumbTitle?: string;
 }
 
-const { title, description, heroImage, eyebrow, heroTitle, heroSubtitle } = Astro.props;
+const {
+	title,
+	description,
+	heroImage,
+	heroImageId,
+	heroAlt = '',
+	heroPosition,
+	eyebrow,
+	heroTitle,
+	heroSubtitle,
+	ctaLabel = 'Book a Private Consultation',
+	ctaHref,
+	intro,
+	serviceName,
+	serviceType,
+	related = [],
+	relatedEyebrow = 'One System',
+	relatedTitle = 'Designed to work together.',
+	breadcrumbTitle,
+} = Astro.props;
+
+const ogImage = heroImage ?? (heroImageId ? ogImageUrl(heroImageId) : undefined);
+
+const site = Astro.site ?? new URL(siteInfo.url);
+const pageUrl = new URL(Astro.url.pathname, site).toString();
+
+const schema = serviceName
+	? [
+			{
+				'@type': 'Service',
+				'@id': `${pageUrl}#service`,
+				name: serviceName,
+				serviceType: serviceType ?? serviceName,
+				description,
+				url: pageUrl,
+				...(ogImage ? { image: new URL(ogImage, site).toString() } : {}),
+				provider: { '@id': 'https://projectautomate.com/#business' },
+				// Shared with the business node (src/data/site.ts) so the two never drift.
+				areaServed,
+				audience: {
+					'@type': 'Audience',
+					audienceType: 'Owners of luxury residences, architects, interior designers',
+				},
+			},
+		]
+	: undefined;
+
+const relatedLinks = related.map((key) => SOLUTIONS[key]);
+const studioPhone = siteInfo.phones[0];
+const heroStyle = heroPosition ? `object-position:${heroPosition}` : undefined;
+const heroEntry = heroImageId ? libraryEntry(heroImageId) : undefined;
+const heroSizes = heroEntry ? coverSizes(heroEntry.width / heroEntry.height) : '100vw';
 ---
 
-<PageLayout title={title} description={description} image={heroImage} progress>
+<PageLayout
+	title={title}
+	description={description}
+	image={ogImage}
+	imageAlt={heroImage && heroAlt ? heroAlt : undefined}
+	schema={schema}
+	breadcrumbTitle={breadcrumbTitle}
+	progress
+>
 	<section class="service-hero">
 		<div class="scroll-sentinel" data-hero-sentinel aria-hidden="true"></div>
-		<img class="hero-bg" src={heroImage} alt="" loading="eager" />
-		<div class="hero-overlay"></div>
+		<div class="hero-media">
+			{heroImageId ? (
+				<Picture id={heroImageId} alt={heroAlt} sizes={heroSizes} class="hero-bg" style={heroStyle} priority />
+			) : (
+				heroImage && <img class="hero-bg" src={heroImage} alt={heroAlt} style={heroStyle} loading="eager" fetchpriority="high" />
+			)}
+		</div>
+		<div class="hero-overlay" aria-hidden="true"></div>
 		<div class="container hero-content">
-			<span class="eyebrow">{eyebrow}</span>
+			<span class="eyebrow hero-eyebrow">{eyebrow}</span>
 			<h1>{heroTitle}</h1>
-			{heroSubtitle && <p>{heroSubtitle}</p>}
-			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">Schedule Consultation</Button>
+			{heroSubtitle && <p class="hero-subtitle">{heroSubtitle}</p>}
+			<div class="hero-actions">
+				{ctaHref ? (
+					<Button href={ctaHref} variant="primary" size="lg">{ctaLabel}</Button>
+				) : (
+					<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">{ctaLabel}</Button>
+				)}
+				<a class="hero-phone" href={`tel:${studioPhone.replace(/[^\d+]/g, '')}`}>
+					<span>or call the studio</span>
+					{studioPhone}
+				</a>
+			</div>
 		</div>
 	</section>
 
+	{intro && (
+		<section class="service-intro">
+			<div class="container intro-inner">
+				<p class="intro-lede">{intro}</p>
+				<ul class="intro-facts" aria-label="PROJECT: automate at a glance">
+					<li><strong>17+</strong><span>Years of expertise</span></li>
+					<li><strong>400+</strong><span>Los Angeles residences</span></li>
+					<li><strong>CEDIA · HTA</strong><span>Certified integrator</span></li>
+				</ul>
+			</div>
+		</section>
+	)}
+
 	<slot />
+
+	{relatedLinks.length > 0 && (
+		<section class="related" aria-labelledby="related-heading">
+			<div class="container">
+				<div class="related-head">
+					<span class="eyebrow">{relatedEyebrow}</span>
+					<h2 id="related-heading">{relatedTitle}</h2>
+				</div>
+				<ul class="related-list">
+					{relatedLinks.map((item) => (
+						<li>
+							<a href={withBase(item.href)} class="related-link">
+								<span class="related-title">{item.title}</span>
+								<span class="related-line">{item.line}</span>
+								<span class="related-arrow" aria-hidden="true">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		</section>
+	)}
+
+	<slot name="closing" />
 </PageLayout>
 
 <style>
@@ -37,10 +295,13 @@ const { title, description, heroImage, eyebrow, heroTitle, heroSubtitle } = Astr
 		/* Tucks the hero up behind the sticky header so a transparent header
 		   reveals the hero image instead of the cream page background. */
 		margin-top: calc(-1 * var(--header-height, 96px));
-		min-height: 65vh;
+		/* Both min-heights are mirrored in HERO_BANDS (frontmatter) for `sizes`. */
+		min-height: clamp(560px, 88svh, 960px);
 		display: flex;
 		align-items: flex-end;
 		overflow: hidden;
+		background: var(--color-black);
+		color: var(--color-text-on-dark);
 	}
 
 	.scroll-sentinel {
@@ -52,30 +313,282 @@ const { title, description, heroImage, eyebrow, heroTitle, heroSubtitle } = Astr
 		pointer-events: none;
 	}
 
-	.hero-bg {
+	.hero-media {
 		position: absolute;
 		inset: 0;
+	}
+
+	.hero-media :global(.hero-bg) {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		/* One slow settle on arrival, never replayed. */
+		animation: hero-settle 2400ms var(--ease-out-expo) both;
 	}
 
+	/* A light veil at the top keeps the transparent header legible; the deeper
+	   fall-off at the bottom and a soft wash from the left carry the headline,
+	   whatever sits behind it in the photograph. */
 	.hero-overlay {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, rgba(10, 10, 10, 0.35), rgba(10, 10, 10, 0.92));
+		background:
+			linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0) 26%),
+			linear-gradient(90deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.2) 48%, rgba(10, 10, 10, 0) 72%),
+			linear-gradient(0deg, rgba(10, 10, 10, 0.86) 0%, rgba(10, 10, 10, 0.5) 38%, rgba(10, 10, 10, 0) 72%);
 	}
 
 	.hero-content {
 		position: relative;
-		padding-block: var(--space-24) var(--space-16);
-		max-width: 640px;
-		color: var(--color-text-on-dark);
+		padding-block: calc(var(--header-height, 96px) + var(--space-16)) clamp(3rem, 8vw, 6.5rem);
 	}
 
-	.hero-content p {
-		font-size: var(--text-lg);
-		margin-bottom: var(--space-8);
+	.hero-content > * {
+		animation: hero-rise 1100ms var(--ease-out-expo) both;
+	}
+	.hero-content > :nth-child(2) {
+		animation-delay: 90ms;
+	}
+	.hero-content > :nth-child(3) {
+		animation-delay: 180ms;
+	}
+	.hero-content > :nth-child(4) {
+		animation-delay: 270ms;
+	}
+
+	/* Lifted from the brand gold so the small caps clear 4.5:1 over the photo. */
+	.hero-eyebrow {
+		color: color-mix(in srgb, var(--color-gold-light) 68%, var(--color-white));
+		margin-bottom: var(--space-4);
+	}
+
+	.hero-content h1 {
+		max-width: 20ch;
+		margin: 0 0 var(--space-6);
+		font-size: var(--text-display-lg);
+		font-weight: var(--fw-medium);
+		line-height: 1.08;
+		letter-spacing: -0.015em;
+		color: var(--color-text-on-dark);
+		text-wrap: balance;
+	}
+
+	.hero-subtitle {
+		max-width: 36rem;
+		margin: 0 0 var(--space-8);
+		font-size: var(--text-body-lg);
+		line-height: 1.65;
 		color: var(--color-text-on-dark-muted);
+		text-wrap: pretty;
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-4) var(--space-8);
+	}
+
+	.hero-phone {
+		display: inline-flex;
+		flex-direction: column;
+		gap: 2px;
+		font-size: var(--text-base);
+		font-weight: var(--fw-medium);
+		color: var(--color-text-on-dark);
+		transition: color var(--dur-fast) ease;
+	}
+
+	.hero-phone span {
+		font-size: var(--text-xs);
+		font-weight: var(--fw-regular);
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-text-on-dark-muted);
+	}
+
+	.hero-phone:hover {
+		color: var(--color-gold-light);
+	}
+
+	/* ---- Intro ---- */
+
+	.service-intro {
+		padding-block: clamp(4.5rem, 10vw, 8.5rem) clamp(3rem, 6vw, 5rem);
+	}
+
+	.intro-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+		gap: clamp(2.5rem, 7vw, 7rem);
+		align-items: end;
+	}
+
+	.intro-lede {
+		margin: 0;
+		font-size: clamp(1.375rem, 2.3vw, 2.125rem);
+		font-weight: var(--fw-regular);
+		line-height: 1.42;
+		letter-spacing: -0.005em;
+		color: var(--color-text);
+		text-wrap: pretty;
+	}
+
+	.intro-facts li {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-4);
+		padding-block: var(--space-4);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.intro-facts li:last-child {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.intro-facts strong {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		color: var(--color-text);
+		white-space: nowrap;
+	}
+
+	.intro-facts span {
+		font-size: var(--text-sm);
+		color: var(--color-text-muted);
+		text-align: right;
+	}
+
+	/* ---- Related solutions ---- */
+
+	.related {
+		padding-block: clamp(4rem, 9vw, 7rem);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.related-head {
+		margin-bottom: clamp(2rem, 4vw, 3rem);
+	}
+
+	.related h2 {
+		margin: 0;
+		font-size: var(--text-display-sm);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+	}
+
+	.related-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+		gap: 0 clamp(1.5rem, 3vw, 3rem);
+	}
+
+	.related-link {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		grid-template-rows: auto 1fr;
+		column-gap: var(--space-6);
+		height: 100%;
+		padding-block: var(--space-6) var(--space-8);
+		border-top: 1px solid var(--color-text);
+	}
+
+	.related-title {
+		font-size: var(--text-xl);
+		font-weight: var(--fw-medium);
+		line-height: 1.3;
+		color: var(--color-text);
+		transition: color var(--dur-fast) ease;
+	}
+
+	.related-line {
+		grid-column: 1;
+		margin-top: var(--space-2);
+		font-size: var(--text-base);
+		line-height: 1.55;
+		color: var(--color-text-muted);
+	}
+
+	.related-arrow {
+		grid-column: 2;
+		grid-row: 1;
+		width: 22px;
+		height: 22px;
+		margin-top: 3px;
+		color: var(--color-accent);
+		transition: transform var(--dur-base) var(--ease-out-expo);
+	}
+
+	.related-link:hover .related-title,
+	.related-link:focus-visible .related-title {
+		color: var(--color-accent);
+	}
+
+	.related-link:hover .related-arrow,
+	.related-link:focus-visible .related-arrow {
+		transform: translateX(6px);
+	}
+
+	@keyframes hero-settle {
+		from {
+			transform: scale(1.06);
+		}
+		to {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes hero-rise {
+		from {
+			opacity: 0;
+			transform: translateY(18px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.intro-inner {
+			grid-template-columns: 1fr;
+			align-items: start;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.service-hero {
+			min-height: clamp(540px, 86svh, 760px);
+		}
+		.hero-content {
+			padding-bottom: var(--space-12);
+		}
+		.hero-content h1 {
+			margin-bottom: var(--space-4);
+		}
+		.hero-subtitle {
+			font-size: var(--text-base);
+			margin-bottom: var(--space-6);
+		}
+		.hero-actions :global(.btn) {
+			width: 100%;
+		}
+		.hero-phone {
+			flex-direction: row;
+			align-items: baseline;
+			gap: var(--space-2);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-media :global(.hero-bg),
+		.hero-content > * {
+			animation: none;
+		}
+		.related-arrow {
+			transition: none;
+		}
 	}
 </style>

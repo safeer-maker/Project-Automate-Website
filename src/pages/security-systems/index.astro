@@ -1,54 +1,67 @@
 ---
-import { withBase } from '../../lib/paths.ts';
 import ServiceLayout from '../../layouts/ServiceLayout.astro';
 import CapabilityList from '../../components/brands/CapabilityList.astro';
 import DailyExperience from '../../components/brands/DailyExperience.astro';
-import SectionHeading from '../../components/ui/SectionHeading.astro';
 import CtaBanner from '../../components/ui/CtaBanner.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
 
-const capabilities = [
+type Capability = { title: string; description: string; imageId: LibraryImageId; imageAlt: string };
+
+const capabilities: Capability[] = [
 	{
-		title: 'Alarm System',
-		description: 'Smart alarms that detect, alert and act instantly. Receive real-time notifications and monitor your home from anywhere.',
-		image: withBase('/images/solutions/security-systems/feature-1.webp'),
+		title: 'Intelligent Alarms',
+		description:
+			'Alarms that detect, alert and respond the moment something changes. Real-time notifications reach you wherever you are, and the whole property can be checked from a single screen.',
+		imageId: 'solutions/security-camera',
+		imageAlt: 'Security camera mounted discreetly on a modern residence at dusk',
 	},
 	{
-		title: 'Smart Entry Systems',
-		description: 'See, speak and grant access from anywhere. Modern entry solutions that combine convenience with advanced security.',
-		image: withBase('/images/solutions/security-systems/feature-2.webp'),
+		title: 'Smart Entry',
+		description:
+			'See, speak with and admit visitors from anywhere. Entry that is effortless for the family and exacting about everyone else.',
+		imageId: 'solutions/security-smart-lock',
+		imageAlt: 'Smart lock set into a timber front door, with a sunset terrace beyond',
 	},
 	{
-		title: 'Access Control Systems',
-		description: 'Designed for peace of mind, our access control systems give you full command over who comes and goes, from any part of the property.',
-		image: withBase('/images/solutions/security-systems/feature-3.webp'),
+		title: 'Access Control',
+		description:
+			'Full command over who comes and goes, at every gate and door, from any part of the property.',
+		imageId: 'solutions/security-estate-gate',
+		imageAlt: 'Estate gates lit at night, opening onto a palm-lined drive',
 	},
 ];
 
 const scenes = [
-	{ title: 'Arrival', description: 'The system recognizes your approach, disarms the alarm and unlocks the entry automatically.' },
-	{ title: 'Visitors', description: 'See and speak with anyone at the gate or front door before granting them access.' },
-	{ title: 'Away', description: 'Arm the property with one tap and receive real-time alerts wherever you are.' },
-	{ title: 'Overnight', description: 'Cameras, sensors and access points stay watched quietly while the home rests.' },
+	{ title: 'Arrival', description: 'The system recognizes your approach, disarms the alarm and unlocks the entry.' },
+	{ title: 'Visitors', description: 'See and speak with anyone at the gate or front door before they are let in.' },
+	{ title: 'Away', description: 'One touch arms the property, and real-time alerts follow you wherever you are.' },
+	{ title: 'Overnight', description: 'Cameras, sensors and access points keep watch while the home rests.' },
 ];
 ---
 
 <ServiceLayout
-	title="Security Systems"
-	description="Custom smart home security systems from PROJECT: automate — intelligent alarms, entry systems and access control for refined Los Angeles residences."
-	heroImage={withBase('/images/solutions/security-systems/hero.webp')}
-	eyebrow="A Smarter Way to Stay Safe"
+	title="Estate Security Systems, Los Angeles"
+	description="Discreet, integrated estate security for Los Angeles residences: alarms, cameras, gates and access control that protect quietly and answer to one interface."
+	heroImageId="solutions/security-driveway-gate"
+	serviceName="Estate Security Systems"
+	serviceType="Residential security system design and integration"
+	eyebrow="Estate Security"
 	heroTitle="Complete Protection for Every Part of Your Property"
-	heroSubtitle="We create intelligent environments where every detail works in harmony — quietly, beautifully, completely."
+	heroSubtitle="Alarms, cameras, gates and access control, designed as one quiet system. Always present, and never in the way."
+	intro="The finest protection is felt rather than seen. We design alarms, cameras, gates and access control as a single system, placed in step with the architecture and answering to the same interface as the rest of the home."
+	related={['surveillance-systems', 'access-control-and-intercom', 'intrusion-detection-systems']}
+	relatedEyebrow="The Security Suite"
+	relatedTitle="Every layer, designed together."
 >
-	<CapabilityList eyebrow="Modern Security" title="Smart alarms, entry and access control working together in harmony." items={capabilities} />
+	<CapabilityList eyebrow="Modern Security" title="Alarms, entry and access, working as one." items={capabilities} />
 
-	<DailyExperience eyebrow="Daily Experience" title="Protection that moves quietly through your day." scenes={scenes} />
+	<DailyExperience
+		eyebrow="Daily Experience"
+		title="Protection that moves quietly through your day."
+		scenes={scenes}
+		imageId="solutions/access-lit-gate"
+		imageAlt="Contemporary gate traced with a line of light beside an intercom post at dusk"
+	/>
 
-	<section class="section power-system">
-		<div class="container">
-			<SectionHeading eyebrow="Our Philosophy" title="Design Your Living Experience" subtitle="Intelligent technology, designed around your lifestyle." align="center" />
-		</div>
-	</section>
-
-	<CtaBanner />
+	<CtaBanner slot="closing" />
 </ServiceLayout>

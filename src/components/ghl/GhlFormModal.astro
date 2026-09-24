@@ -18,7 +18,32 @@ import GhlForm from './GhlForm.astro';
 <script>
 	const dialog = document.querySelector<HTMLDialogElement>('[data-ghl-modal]');
 
-	if (dialog) {
+	// On pages where the form is the main content (/schedule/, /get-started/,
+	// landing pages), a second copy in a popup only competes with it for
+	// bandwidth. There, CTAs scroll to the page's own form and the popup is
+	// never loaded.
+	const primaryForm = document.querySelector<HTMLElement>('iframe[data-ghl-primary]')?.closest<HTMLElement>('[data-ghl-shell]');
+
+	if (primaryForm) {
+		document.addEventListener('click', (e) => {
+			const trigger = (e.target as Element | null)?.closest?.('[data-ghl-form-open]');
+			if (!trigger) return;
+			if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+			e.preventDefault();
+			trigger.closest('[data-offcanvas]')?.querySelector<HTMLElement>('[data-menu-close]')?.click();
+			// Through Lenis when it's running, so the two don't fight over the scroll.
+			// Deferred a frame: Lenis's own click handler (stopInertiaOnNavigate) runs
+			// after this one, sees a link to another path (/schedule/) and resets —
+			// which would cancel a scroll started synchronously here.
+			const lenis = (window as Window & { lenis?: { scrollTo: (el: Element) => void } }).lenis;
+			requestAnimationFrame(() => {
+				if (lenis) lenis.scrollTo(primaryForm);
+				else primaryForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			});
+		});
+	}
+
+	if (dialog && !primaryForm) {
 		const frame = dialog.querySelector<HTMLIFrameElement>('iframe[data-src]');
 		const load = () => {
 			if (frame && !frame.getAttribute('src')) frame.src = frame.dataset.src!;
@@ -28,8 +53,11 @@ import GhlForm from './GhlForm.astro';
 		// when a CTA is clicked. Waits for page load + an idle moment so it never
 		// competes with the page itself. On Save-Data connections, skip the
 		// background load and rely on the intent warm-up below instead.
+		// Pages that mark themselves [data-ghl-no-preload] (the thank-you page,
+		// reached right after a submission) rarely need the form again.
 		const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-		if (!saveData) {
+		const skipPreload = saveData || document.querySelector('[data-ghl-no-preload]') !== null;
+		if (!skipPreload) {
 			const preload = () =>
 				'requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 3000 }) : setTimeout(load, 1500);
 			if (document.readyState === 'complete') preload();

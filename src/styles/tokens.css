@@ -12,6 +12,18 @@
 	--color-white: #ffffff;
 	--color-gray: #9e9e9e;
 
+	/* Accessible bronzes: the brand hue (35°, 46% sat) darkened only as far as
+	   WCAG AA needs, computed rather than eyeballed. #9a7239 reaches just
+	   4.34:1 under a white label and 4.0–4.2:1 as small type on the creams.
+	   - fill: the lightest bronze a white label reads on at 4.5:1 (4.54).
+	     Hover goes darker (5.57), never lighter, so the label stays legible.
+	   - text: the lightest bronze for small type on both creams (4.75 on
+	     --color-cream, 4.50 on --color-cream-alt).
+	   On charcoal keep --color-gold-light, which is 5.57:1 there. */
+	--color-bronze-fill: #966f38;
+	--color-bronze-fill-hover: #846231;
+	--color-bronze-text: #906a35;
+
 	/* Semantic aliases — the live site is a warm cream/ivory theme with dark
 	   charcoal text, bronze/gold accents, and a small number of intentionally
 	   dark sections (header bar, hero overlays, footer, closing CTAs). */

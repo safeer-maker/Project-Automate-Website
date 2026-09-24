@@ -2,6 +2,7 @@
 title: "The Must-Have Elements of a Home Theater System"
 publishDate: 2025-06-14
 excerpt: "A great home theater is more than a big screen. A world-class sound system, a high-definition projector, and home automation together create the full content-watching experience."
+seoDescription: "The must-have elements of a home theater system: surround sound, a high-definition Barco projector and home automation that sets the room with one touch."
 coverImage: "/images/blog/the-must-have-elements-of-a-home-theater-system.webp"
 coverImageAlt: "Modern home theater room with a large screen and tiered seating"
 category: "Home Theater"

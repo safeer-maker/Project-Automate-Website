@@ -1,36 +1,90 @@
 ---
 import { withBase } from '../lib/paths.ts';
 import Seo from '../components/seo/Seo.astro';
-import { siteInfo } from '../data/site.ts';
+import { siteInfo, areaServed } from '../data/site.ts';
 import { ghl, ghlFormEmbedScript, ghlTrackingScript } from '../data/ghl.ts';
 import GhlFormModal from '../components/ghl/GhlFormModal.astro';
 import CookieNotice from '../components/ghl/CookieNotice.astro';
+import SmoothScroll from '../components/layout/SmoothScroll.astro';
 import '../styles/global.css';
 // Imported (not public/) so Vite hashes them and applies the deploy base —
 // these resolve to the same emitted files the @font-face rules reference.
 import manrope400 from '../styles/fonts/manrope-latin-400-normal.woff2';
 import manrope700 from '../styles/fonts/manrope-latin-700-normal.woff2';
 
+type Crumb = { name: string; path: string };
+
 interface Props {
+	/** The page's own title, WITHOUT the brand suffix (Seo.astro appends it when it fits). */
 	title: string;
 	description: string;
+	/** og:image URL — use ogImageUrl(id). Defaults to the Hidden Hills pavilion. */
 	image?: string;
+	imageAlt?: string;
+	/** Keep this page out of search results (links are still followed). */
+	noindex?: boolean;
+	/** Extra JSON-LD nodes merged into the page's @graph (no @context needed). */
+	schema?: Record<string, unknown>[];
+	ogType?: 'website' | 'article';
+	publishedTime?: Date;
+	modifiedTime?: Date;
+	/** Middle breadcrumbs when the URL doesn't express the hierarchy (blog posts live at the root). */
+	breadcrumbs?: Crumb[];
+	/** Name of the last breadcrumb. Defaults to the page title without its location tail. */
+	breadcrumbTitle?: string;
 }
 
-const { title, description, image } = Astro.props;
+const {
+	title,
+	description,
+	image,
+	imageAlt,
+	noindex = false,
+	schema = [],
+	ogType,
+	publishedTime,
+	modifiedTime,
+	breadcrumbs,
+	breadcrumbTitle,
+} = Astro.props;
 
-// LocalBusiness structured data — legalName is the registered entity
-// (Project Automate Inc.), name/alternateName carry the public brand
-// (PROJECT: automate) used everywhere else on the site.
-const structuredData = {
-	'@context': 'https://schema.org',
-	'@type': 'LocalBusiness',
+// ── Structured data ──────────────────────────────────────────────────────────
+// One @graph per page: the business, the website, this page's breadcrumb trail,
+// then whatever the page adds (Service, BlogPosting, …). Node @ids are fixed to
+// the production origin so every page — and every host — describes the same
+// entity; page and asset URLs follow Astro.site like the canonical does.
+const ORIGIN = siteInfo.url.replace(/\/$/, '');
+const BUSINESS_ID = `${ORIGIN}/#business`;
+const WEBSITE_ID = `${ORIGIN}/#website`;
+const absolute = (path: string) => new URL(withBase(path), Astro.site).toString();
+
+const phoneDigits = siteInfo.phones[0].replace(/\D/g, '');
+const telephone = `+1-${phoneDigits.slice(0, 3)}-${phoneDigits.slice(3, 6)}-${phoneDigits.slice(6)}`;
+
+// Only facts the site already states. No geo / opening hours / directory
+// listings until they're verified against the Google Business Profile — NAP
+// must match it exactly.
+const business = {
+	'@type': ['HomeAndConstructionBusiness', 'ProfessionalService'],
+	'@id': BUSINESS_ID,
 	name: siteInfo.name,
+	alternateName: 'Project Automate',
 	legalName: siteInfo.legalName,
-	alternateName: siteInfo.name,
-	url: siteInfo.url,
+	url: `${ORIGIN}/`,
+	description:
+		'Luxury home technology integrator in Manhattan Beach, designing lighting, shading, cinema, climate and security as one quiet system for Los Angeles estates.',
+	logo: {
+		'@type': 'ImageObject',
+		'@id': `${ORIGIN}/#logo`,
+		url: absolute('/images/logo/favicon.webp'),
+		width: 512,
+		height: 512,
+		caption: siteInfo.name,
+	},
+	image: { '@id': `${ORIGIN}/#logo` },
+	telephone,
 	email: siteInfo.email,
-	telephone: siteInfo.phones[0],
+	priceRange: '$$$$',
 	address: {
 		'@type': 'PostalAddress',
 		streetAddress: siteInfo.address.line1,
@@ -39,8 +93,114 @@ const structuredData = {
 		postalCode: '90266',
 		addressCountry: 'US',
 	},
+	founder: { '@type': 'Person', '@id': `${ORIGIN}/#founder`, name: 'Joshua Trevithick', jobTitle: 'Founder' },
+	// One shared list (src/data/site.ts), also used by every Service node
+	// (ServiceLayout / BrandLayout), so the two never drift.
+	areaServed,
+	knowsAbout: [
+		'Home automation',
+		'Lighting control',
+		'Landscape lighting',
+		'Home theater design',
+		'Whole-home audio',
+		'Motorized shades',
+		'Climate control',
+		'Estate security',
+		'Savant',
+		'Crestron',
+		'Control4',
+		'Lutron',
+		'Basalte',
+		'Josh.ai',
+	],
+	hasCredential: [
+		{
+			'@type': 'EducationalOccupationalCredential',
+			credentialCategory: 'certification',
+			name: 'CEDIA Certified',
+			recognizedBy: { '@type': 'Organization', name: 'CEDIA' },
+		},
+		{
+			'@type': 'EducationalOccupationalCredential',
+			credentialCategory: 'certification',
+			name: 'HTA Certified',
+			recognizedBy: { '@type': 'Organization', name: 'Home Technology Association' },
+		},
+	],
 	sameAs: siteInfo.social.map((s) => s.href),
 };
+
+// Google reads the site name shown in results from this node.
+const website = {
+	'@type': 'WebSite',
+	'@id': WEBSITE_ID,
+	url: `${ORIGIN}/`,
+	name: siteInfo.name,
+	alternateName: ['Project Automate'],
+	inLanguage: 'en-US',
+	publisher: { '@id': BUSINESS_ID },
+};
+
+// Breadcrumbs from the URL path: Home › Brands › Savant. Section names are
+// fixed so a section reads the same whether it's the last crumb or a parent.
+const SECTION_NAMES: Record<string, string> = {
+	brands: 'Brands',
+	blog: 'Journal',
+	'success-stories': 'Success Stories',
+};
+const ACRONYMS: Record<string, string> = { hvac: 'HVAC', hta: 'HTA', ai: 'AI', av: 'AV' };
+const MINOR_WORDS = new Set(['and', 'or', 'of', 'the', 'to', 'a', 'in', 'for']);
+const humanise = (segment: string) =>
+	SECTION_NAMES[segment] ??
+	segment
+		.split('-')
+		.map((word, i) => ACRONYMS[word] ?? (i > 0 && MINOR_WORDS.has(word) ? word : word.charAt(0).toUpperCase() + word.slice(1)))
+		.join(' ');
+// "Whole-Home Control Systems, Los Angeles" → "Whole-Home Control Systems":
+// the location earns its place in the title link, not in the trail.
+const crumbName = (pageTitle: string) =>
+	pageTitle
+		.replace(/\s*\|\s*project:\s*automate\s*$/i, '')
+		.replace(/,?\s+(?:in\s+)?(?:Los Angeles|LA)$/, '')
+		.trim();
+
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sitePath = basePath && Astro.url.pathname.startsWith(basePath) ? Astro.url.pathname.slice(basePath.length) : Astro.url.pathname;
+const segments = sitePath.split('/').filter(Boolean);
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+
+let breadcrumbList: Record<string, unknown> | undefined;
+if (segments.length > 0 && !noindex) {
+	const sectionName = segments.length === 1 ? SECTION_NAMES[segments[0]] : undefined;
+	const middle: Crumb[] =
+		breadcrumbs ??
+		segments.slice(0, -1).map((segment, i) => ({ name: humanise(segment), path: `/${segments.slice(0, i + 1).join('/')}/` }));
+	const trail: Crumb[] = [
+		{ name: 'Home', path: '/' },
+		...middle,
+		{ name: breadcrumbTitle ?? sectionName ?? crumbName(title), path: `/${segments.join('/')}/` },
+	];
+	breadcrumbList = {
+		'@type': 'BreadcrumbList',
+		'@id': `${pageUrl}#breadcrumb`,
+		itemListElement: trail.map((crumb, i) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			name: crumb.name,
+			item: absolute(crumb.path),
+		})),
+	};
+}
+
+// Nodes passed in by a page may carry their own @context; the graph has one.
+const extraNodes = schema.map(({ '@context': _context, ...node }) => node);
+
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@graph': [business, website, ...(breadcrumbList ? [breadcrumbList] : []), ...extraNodes],
+};
+// Escape "<" so no string in the graph can close the script element early.
+const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
 ---
 
 <html lang="en">
@@ -53,21 +213,34 @@ const structuredData = {
 		<link rel="preload" href={manrope700} as="font" type="font/woff2" crossorigin />
 		<link rel="preload" href={manrope400} as="font" type="font/woff2" crossorigin />
 
-		<Seo title={title} description={description} image={image} />
-		<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+		<Seo
+			title={title}
+			description={description}
+			image={image}
+			imageAlt={imageAlt}
+			noindex={noindex}
+			ogType={ogType}
+			publishedTime={publishedTime}
+			modifiedTime={modifiedTime}
+		/>
+		<script type="application/ld+json" set:html={structuredDataJson} />
 
 		<!-- Warm connections to the hosts the GHL form loads from, so the preloaded popup form starts fetching sooner. -->
 		<link rel="preconnect" href="https://api.leadconnectorhq.com" />
 		<link rel="preconnect" href="https://stcdn.leadconnectorhq.com" crossorigin />
 		<link rel="preconnect" href="https://backend.leadconnectorhq.com" crossorigin />
 
-		<!-- GoHighLevel: visitor tracking + form embed (sizing, consent hand-off). IDs live in src/data/ghl.ts. -->
+		<!-- GoHighLevel: visitor tracking + form embed (sizing, consent hand-off). IDs live in src/data/ghl.ts.
+		     Both async: as `defer`, form_embed.js held DOMContentLoaded — and every page script, including
+		     the one that starts the form loading — until GHL's CDN answered (1–4s on a cold cache). It
+		     initialises iframes whenever it lands, so it doesn't need to run before them. -->
 		<script is:inline async src={ghlTrackingScript} data-tracking-id={ghl.trackingId}></script>
-		<script is:inline defer src={ghlFormEmbedScript}></script>
+		<script is:inline async src={ghlFormEmbedScript}></script>
 	</head>
 	<body>
 		<slot />
 		<GhlFormModal />
 		<CookieNotice />
+		<SmoothScroll />
 	</body>
 </html>

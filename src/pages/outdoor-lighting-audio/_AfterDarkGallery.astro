@@ -1,0 +1,195 @@
+---
+// A short editorial gallery: one portrait, one working shot, and a wide
+// closing frame of a whole estate at dusk.
+import Picture from '../../components/ui/Picture.astro';
+---
+
+<section class="after-dark" aria-labelledby="after-dark-heading" data-after-dark>
+	<div class="container">
+		<div class="heading">
+			<span class="eyebrow">After Dark</span>
+			<h2 id="after-dark-heading">The garden, drawn softly in light.</h2>
+		</div>
+
+		<div class="gallery">
+			<figure class="shot shot-portrait" style="--i:0">
+				<div class="frame">
+					<Picture
+						id="solutions/audio-bollard"
+						alt="A slim bollard speaker glowing beside a poolside terrace at dusk"
+						sizes="(max-width: 760px) 100vw, 40vw"
+					/>
+				</div>
+				<figcaption>Bollard speakers and path lights, one quiet line along the terrace.</figcaption>
+			</figure>
+
+			<div class="side">
+				<figure class="shot" style="--i:1">
+					<div class="frame">
+						<Picture
+							id="solutions/landscape-installation"
+							alt="A technician setting a landscape light into the planting of a stone-built residence"
+							sizes="(max-width: 760px) 100vw, 55vw"
+						/>
+					</div>
+					<figcaption>Each fixture placed and aimed with care, so the garden reads as calm, never floodlit.</figcaption>
+				</figure>
+				<p class="side-note">
+					We plan lighting and sound alongside your architect and landscape designer, so fixtures, speakers
+					and wiring are resolved early, never added as an afterthought.
+				</p>
+			</div>
+
+			<figure class="shot shot-wide" style="--i:2">
+				<div class="frame">
+					<Picture
+						id="residences/stone-estate-wide"
+						alt="A limestone estate at dusk, its facade and trees gently uplit"
+						sizes="(max-width: 1280px) 100vw, 1232px"
+					/>
+				</div>
+				<figcaption>Uplighting that lets the architecture and the trees carry the evening.</figcaption>
+			</figure>
+		</div>
+	</div>
+</section>
+
+<script>
+	// Each frame settles once as it enters.
+	const shots = document.querySelectorAll<HTMLElement>('[data-after-dark] .shot');
+	if (!('IntersectionObserver' in window)) {
+		shots.forEach((shot) => shot.classList.add('is-revealed'));
+	} else {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('is-revealed');
+					io.unobserve(entry.target);
+				});
+			},
+			{ rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
+		);
+		shots.forEach((shot) => io.observe(shot));
+	}
+</script>
+
+<style>
+	.after-dark {
+		background: var(--color-charcoal);
+		color: var(--color-text-on-dark);
+		padding-block: clamp(4.5rem, 10vw, 8rem);
+	}
+
+	.heading {
+		max-width: 40rem;
+		margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+	}
+
+	.heading .eyebrow {
+		color: color-mix(in srgb, var(--color-gold-light) 68%, var(--color-white));
+	}
+
+	.heading h2 {
+		margin: 0;
+		font-size: var(--text-display-md);
+		font-weight: var(--fw-medium);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		color: var(--color-text-on-dark);
+		text-wrap: balance;
+	}
+
+	.gallery {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(2rem, 4vw, 3.5rem) clamp(1.25rem, 3vw, 2.5rem);
+		align-items: start;
+	}
+
+	.shot {
+		margin: 0;
+	}
+
+	.frame {
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		background: var(--color-charcoal-2);
+	}
+
+	.frame :global(img) {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+	}
+
+	.shot-portrait .frame :global(img) {
+		aspect-ratio: 4 / 5;
+	}
+
+	.shot-wide {
+		grid-column: 1 / -1;
+	}
+
+	.shot-wide .frame :global(img) {
+		aspect-ratio: 8 / 3;
+	}
+
+	figcaption {
+		margin-top: var(--space-4);
+		max-width: 34rem;
+		font-size: var(--text-sm);
+		line-height: 1.6;
+		color: var(--color-text-on-dark-muted);
+	}
+
+	.side {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(2rem, 4vw, 3rem);
+	}
+
+	.side-note {
+		max-width: 30rem;
+		margin: 0;
+		padding-top: var(--space-6);
+		border-top: 1px solid var(--color-border-on-dark);
+		font-size: var(--text-body-lg);
+		line-height: 1.7;
+		color: var(--color-text-on-dark);
+	}
+
+	@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+		.shot {
+			opacity: 0;
+			transition: opacity 1100ms var(--ease-out-expo);
+			transition-delay: calc(var(--i, 0) * 120ms);
+		}
+
+		.shot .frame :global(img) {
+			transform: scale(1.06);
+			transition: transform 1800ms var(--ease-out-expo);
+		}
+
+		.shot.is-revealed {
+			opacity: 1;
+		}
+
+		.shot.is-revealed .frame :global(img) {
+			transform: scale(1);
+		}
+	}
+
+	@media (max-width: 760px) {
+		.gallery {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.shot {
+			transition-delay: 0ms;
+		}
+		.shot-wide .frame :global(img) {
+			aspect-ratio: 16 / 9;
+		}
+	}
+</style>
