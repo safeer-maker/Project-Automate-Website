@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - '**'
+  # Manual run from the Actions tab.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,9 +18,12 @@ concurrency:
 
 jobs:
   build:
-    # Always deploy on main (i.e. after a PR merge). On any other branch,
-    # only deploy when the head commit message contains "@deploy".
-    if: github.ref == 'refs/heads/main' || contains(github.event.head_commit.message, '@deploy')
+    # Deploy on every push or merge to main. On any other branch, deploy when
+    # any commit in the push (not just the last one) mentions "@deploy".
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.ref == 'refs/heads/main' ||
+      contains(join(github.event.commits.*.message, ' '), '@deploy')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
