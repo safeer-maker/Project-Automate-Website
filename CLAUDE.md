@@ -53,6 +53,7 @@ Site photography is a licensed Adobe Stock set. The originals (1–23MB each) li
 ## Copy & design
 
 - **No eyebrow text anywhere on the site.** An eyebrow (also called a kicker or overline) is the small label above a headline, like "Home Technology · Manhattan Beach" above the homepage hero title. Never add one to a new page, section or component. Headlines stand on their own.
+- **Full-bleed hero copy sits in the corners, never centered**, so the video or photo stays clear: the headline block (and its subtitle) in the bottom-right corner, the CTA actions in the bottom-left. Both hug the screen's own gutter (not capped at `--page-max`), `--hero-copy-bottom` (`tokens.css`) off the bottom edge. This applies to the homepage and every inner photo hero (ServiceLayout, BrandLayout, Solutions, Support). On phones (≤700px) everything stacks in one left-aligned column.
 
 ## Documentation
 

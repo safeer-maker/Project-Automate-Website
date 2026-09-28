@@ -50,9 +50,26 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		     fades in over it nothing jumps. It's the page's LCP image, hence fetchpriority. The
 		     video's own `poster` isn't used: it can't vary by breakpoint. -->
 		<picture class="hero-poster">
-			<source media={portraitPhone} srcset={posterPortrait} width="540" height="960" />
-			<source media="(max-width: 700px)" srcset={posterMobile} width="960" height="540" />
-			<img src={poster} alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+			<source
+				media={portraitPhone}
+				srcset={posterPortrait}
+				width="540"
+				height="960"
+			/>
+			<source
+				media="(max-width: 700px)"
+				srcset={posterMobile}
+				width="960"
+				height="540"
+			/>
+			<img
+				src={poster}
+				alt=""
+				width="1600"
+				height="900"
+				fetchpriority="high"
+				decoding="async"
+			/>
 		</picture>
 		<!-- No autoplay attribute: the script starts playback once a few
 		     seconds are buffered (see below). preload="none" in the markup so
@@ -94,9 +111,12 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		</video>
 		<script is:inline>
 			{
-				const v = document.querySelector('[data-hero-video]');
-				if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-					v.preload = 'auto';
+				const v = document.querySelector("[data-hero-video]");
+				if (
+					v &&
+					!matchMedia("(prefers-reduced-motion: reduce)").matches
+				) {
+					v.preload = "auto";
 					v.load();
 				}
 			}
@@ -110,21 +130,21 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 			     The literal space between them keeps the heading's text (and its
 			     accessible name) "Technology for", not "Technologyfor". -->
 			<h1 class="hero-title" id="hero-title">
-				<span class="line"><span>Tailored Luxury Technology</span></span>
+				<span class="line"><span>Tailored Luxury Technology</span></span
+				>
 				{" "}
-				<span class="line"><span>for Los Angeles Residences</span></span>
+				<span class="line"><span>for Los Angeles Residences</span></span
+				>
 			</h1>
-			<p class="hero-lede">
+			<!--<p class="hero-lede">
 				Lighting, climate, sound and security, designed to work as one, and to disappear.
-			</p>
+			</p>-->
 		</div>
 		<!-- After the headline in the markup so screen readers and the tab order
 		     meet the heading first; the grid places it bottom-left on screen. -->
 		<div class="hero-actions" data-cookie-clear>
-			<a
-				class="hero-btn"
-				href={withBase("/schedule/")}
-				data-ghl-form-open>Book a Private Consultation</a
+			<a class="hero-btn" href={withBase("/schedule/")} data-ghl-form-open
+				>Book a Private Consultation</a
 			>
 			<!-- Lenis (anchors: true) glides this to the statement below. -->
 			<a class="hero-link" href="#approach">
@@ -143,21 +163,28 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 </section>
 
 <script>
-	const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+	const video = document.querySelector<HTMLVideoElement>("[data-hero-video]");
 
 	// No pause control, by client request. Reduced-motion visitors are the
 	// ones who can't opt out any other way, so they only ever get the still.
-	if (video && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+	if (
+		video &&
+		!window.matchMedia("(prefers-reduced-motion: reduce)").matches
+	) {
 		// Slightly under real time. Almost subliminal, but it stops the clip
 		// feeling like stock footage.
 		const settle = () => (video.playbackRate = 0.85);
 		settle();
 		// Some browsers reset playbackRate when the source finishes loading.
-		video.addEventListener('loadeddata', settle);
+		video.addEventListener("loadeddata", settle);
 
 		// The film fades in over its own first frame once it's genuinely
 		// playing, so the swap from still to motion is invisible.
-		video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+		video.addEventListener(
+			"playing",
+			() => video.classList.add("is-playing"),
+			{ once: true },
+		);
 
 		let onScreen = true;
 
@@ -174,21 +201,24 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		const bufferedAhead = () => {
 			const ranges = video.buffered;
 			for (let i = 0; i < ranges.length; i++) {
-				if (ranges.start(i) <= video.currentTime + 0.1) return ranges.end(i) - video.currentTime;
+				if (ranges.start(i) <= video.currentTime + 0.1)
+					return ranges.end(i) - video.currentTime;
 			}
 			return 0;
 		};
 		const startWhenReady = () => {
 			if (started) return;
 			const ahead = bufferedAhead();
-			const whole = Number.isFinite(video.duration) && ahead >= video.duration - 0.5;
+			const whole =
+				Number.isFinite(video.duration) &&
+				ahead >= video.duration - 0.5;
 			if (ahead >= 3 || whole) {
 				started = true;
 				play();
 			}
 		};
-		video.addEventListener('progress', startWhenReady);
-		video.addEventListener('canplaythrough', startWhenReady);
+		video.addEventListener("progress", startWhenReady);
+		video.addEventListener("canplaythrough", startWhenReady);
 		startWhenReady();
 		window.setTimeout(() => {
 			if (!started) {
@@ -277,17 +307,22 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 				rgba(10, 10, 10, 0.55) var(--header-height, 96px),
 				rgba(10, 10, 10, 0) 26%
 			),
-			linear-gradient(0deg, rgba(10, 10, 10, 0.74) 0%, rgba(10, 10, 10, 0.4) 36%, rgba(10, 10, 10, 0) 64%);
+			linear-gradient(
+				0deg,
+				rgba(10, 10, 10, 0.74) 0%,
+				rgba(10, 10, 10, 0.4) 36%,
+				rgba(10, 10, 10, 0) 64%
+			);
 	}
 
 	.hero-inner {
 		position: relative;
 		z-index: 1;
+		/* Not capped at the page width: past 1440 that left the headline up
+		   to 240px short of the corner. The copy hugs the screen's gutter. */
 		width: 100%;
-		max-width: var(--page-max);
-		margin-inline: auto;
 		padding-inline: var(--page-gutter);
-		padding-bottom: clamp(3.5rem, 10vh, 7rem);
+		padding-bottom: var(--hero-copy-bottom);
 		/* Headline bottom-right, actions bottom-left. Stacked (headline over
 		   actions) until there's room for both on one row. */
 		display: grid;
@@ -313,16 +348,14 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		}
 	}
 
-	/* The block sits right, but the type inside reads left-to-right like any
-	   other English copy — a right-aligned ragged edge fought the reading order.
-	   It shrink-wraps the headline so its right edge always lands on the page
-	   gutter, whatever size the type resolves to. */
+	/* Shrink-wrapped and set ragged-left, so every line ends flush on the
+	   right gutter, in the corner, whatever size the type resolves to. */
 	.hero-box {
 		position: relative;
 		justify-self: end;
 		width: fit-content;
 		max-width: 100%;
-		text-align: left;
+		text-align: right;
 	}
 
 	/* The copy lands on the white house and pool deck, where the low falloff
@@ -330,7 +363,7 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 	   rather than a heavier full-width band, keeps the rest of the frame
 	   bright. Wide enough that its edge never reads as a shape. */
 	.hero-box::before {
-		content: '';
+		content: "";
 		position: absolute;
 		inset: -9rem -5rem -5rem -12rem;
 		z-index: -1;
@@ -394,7 +427,8 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 
 	.hero-lede {
 		max-width: 34ch;
-		margin: 0;
+		/* Narrower than the headline: pushed to the box's right edge. */
+		margin: 0 0 0 auto;
 		font-size: clamp(1rem, 1.3vw, 1.1875rem);
 		font-weight: var(--fw-regular);
 		line-height: 1.6;
@@ -444,7 +478,7 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		font-weight: var(--fw-medium);
 		letter-spacing: 0.02em;
 		color: rgba(255, 255, 255, 0.86);
-		/* Off the headline's shade pool now, over the bare bottom falloff. */
+		/* Off the headline's shade pool, over the bare bottom falloff. */
 		text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
 		transition: color var(--dur-fast) ease;
 	}
@@ -484,7 +518,11 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		   too, where the same copy reaches higher up the frame. */
 		.hero-scrim {
 			background:
-				linear-gradient(180deg, rgba(10, 10, 10, 0.5) 0%, rgba(10, 10, 10, 0) 18%),
+				linear-gradient(
+					180deg,
+					rgba(10, 10, 10, 0.5) 0%,
+					rgba(10, 10, 10, 0) 18%
+				),
 				linear-gradient(
 					0deg,
 					rgba(10, 10, 10, 0.82) 0%,
@@ -496,6 +534,10 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		   left-hand button would zigzag down a 390px screen. */
 		.hero-box {
 			justify-self: start;
+			text-align: left;
+		}
+		.hero-lede {
+			margin-left: 0;
 		}
 		.hero-title {
 			font-size: clamp(2rem, 8.6vw, 2.5rem);
