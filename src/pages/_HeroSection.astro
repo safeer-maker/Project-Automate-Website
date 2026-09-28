@@ -295,7 +295,10 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 	   can't rely on text-shadow alone. A low, warm-black falloff under the
 	   copy plus a band behind the transparent header, nothing mid-frame. The
 	   band holds ~0.55 across the header's own height (white nav over bright
-	   sky was 2.6:1 at 0.42) and is gone by a quarter of the way down. */
+	   sky was 2.6:1 at 0.42) and is gone by a quarter of the way down.
+	   The falloff only has to cover the copy (~180px up from the bottom), so
+	   it's gone by 40%: when it ran to 64% at 0.74 it dulled the lower half of
+	   the film for contrast the copy didn't need (worst frame was ~8:1). */
 	.hero-scrim {
 		position: absolute;
 		inset: 0;
@@ -309,9 +312,9 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 			),
 			linear-gradient(
 				0deg,
-				rgba(10, 10, 10, 0.74) 0%,
-				rgba(10, 10, 10, 0.4) 36%,
-				rgba(10, 10, 10, 0) 64%
+				rgba(10, 10, 10, 0.55) 0%,
+				rgba(10, 10, 10, 0.28) max(20%, 12rem),
+				rgba(10, 10, 10, 0) max(40%, 22rem)
 			);
 	}
 
@@ -512,10 +515,12 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 	}
 
 	@media (max-width: 700px) {
-		/* On a tall phone crop the copy climbs to ~60% of the frame, right
-		   over the bright white house, so the falloff has to hold ~0.65
-		   up to the headline. The max() stops keep that true on short phones
-		   too, where the same copy reaches higher up the frame. */
+		/* On a tall phone the copy block climbs ~350px (about 42% of the
+		   frame), over the bright white house, so the falloff holds ~0.45
+		   up to the headline, then clears. The max() stops keep that true on
+		   short phones too, where the same copy reaches higher up the frame.
+		   It used to hold 0.65 to 62% and run to 90%, which left almost the
+		   whole portrait film at a third of its brightness. */
 		.hero-scrim {
 			background:
 				linear-gradient(
@@ -525,9 +530,9 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 				),
 				linear-gradient(
 					0deg,
-					rgba(10, 10, 10, 0.82) 0%,
-					rgba(10, 10, 10, 0.65) max(62%, 36rem),
-					rgba(10, 10, 10, 0) max(90%, 48rem)
+					rgba(10, 10, 10, 0.62) 0%,
+					rgba(10, 10, 10, 0.45) max(40%, 22rem),
+					rgba(10, 10, 10, 0) max(62%, 32rem)
 				);
 		}
 		/* One left-aligned column on a phone: a right-hand headline over a

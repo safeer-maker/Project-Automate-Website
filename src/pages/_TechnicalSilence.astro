@@ -287,12 +287,14 @@ const stillPortrait = withBase('/images/home/technical-silence/still-portrait.we
 		color: var(--color-text-on-dark);
 	}
 
+	/* Copy sits at the bottom so the lit house stays clear above it. */
 	.silence-stage {
 		position: sticky;
 		top: 0;
 		height: 100vh;
 		display: flex;
-		align-items: center;
+		align-items: flex-end;
+		padding-bottom: clamp(2.5rem, 7vh, 4.5rem);
 		overflow: hidden;
 	}
 
@@ -317,16 +319,17 @@ const stillPortrait = withBase('/images/home/technical-silence/still-portrait.we
 		opacity: 1;
 	}
 
-	/* The clip is dark up top but the lit driveway gets bright in the lower
-	   half, which is where the paragraph sits. */
+	/* Only under the copy: the lit driveway along the bottom is the bright
+	   part. A full-frame scrim here (0.4 up top, 0.6 at the foot) dulled the
+	   whole payoff frame. */
 	.silence-scrim {
 		position: absolute;
 		inset: 0;
 		background: linear-gradient(
-			180deg,
-			rgba(10, 10, 10, 0.4) 0%,
-			rgba(10, 10, 10, 0.25) 40%,
-			rgba(10, 10, 10, 0.6) 100%
+			0deg,
+			rgba(10, 10, 10, 0.6) 0%,
+			rgba(10, 10, 10, 0.3) max(22%, 13rem),
+			rgba(10, 10, 10, 0) max(42%, 24rem)
 		);
 	}
 
@@ -336,11 +339,10 @@ const stillPortrait = withBase('/images/home/technical-silence/still-portrait.we
 		width: 100%;
 	}
 
-	/* The paragraph lands on the brightest part of the lit facade (the arch
-	   and windows), where the scrim is at its lightest. A soft pool of shade
-	   that travels with the copy, as behind the hero's, rather than a heavier
-	   full-frame scrim that would dull the payoff. Centred on the ~34rem text
-	   block and wide enough that its edge never reads as a shape. */
+	/* The paragraph lands on the lit driveway and bollards. A soft pool of
+	   shade that travels with the copy, as behind the hero's, rather than a
+	   heavier full-frame scrim that would dull the payoff. Centred on the
+	   ~34rem text block and wide enough that its edge never reads as a shape. */
 	.silence-copy::before {
 		content: '';
 		position: absolute;
@@ -413,7 +415,16 @@ const stillPortrait = withBase('/images/home/technical-silence/still-portrait.we
 			position: static;
 			height: auto;
 			min-height: 100vh;
-			padding-block: clamp(4rem, 9vw, 7.5rem);
+			padding-block: clamp(4rem, 9vw, 7.5rem) var(--hero-copy-bottom);
+		}
+		/* The copy spans the width and climbs higher up a portrait screen. */
+		.silence-scrim {
+			background: linear-gradient(
+				0deg,
+				rgba(10, 10, 10, 0.62) 0%,
+				rgba(10, 10, 10, 0.4) max(34%, 17rem),
+				rgba(10, 10, 10, 0) max(56%, 28rem)
+			);
 		}
 		/* The copy spans the phone's width, so the pool centres on the screen. */
 		.silence-copy::before {
