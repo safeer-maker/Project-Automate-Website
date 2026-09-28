@@ -40,8 +40,8 @@ import { withBase } from '../../lib/paths.ts';
 			notice.hidden = true;
 		});
 
-		// Anything marked [data-cookie-clear] (the homepage hero's actions and
-		// film toggle) must not be covered on arrival. On phones, and on short
+		// Anything marked [data-cookie-clear] (the homepage hero's actions)
+		// must not be covered on arrival. On phones, and on short
 		// laptop screens like 1024x768, they sit exactly where the notice goes,
 		// so there it waits for the first scroll (or key press) instead of
 		// covering the first impression. Measured with the notice laid out for
@@ -83,8 +83,8 @@ import { withBase } from '../../lib/paths.ts';
 			}
 		});
 
-		// After every page script has run (the hero's toggle is only unhidden
-		// by its own script), so everything to keep clear is measurable.
+		// After every page script has run, so everything to keep clear is
+		// laid out and measurable.
 		if (document.readyState === 'complete') place();
 		else document.addEventListener('DOMContentLoaded', place, { once: true });
 	}
