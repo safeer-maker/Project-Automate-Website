@@ -1,7 +1,9 @@
 ---
-// "A day at home": four moments, one photograph each. On desktop the image
-// column is CSS-sticky and crossfades as each caption crosses the middle of
-// the screen. The page scrolls normally throughout: no second pin, no
+// "A day at home": four moments, one photograph each, plus an establishing
+// shot of the whole house for the intro. On desktop the image column is
+// CSS-sticky and crossfades as each caption crosses the middle of the
+// screen: the house while the intro is read, then Morning, Afternoon and so
+// on. The page scrolls normally throughout: no second pin, no
 // scroll-jacking. Below 800px it is a plain stack of image + caption cards.
 //
 // One set of images serves both layouts: on mobile the sticky wrappers become
@@ -23,11 +25,12 @@ const scenes: Scene[] = [
 	{
 		time: 'Morning',
 		caption: 'The shades rise with the sun, and the house is already warm.',
-		image: 'solutions/control-panel-living',
-		alt: 'A sunlit living room that opens onto the trees, with a slim control panel on the wall beside it',
-		// Keeps the control panel (the subject) whole at every width, desktop
-		// frame and 4:3 phone card alike; 18% sliced it through its screen.
-		focus: '85% 50%',
+		// Morning light has to be the subject: the old control-panel close-up
+		// cropped to a downlit wall that read as evening.
+		image: 'solutions/control-great-room',
+		alt: 'A bright open-plan living room in morning sun, full-height windows onto the garden and a control panel on the wall',
+		// The sunlit room and windows, with the panel still at the frame's edge.
+		focus: '60% 50%',
 	},
 	{
 		time: 'Afternoon',
@@ -52,6 +55,13 @@ const scenes: Scene[] = [
 	},
 ];
 
+// Shown beside "The day, composed." before any moment is reached.
+const intro = {
+	image: 'residences/stone-estate-wide' as LibraryImageId,
+	alt: 'A limestone residence at dusk, its facade and gardens softly uplit',
+	focus: '50% 50%',
+};
+
 const pad = (n: number) => String(n).padStart(2, '0');
 
 // The desktop frame is roughly square and every photo is ~16:9, so object-fit
@@ -60,13 +70,16 @@ const pad = (n: number) => String(n).padStart(2, '0');
 const shotSizes = '(max-width: 799px) 100vw, calc((100vh - 96px) * 1.8)';
 ---
 
-<section class="day" aria-labelledby="day-title" data-day>
+<section class="day is-intro" aria-labelledby="day-title" data-day>
 	<div class="day-grid">
 		<div class="day-media">
 			<div class="day-frame">
+				<div class="day-shot day-shot--intro is-active" data-shot style={`--focus:${intro.focus}`}>
+					<Picture id={intro.image} alt={intro.alt} sizes={shotSizes} />
+				</div>
 				{scenes.map((scene, i) => (
 					<div
-						class:list={['day-shot', { 'is-active': i === 0 }]}
+						class="day-shot"
 						data-shot
 						style={`--order:${i * 2 + 1};--focus:${scene.focus}`}
 					>
@@ -82,7 +95,6 @@ const shotSizes = '(max-width: 799px) 100vw, calc((100vh - 96px) * 1.8)';
 
 		<div class="day-copy">
 			<header class="day-intro">
-				<span class="eyebrow">A Day at Home</span>
 				<h2 id="day-title">The day, composed.</h2>
 				<p>
 					Every system plays its part at the right moment, so the home simply feels right from
@@ -92,7 +104,7 @@ const shotSizes = '(max-width: 799px) 100vw, calc((100vh - 96px) * 1.8)';
 
 			{scenes.map((scene, i) => (
 				<article
-					class:list={['scene', { 'is-active': i === 0 }]}
+					class="scene"
 					data-scene
 					style={`--order:${i * 2 + 2}`}
 				>
@@ -115,26 +127,30 @@ const shotSizes = '(max-width: 799px) 100vw, calc((100vh - 96px) * 1.8)';
 		const shots = [...root.querySelectorAll<HTMLElement>('[data-shot]')];
 		const scenes = [...root.querySelectorAll<HTMLElement>('[data-scene]')];
 		const counter = root.querySelector<HTMLElement>('[data-day-counter]');
-		let active = 0;
+		const section = root;
+		let active = -1;
 
+		// -1 is the intro: the house shot (shots[0]) and no counter. Scene i
+		// owns shots[i + 1].
 		const show = (index: number) => {
-			if (index < 0 || index === active) return;
+			if (index === active) return;
 			active = index;
-			shots.forEach((el, i) => el.classList.toggle('is-active', i === index));
+			shots.forEach((el, i) => el.classList.toggle('is-active', i === index + 1));
 			scenes.forEach((el, i) => el.classList.toggle('is-active', i === index));
-			if (counter) counter.textContent = String(index + 1).padStart(2, '0');
+			section.classList.toggle('is-intro', index < 0);
+			if (counter && index >= 0) counter.textContent = String(index + 1).padStart(2, '0');
 		};
 
 		// The caption that has crossed the middle of the screen owns the image.
 		// Read from positions rather than an IntersectionObserver band, so the
 		// answer is right after any jump (an anchor link, a reload mid-page),
 		// not only after scrolling through each caption in turn: above the
-		// first caption Morning shows, past the last one Night stays up.
+		// first caption the house shows, past the last one Night stays up.
 		let queued = false;
 		const pick = () => {
 			queued = false;
 			const middle = window.innerHeight / 2;
-			let index = 0;
+			let index = -1;
 			scenes.forEach((scene, i) => {
 				if (scene.getBoundingClientRect().top <= middle) index = i;
 			});
@@ -227,6 +243,14 @@ const shotSizes = '(max-width: 799px) 100vw, calc((100vh - 96px) * 1.8)';
 	.day-shot.is-active :global(img) {
 		transform: scale(1);
 		transition: transform 2.4s var(--ease-out-expo);
+	}
+
+	/* No "01 / 04" over the house shot: the count starts with Morning. */
+	.day-counter {
+		transition: opacity var(--dur-base) ease;
+	}
+	.day.is-intro .day-counter {
+		opacity: 0;
 	}
 
 	.day-frame::after {
@@ -368,7 +392,7 @@ const shotSizes = '(max-width: 799px) 100vw, calc((100vh - 96px) * 1.8)';
 
 	@media (max-width: 799px) {
 		.day {
-			padding-block: clamp(4rem, 16vw, 6rem);
+			padding-block: var(--section-pad);
 		}
 
 		.day-grid {
@@ -402,6 +426,14 @@ const shotSizes = '(max-width: 799px) 100vw, calc((100vh - 96px) * 1.8)';
 			border-radius: var(--radius-lg);
 			overflow: hidden;
 			transition: none;
+		}
+
+		/* The house leads the stack, above the heading, so it never sits
+		   directly on top of the Morning photo. */
+		.day-shot--intro,
+		.day-shot--intro.is-active {
+			order: -1;
+			margin-bottom: var(--space-12);
 		}
 
 		.day-shot :global(img),

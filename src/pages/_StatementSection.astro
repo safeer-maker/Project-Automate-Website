@@ -5,28 +5,30 @@
 // onto their own line. id="approach" is the hero's "Discover the approach"
 // target.
 // No list of systems here: the hero's lede, directly above, already names them.
-const statement = 'A great home does not ask to be operated. It simply responds, then steps out of sight.';
+const statement =
+	"A great home does not ask to be operated. It simply responds, then steps out of sight.";
 
-const words = statement.split(' ');
+const words = statement.split(" ");
 ---
 
 <section class="statement" id="approach" aria-labelledby="approach-title">
 	<div class="page">
-		<span class="eyebrow">Our Approach</span>
 		<h2 id="approach-title" data-reveal>
-			{words.map((word) => (
-				<span class="word">{word}&nbsp;</span>
-			))}
+			{words.map((word) => <span class="word">{word}&nbsp;</span>)}
 		</h2>
 	</div>
 </section>
 
 <script>
-	const heading = document.querySelector<HTMLElement>('.statement [data-reveal]');
+	const heading = document.querySelector<HTMLElement>(
+		".statement [data-reveal]",
+	);
 
 	if (heading) {
-		const words = [...heading.querySelectorAll<HTMLElement>('.word')];
-		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const words = [...heading.querySelectorAll<HTMLElement>(".word")];
+		const reduce = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
 
 		if (!reduce) {
 			const DIM = 0.14;
@@ -68,19 +70,21 @@ const words = statement.split(' ');
 			};
 
 			update();
-			window.addEventListener('resize', onScroll);
+			window.addEventListener("resize", onScroll);
 
 			// Only listen to scroll while the statement is near the viewport.
 			const io = new IntersectionObserver(
 				([entry]) => {
 					if (entry.isIntersecting) {
-						window.addEventListener('scroll', onScroll, { passive: true });
+						window.addEventListener("scroll", onScroll, {
+							passive: true,
+						});
 						update();
 					} else {
-						window.removeEventListener('scroll', onScroll);
+						window.removeEventListener("scroll", onScroll);
 					}
 				},
-				{ rootMargin: '100px 0px' }
+				{ rootMargin: "100px 0px" },
 			);
 			io.observe(heading);
 		}

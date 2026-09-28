@@ -64,10 +64,7 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 		<div class="page">
 			<div class="process-inner">
 				<header class="process-intro">
-					<div>
-						<span class="eyebrow">How We Work</span>
-						<h2 id="process-title">From vision to<br />effortless living.</h2>
-					</div>
+					<h2 id="process-title">From vision to<br />effortless living.</h2>
 					<p>
 						Four considered steps and one team, from first conversation to the day you move in and
 						beyond.
@@ -245,18 +242,14 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 	.process {
 		position: relative;
 		background: var(--color-bg);
-		padding-block: clamp(4.5rem, 10vw, 8.5rem);
-		/* /#process lands with the eyebrow clear of the sticky header. */
+		padding-block: var(--section-pad);
+		/* /#process lands with the heading clear of the sticky header. */
 		scroll-margin-top: var(--header-height, 96px);
 		--gap: clamp(2rem, 5vw, 4.5rem);
 	}
 
+	/* Headline and its line stacked together, so they read as one thought. */
 	.process-intro {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-		column-gap: var(--gap);
-		row-gap: var(--space-6);
-		align-items: end;
 		margin-bottom: clamp(3rem, 7vw, 5rem);
 	}
 
@@ -270,7 +263,7 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 	}
 
 	.process-intro p {
-		margin: 0;
+		margin: var(--space-4) 0 0;
 		max-width: 30rem;
 		font-size: var(--text-body-lg);
 		line-height: 1.65;
@@ -408,16 +401,7 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 	}
 
 	@media (max-width: 599px) {
-		.process-intro {
-			grid-template-columns: 1fr;
-		}
 		.steps {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	@media (min-width: 600px) and (max-width: 899px) {
-		.process-intro {
 			grid-template-columns: 1fr;
 		}
 	}
@@ -432,7 +416,7 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 		   otherwise ran to within ~35–75px of the next section. Margin, not
 		   padding: offsetHeight (and so the pin maths in the script) is
 		   unchanged, and the body is the same cream behind it. */
-		margin-bottom: clamp(3rem, 8vw, 6rem);
+		margin-bottom: var(--section-pad);
 		/* The stage pads itself for the header, so the anchor lands flush:
 		   that is the exact point where the stage pins. */
 		scroll-margin-top: 0;
@@ -601,11 +585,6 @@ const mediaSizes = '(max-width: 599px) calc(100vw - 2.5rem), (max-width: 899px) 
 			--col-a: 5fr;
 			--col-b: 7fr;
 			--share: calc(7 / 12);
-		}
-		/* The intro paragraph starts on the photo column's edge beneath it
-		   (it sat ~100px right of it on the 1:1 split). */
-		.process.is-pinned .process-intro {
-			grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
 		}
 	}
 
