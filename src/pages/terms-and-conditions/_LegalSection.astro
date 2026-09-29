@@ -1,54 +1,90 @@
 ---
 import { withBase } from '../../lib/paths.ts';
+import { siteInfo } from '../../data/site.ts';
+
+// The SMS section below is what A2P 10DLC reviewers read (GoHighLevel, Twilio
+// and the carriers check it element by element), so it sits near the top. It
+// has to agree with the consent checkboxes in the GHL form and with the
+// campaign registration: change the wording in all three places together.
+const { legalName, name, smsPhone, legalEmail, address } = siteInfo;
+const phoneHref = `tel:${smsPhone.replace(/[^0-9+]/g, '')}`;
+const privacyHref = withBase('/privacy-policy/');
 ---
 
 <section class="legal">
 	<div class="container legal-wrap">
 		<header class="legal-head">
-			<span class="eyebrow">Legal</span>
 			<h1>Terms and Conditions</h1>
-			<p class="updated">Last Updated: August 2026</p>
+			<p class="updated">Last Updated: September 29, 2026</p>
 		</header>
 
-		<p>These Terms and Conditions govern your use of the Project Automate Inc. website and your interactions with our services. By accessing this website or submitting information through it, you agree to these Terms and Conditions.</p>
+		<p>These Terms and Conditions govern your use of the website operated by {legalName}, doing business as {name}, and your interactions with our services. By accessing this website or submitting information through it, you agree to these Terms and Conditions.</p>
+		<p>Agreeing to these Terms does not sign you up for text messages. You receive texts from us only if you choose to, as described in the <a href="#sms-terms">Text Messaging (SMS) Terms</a> below.</p>
 
 		<h2>Definitions</h2>
 		<p>For these Terms and Conditions:</p>
 		<ul>
-			<li><strong>Company</strong> refers to Project Automate Inc.</li>
+			<li><strong>Company</strong>, <strong>we</strong> and <strong>us</strong> refer to {legalName}, doing business as {name}.</li>
 			<li><strong>Website</strong> refers to <a href="https://projectautomate.com" target="_blank" rel="noopener">https://projectautomate.com</a>.</li>
-			<li><strong>Services</strong> refers to the consultations, design, installation, maintenance, support, and related services provided by Project Automate Inc.</li>
+			<li><strong>Services</strong> refers to the consultations, design, installation, maintenance, support, and related services provided by the Company.</li>
+			<li><strong>SMS Program</strong> refers to the text messages described in the Text Messaging (SMS) Terms below.</li>
 			<li><strong>You</strong> refers to the person accessing the Website or using our Services.</li>
 		</ul>
+
+		<h2 id="sms-terms">Text Messaging (SMS) Terms</h2>
+		<p>The {name} SMS Program is operated by {legalName}, doing business as {name}.</p>
+
+		<h3>How you opt in</h3>
+		<p>You join the SMS Program only by checking a text message consent box on one of our website forms, such as our consultation request form. The boxes are optional and are never checked in advance. Giving us your phone number, or agreeing to these Terms, does not sign you up for texts.</p>
+		<p><strong>Consent to receive text messages is not a condition of purchase.</strong> You can submit a form, request a consultation, or buy our Services without agreeing to receive texts.</p>
+
+		<h3>Messages you may receive</h3>
+		<ul>
+			<li><strong>Non-marketing messages</strong>, if you check the non-marketing box: replies to your inquiry, consultation scheduling, appointment confirmations and reminders, project and installation updates, and customer support.</li>
+			<li><strong>Marketing messages</strong>, only if you separately check the marketing box: occasional special offers, event invitations, and announcements about new services. Marketing messages may be sent using automated technology.</li>
+		</ul>
+
+		<h3>Message frequency and costs</h3>
+		<p>Message frequency varies, depending on your inquiry and on your project’s activity. We do not charge for the SMS Program, but message and data rates may apply to any messages we send to you and you send to us. Contact your wireless provider for details of your plan.</p>
+
+		<h3>How to opt out</h3>
+		<p><strong>You can cancel the SMS service at any time. Just reply STOP to any text message from us.</strong> We also accept QUIT, END, CANCEL, UNSUBSCRIBE and STOPALL. After you send one of these words, we will send you one message confirming that you have been unsubscribed, and you will receive no further text messages from us.</p>
+		<p>You may also opt out in any other reasonable way, for example by replying “revoke” or “opt out”, by emailing <a href={`mailto:${legalEmail}`}>{legalEmail}</a>, or by calling <a href={phoneHref}>{smsPhone}</a>. We honor these requests promptly, and no later than 10 business days after we receive them.</p>
+		<p>If you want to join again, reply START, or check a text message consent box on one of our forms again.</p>
+
+		<h3>Help</h3>
+		<p><strong>Reply HELP to any text message for help.</strong> You can also contact us at <a href={phoneHref}>{smsPhone}</a> or <a href={`mailto:${legalEmail}`}>{legalEmail}</a>.</p>
+
+		<h3>Carrier disclaimer</h3>
+		<p>Carriers are not liable for delayed or undelivered messages.</p>
+
+		<h3>Eligibility</h3>
+		<p>You must be at least 18 years old to join the SMS Program, and you must be the account holder or an authorized user of the mobile number you provide. If you change or give up that number, please reply STOP from it first or let us know, so that we do not text its next owner.</p>
+
+		<h3>Privacy</h3>
+		<p>We do not sell, rent, or share your mobile number, text messaging opt-in data, or consent with third parties or affiliates for their marketing or promotional purposes. For details of how we handle your information, see our <a href={privacyHref}>Privacy Policy</a>.</p>
+
+		<h3>Compliance and changes</h3>
+		<p>We run the SMS Program in line with applicable law, including the Telephone Consumer Protection Act, and with wireless industry guidelines. We may change the SMS Program or these SMS Terms. If we make a material change, we will update this page and, where the law requires, ask for your consent again.</p>
 
 		<h2>Use of the Website</h2>
 		<p>You agree to use this Website only for lawful purposes. You may not use the Website in a manner that could damage, disable, interfere with, or compromise its operation or security.</p>
 		<p>Information provided through this Website is intended for general informational purposes and may be changed without notice.</p>
 
 		<h2>Service Inquiries and Consultations</h2>
-		<p>Submitting a contact form, requesting a consultation, or communicating with Project Automate Inc. does not create a binding service agreement.</p>
+		<p>Submitting a contact form, requesting a consultation, or communicating with us does not create a binding service agreement.</p>
 		<p>Project scope, pricing, timelines, payment terms, and other service details will be confirmed through a separate proposal, estimate, contract, or written agreement.</p>
 
 		<h2>Accuracy of Information</h2>
-		<p>You agree to provide accurate and complete information when submitting an inquiry, requesting a consultation, or communicating with Project Automate Inc.</p>
+		<p>You agree to provide accurate and complete information when submitting an inquiry, requesting a consultation, or communicating with us.</p>
 		<p>We are not responsible for delays or issues caused by inaccurate, incomplete, or outdated information provided by you.</p>
 
-		<h2>SMS Terms &amp; Conditions</h2>
-		<p>By providing your mobile number and opting in to receive SMS messages from Project Automate Inc., you consent to receive conversational messages related to our services.</p>
-		<ul>
-			<li><strong>Message frequency:</strong> Message frequency may vary. On average, 5–10 messages per week.</li>
-			<li><strong>Opt-out:</strong> You can opt out at any time by replying STOP to any message.</li>
-			<li><strong>Help:</strong> For help, reply HELP to any message.</li>
-			<li><strong>Privacy Policy:</strong> <a href={withBase('/privacy-policy/')}>https://projectautomate.com/privacy-policy/</a></li>
-		</ul>
-		<p>Message and data rates may apply depending on your mobile carrier plan.</p>
-
 		<h2>Intellectual Property</h2>
-		<p>Unless otherwise stated, the Website and its content—including text, graphics, logos, images, designs, and other materials—are owned by or licensed to Project Automate Inc.</p>
+		<p>Unless otherwise stated, the Website and its content—including text, graphics, logos, images, designs, and other materials—are owned by or licensed to {legalName}.</p>
 		<p>You may not copy, reproduce, distribute, modify, publish, or commercially use Website content without prior written permission.</p>
 
 		<h2>Third-Party Links and Services</h2>
-		<p>The Website may contain links to third-party websites, platforms, or services. Project Automate Inc. does not control and is not responsible for the availability, content, security, or privacy practices of third-party websites.</p>
+		<p>The Website may contain links to third-party websites, platforms, or services. We do not control and are not responsible for the availability, content, security, or privacy practices of third-party websites.</p>
 		<p>Your use of third-party services is subject to their own terms and policies.</p>
 
 		<h2>Disclaimer</h2>
@@ -56,7 +92,7 @@ import { withBase } from '../../lib/paths.ts';
 		<p>We do not guarantee that the Website will always be available, uninterrupted, secure, or free from errors.</p>
 
 		<h2>Limitation of Liability</h2>
-		<p>To the fullest extent permitted by law, Project Automate Inc. will not be liable for indirect, incidental, special, consequential, or punitive damages arising from your use of—or inability to use—the Website.</p>
+		<p>To the fullest extent permitted by law, {legalName} will not be liable for indirect, incidental, special, consequential, or punitive damages arising from your use of—or inability to use—the Website.</p>
 		<p>Nothing in these Terms excludes liability that cannot legally be excluded or limited.</p>
 
 		<h2>Changes to These Terms</h2>
@@ -64,14 +100,17 @@ import { withBase } from '../../lib/paths.ts';
 		<p>Your continued use of the Website after changes are published constitutes acceptance of the updated Terms.</p>
 
 		<h2>Governing Law</h2>
-		<p>These Terms and Conditions are governed by the laws applicable in the jurisdiction where Project Automate Inc. operates, without regard to conflict-of-law principles.</p>
+		<p>These Terms and Conditions are governed by the laws of the State of California and applicable United States federal law, without regard to conflict-of-law principles. Any dispute arising from these Terms or your use of the Website will be heard in the state or federal courts located in Los Angeles County, California.</p>
 
 		<h2>Contact Us</h2>
-		<p><strong>For questions about these Terms and Conditions, contact:</strong></p>
+		<p>For questions about these Terms and Conditions or the SMS Program, contact:</p>
 		<p>
-			<strong>Project Automate Inc.</strong><br />
-			Website: <a href="https://projectautomate.com" target="_blank" rel="noopener">https://projectautomate.com</a><br />
-			Email: <a href="mailto:sales@projectautomate.com">sales@projectautomate.com</a>
+			<strong>{legalName}, doing business as {name}</strong><br />
+			{address.line1}<br />
+			{address.line2}<br />
+			Phone: <a href={phoneHref}>{smsPhone}</a><br />
+			Email: <a href={`mailto:${legalEmail}`}>{legalEmail}</a><br />
+			Website: <a href="https://projectautomate.com" target="_blank" rel="noopener">https://projectautomate.com</a>
 		</p>
 	</div>
 </section>
@@ -114,6 +153,11 @@ import { withBase } from '../../lib/paths.ts';
 		margin-top: var(--space-8);
 		padding-top: 0;
 		border-top: none;
+	}
+
+	.legal-wrap h3 {
+		font-size: var(--text-lg);
+		margin-top: var(--space-8);
 	}
 
 	.legal-wrap p {

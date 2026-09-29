@@ -1,15 +1,26 @@
 ---
+import { withBase } from '../../lib/paths.ts';
+import { siteInfo } from '../../data/site.ts';
+
+// A2P 10DLC reviewers read the Text Messaging (SMS) section closely. The bold
+// paragraph in it is HighLevel's required no-sharing clause, word for word:
+// don't reword it, and don't add sharing language next to it. SMS data is also
+// carved out of "Sharing Your Information", so the two sections can't conflict.
+// If a Meta Pixel (or any advertising tag) is added to the site or the GHL
+// form, the Cookies section and CookieNotice.astro must be updated with it.
+const { legalName, name, smsPhone, legalEmail, address } = siteInfo;
+const phoneHref = `tel:${smsPhone.replace(/[^0-9+]/g, '')}`;
+const smsTermsHref = withBase('/terms-and-conditions/#sms-terms');
 ---
 
 <section class="legal">
 	<div class="container legal-wrap">
 		<header class="legal-head">
-			<span class="eyebrow">Legal</span>
 			<h1>Privacy Policy</h1>
-			<p class="updated">Last Updated: September 2026</p>
+			<p class="updated">Last Updated: September 29, 2026</p>
 		</header>
 
-		<p><strong>Project Automate Inc.</strong>, doing business as <strong>PROJECT: automate</strong>, respects your privacy and is committed to protecting the personal information you provide when visiting our website or using our services. This Privacy Policy explains how we collect, use, and protect your information.</p>
+		<p><strong>{legalName}</strong>, doing business as <strong>{name}</strong>, respects your privacy and is committed to protecting the personal information you provide when visiting our website or using our services. This Privacy Policy explains how we collect, use, and protect your information.</p>
 
 		<h2>Interpretation and Definitions</h2>
 		<h3>Interpretation</h3>
@@ -18,16 +29,17 @@
 		<h3>Definitions</h3>
 		<p>For the purposes of this Privacy Policy:</p>
 		<ul>
-			<li><strong>Company</strong> refers to Project Automate Inc., doing business as PROJECT: automate.</li>
+			<li><strong>Company</strong>, <strong>we</strong> and <strong>us</strong> refer to {legalName}, doing business as {name}.</li>
 			<li><strong>Website</strong> refers to <a href="https://projectautomate.com" target="_blank" rel="noopener">https://projectautomate.com</a>.</li>
 			<li><strong>Personal Information</strong> means any information that identifies or can be used to identify an individual, such as name, email address, phone number, or other contact information.</li>
-			<li><strong>Service</strong> refers to the website, services, consultations, installations, and support provided by Project Automate Inc.</li>
+			<li><strong>Service</strong> refers to the website, services, consultations, installations, and support provided by the Company.</li>
 			<li><strong>You</strong> means the individual accessing the website or using our services.</li>
 		</ul>
 
-		<h2>SMS Privacy</h2>
-		<p>Mobile information, phone numbers, and SMS opt-in consent will not be sold, rented, or shared with third parties or affiliates for marketing or promotional purposes.</p>
-		<p>Information may be shared with service providers only when necessary to deliver requested communications and operate our messaging services. These providers may not use the information for their own marketing purposes.</p>
+		<h2 id="sms">Text Messaging (SMS)</h2>
+		<p>If you check a text message consent box on one of our website forms, {name} will send you text messages about the topics you chose, as described in our <a href={smsTermsHref}>Text Messaging (SMS) Terms</a>. Message frequency varies. Message and data rates may apply. Reply STOP to any message to opt out, or reply HELP for help. You can also contact us at <a href={phoneHref}>{smsPhone}</a> or <a href={`mailto:${legalEmail}`}>{legalEmail}</a>.</p>
+		<p>When you opt in, we keep a record of your mobile number, the consent boxes you checked, the date, time and page of your opt-in, and any later opt-out request. We use this record only to run our text messaging program, honor your choices, and show that you consented.</p>
+		<p><strong>No mobile information will be shared with third parties/affiliates for marketing/promotional purposes. Information sharing to subcontractors in support services, such as customer service, is permitted. All other use case categories exclude text messaging originator opt-in data and consent; this information will not be shared with any third parties.</strong></p>
 
 		<h2>Information We Collect</h2>
 		<p>We may collect the following types of information when you interact with our website or services:</p>
@@ -38,13 +50,15 @@
 			<li>Name</li>
 			<li>Email address</li>
 			<li>Phone number</li>
-			<li>Project details or inquiry information</li>
+			<li>Property address</li>
+			<li>Project details, such as the systems you are interested in, your property’s approximate value, and your budget range</li>
+			<li>Your text messaging consent choices</li>
 		</ul>
 		<p>This information is typically collected when you:</p>
 		<ul>
-			<li>Submit a contact form</li>
+			<li>Submit a contact or consultation form</li>
 			<li>Request a consultation</li>
-			<li>Communicate with us via email or phone</li>
+			<li>Communicate with us by email, phone, or text message</li>
 		</ul>
 
 		<h3>Automatically Collected Information</h3>
@@ -56,6 +70,7 @@
 			<li>Pages visited on our website</li>
 			<li>Date and time of visits</li>
 		</ul>
+		<p>Our website uses a visitor-tracking script from our customer relationship platform, HighLevel (LeadConnector). It records the pages you visit on our website. If you later submit one of our forms, it links that visit history to your inquiry, so we can recognize returning visitors and understand how they found us, for example through one of our ads.</p>
 		<p>This information helps us improve our website performance and user experience.</p>
 
 		<h2 id="cookies">Cookies</h2>
@@ -67,51 +82,63 @@
 		</ul>
 		<p>We do <strong>not</strong> use advertising, marketing, or social media cookies, and we do not share cookie data with advertising networks.</p>
 		<p>You can block or delete cookies at any time through your browser settings. Blocking them may prevent our inquiry forms from working correctly.</p>
+		<p><strong>Do Not Track.</strong> Some browsers can send a “Do Not Track” signal to the websites you visit. There is no common standard for responding to these signals, so our website does not currently respond to them.</p>
 
 		<h2>How We Use Your Information</h2>
-		<p>PROJECT: automate uses the information collected for the following purposes:</p>
+		<p>{name} uses the information collected for the following purposes:</p>
 		<ul>
 			<li>To respond to inquiries and provide consultations</li>
 			<li>To communicate regarding services or projects</li>
+			<li>To send the text messages you have opted in to</li>
 			<li>To improve our website and services</li>
+			<li>To recognize returning visitors and understand how people find our website</li>
 			<li>To provide customer support</li>
 			<li>To send relevant updates or service-related communications</li>
 		</ul>
 
 		<h2>Sharing Your Information</h2>
-		<p>PROJECT: automate does <strong>not sell or rent personal information</strong> to third parties.</p>
-		<p>We may share information only in limited circumstances such as:</p>
+		<p>{name} does <strong>not sell or rent personal information</strong> to third parties, and we do not share it with third parties for their own direct marketing purposes.</p>
+		<p>We may share information only in limited circumstances, such as:</p>
 		<ul>
-			<li>With trusted service providers who assist in operating our website or services</li>
+			<li>With service providers who help us operate our website and services: our customer relationship platform, HighLevel (LeadConnector); our website hosting and security provider, Cloudflare; and our email provider</li>
+			<li>With professional advisors, such as accountants and lawyers, when needed</li>
 			<li>When required by law or legal obligations</li>
 		</ul>
-		<p>These partners are required to protect your information and use it only for the services they provide.</p>
+		<p>These providers are required to protect your information and use it only for the services they provide.</p>
+		<p>Text messaging opt-in data and consent are excluded from all of the sharing described in this section. They are handled only as described in <a href="#sms">Text Messaging (SMS)</a> above.</p>
 
 		<h2>Data Security</h2>
 		<p>We take reasonable security measures to protect your personal information from unauthorized access, disclosure, or misuse.</p>
 		<p>However, no method of transmission over the internet is completely secure, and we cannot guarantee absolute security.</p>
+
+		<h2>Data Retention</h2>
+		<p>We keep inquiry and client information for as long as we need it to respond to you, provide our services, and meet our legal and accounting obligations. We keep records of text messaging consent and opt-outs for as long as we need them to honor your choices and show that you consented.</p>
+
+		<h2>Your Choices and Rights</h2>
+		<ul>
+			<li><strong>Review, correct, or delete your information:</strong> email <a href={`mailto:${legalEmail}`}>{legalEmail}</a> or call <a href={phoneHref}>{smsPhone}</a>, and we will respond promptly. We may keep records the law requires us to keep, such as records of your text messaging consent and opt-out.</li>
+			<li><strong>Stop text messages:</strong> reply STOP to any message from us, or see how to opt out in our <a href={smsTermsHref}>Text Messaging (SMS) Terms</a>.</li>
+			<li><strong>Stop emails:</strong> reply to any email from us, or contact us using the details below.</li>
+			<li><strong>Cookies:</strong> block or delete them in your browser settings, as described under Cookies above.</li>
+		</ul>
 
 		<h2>Children's Privacy</h2>
 		<p>Our website and services are not directed toward individuals under the age of 13. We do not knowingly collect personal information from children.</p>
 		<p>If we become aware that personal information has been collected from a child without parental consent, we will take steps to remove that information.</p>
 
 		<h2>Changes to This Privacy Policy</h2>
-		<p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with the updated revision date.</p>
+		<p>We may update this Privacy Policy from time to time. Any changes will be posted on this page, with the Last Updated date at the top revised to match.</p>
 		<p>We encourage users to review this page periodically to stay informed about how we protect their information.</p>
-
-		<h2>SMS Data Sharing and Transfers</h2>
-		<p>Consumer SMS registration data, mobile phone numbers, and SMS consent or opt-in information are not sold, rented, shared, transferred, or disclosed to external organizations, affiliates, service providers, or other third parties for marketing or promotional purposes.</p>
-		<p>SMS consent and opt-in data will not be transferred to external organizations except when disclosure is required by law.</p>
-		<p>You may opt out of receiving SMS messages from PROJECT: automate at any time by replying STOP to any message.</p>
-		<p>For assistance, reply HELP to any message or contact us directly:</p>
-		<p>Phone: 1-310-402-4818<br />Email: <a href="mailto:support@projectautomate.com">support@projectautomate.com</a></p>
 
 		<h2>Contact Us</h2>
 		<p>If you have any questions about this Privacy Policy or how your information is handled, please contact us:</p>
 		<p>
-			Project Automate Inc., doing business as PROJECT: automate<br />
-			Website: <a href="https://projectautomate.com" target="_blank" rel="noopener">https://projectautomate.com</a><br />
-			Email: <a href="mailto:sales@projectautomate.com">sales@projectautomate.com</a>
+			<strong>{legalName}, doing business as {name}</strong><br />
+			{address.line1}<br />
+			{address.line2}<br />
+			Phone: <a href={phoneHref}>{smsPhone}</a><br />
+			Email: <a href={`mailto:${legalEmail}`}>{legalEmail}</a><br />
+			Website: <a href="https://projectautomate.com" target="_blank" rel="noopener">https://projectautomate.com</a>
 		</p>
 	</div>
 </section>

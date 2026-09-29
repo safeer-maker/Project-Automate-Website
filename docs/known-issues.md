@@ -31,14 +31,14 @@ Checkbox = not started. Strike through / move to "Resolved" as you go.
       range are you considering?" is worth rewording for $5M+ clients (e.g.
       "Anticipated investment").
 
-- [ ] **A2P/SMS compliance is still pending on your end**, per the checklist you sent:
+- [ ] **A2P/SMS compliance is still pending on your end.** The full checklist is in
+      [`docs/a2p-10dlc.md`](a2p-10dlc.md). The site's Terms and Privacy Policy were
+      rewritten for A2P on 2026-09-29. Still open:
   - IRS CP-575 or 147C letter — not yet provided
-  - Industry / vertical classification — not yet provided
-  - Decision: SMS opt-in via chat widget only, vs. checkbox on forms — not yet decided
-    (any SMS-consent checkbox now lives in the GHL form builder, not in this repo)
-  - Approved sample SMS wording — not yet provided
-  - Review of GoHighLevel's default Privacy Policy / Terms pages — not yet started
-    (once your GHL sub-account/funnel is live)
+  - GHL form fixes: SMS checkbox is currently *required* (must be optional), wording
+    says "Land Scaping", no marketing checkbox, no Terms/Privacy links in the form
+  - Use case (Mixed vs Informational) and sample wording — drafts in the checklist
+  - GHL workflows: consent filter, confirmation / HELP / STOP replies
 
 - [ ] **No deployment yet.** The Cloudflare Workers adapter (`@astrojs/cloudflare`)
       is wired up and the site builds cleanly, but nothing has been pushed to GitHub
