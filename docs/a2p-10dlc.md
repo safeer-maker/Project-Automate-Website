@@ -18,15 +18,26 @@ registration fields. Carriers reject campaigns when these disagree.
 | --- | --- |
 | Footer shows only (310) 402-4818; (310) 740-5375 removed from it | `src/components/layout/Footer.astro`, `siteInfo.smsPhone` |
 | Footer states the DBA: "Project Automate Inc., doing business as PROJECT: automate" (GHL requires the DBA to be visible outside the form) | `Footer.astro` |
-| Terms: a full **Text Messaging (SMS) Terms** section at `/terms-and-conditions/#sms-terms`, placed right after Definitions. It covers the program name, how you opt in (checkbox only; not a condition of purchase), marketing and non-marketing message types, frequency, message and data rates, STOP plus the other keywords, opt-out by any reasonable means within 10 business days, START to rejoin, HELP plus phone and email, the carrier-liability sentence, 18+, no-sharing and compliance | `src/pages/terms-and-conditions/_LegalSection.astro` |
+| Terms: a full **Text Messaging (SMS) Terms** section at `/terms-and-conditions/#sms-terms`, placed right after Definitions. It covers the program name, how you opt in (checkbox only; not a condition of purchase), the informational message types (and a statement that no marketing texts are sent), frequency, message and data rates, STOP plus the other keywords, opt-out by any reasonable means within 10 business days, START to rejoin, HELP plus phone and email, the carrier-liability sentence, 18+, no-sharing and compliance | `src/pages/terms-and-conditions/_LegalSection.astro` |
 | Terms: California governing law (Los Angeles County); full contact block; line saying the general Terms don't enroll anyone in texts | same |
 | Privacy: the two contradictory SMS sections merged into one **Text Messaging (SMS)** section at `/privacy-policy/#sms`, with HighLevel's required no-sharing clause word for word | `src/pages/privacy-policy/_LegalSection.astro` |
-| Privacy: SMS data carved out of "Sharing Your Information"; recipient categories named; GHL visitor tracking described; the form's real fields listed; Do Not Track, Data Retention and Your Choices and Rights added (CalOPPA) | same |
+| Privacy: SMS data carved out of "Sharing Your Information"; recipient categories named; GHL visitor tracking described (and no longer called "necessary"); the form's real fields listed; Tracking by other companies, Do Not Track, Data Retention and Your Choices and Rights added (CalOPPA) | same |
+| Cookie notice says "No advertising cookies" instead of "Necessary cookies only", since GHL's visitor identification isn't strictly necessary | `src/components/ghl/CookieNotice.astro` |
 | Both legal pages: contact is (310) 402-4818 and josh@projectautomate.com (`siteInfo.legalEmail`), dated September 29, 2026; the "Legal" eyebrow removed | both files, `src/data/site.ts` |
 
 **Nothing is live until it's merged to `main`.** Reviewers and HighLevel's AI
 "Review Application" read the live pages, so deploy before submitting. Never
 put GitHub Pages (staging) URLs in the registration.
+
+**Order of work.** Once merged, the Terms describe the *fixed* form (one
+optional box), so the form and the site must change together:
+
+1. Pause every GHL workflow that sends SMS.
+2. Make and test the form changes in 2.1 and 2.2.
+3. Merge to `main` the same day.
+4. Run Review Application, then submit.
+5. Turn SMS workflows back on only after the campaign is approved, filtered as
+   in 3.1.
 
 ---
 
@@ -45,12 +56,18 @@ fixing it in GHL fixes all of them.
    allowed as long as SMS consent is optional.
 2. **Fix the checkbox wording.** The live text says "about **Land Scaping**"
    (left over from a template) and uses "Project:automate". Replace it with the
-   text in 2.2.
-3. **Add a second checkbox for marketing texts.** HighLevel's 2026 guidance
-   says to use two separate optional checkboxes. See 2.2 and the use-case
-   decision in 4.2.
+   text in 2.2. HighLevel requires the checkbox to name the same message types
+   as the campaign description, not just "non-marketing messages".
+3. **Keep one checkbox.** The campaign is informational only (4.2), so there
+   is no marketing checkbox. HighLevel's approval article shows a two-box
+   template, but its rejections article (155000007572, code 30913) says a
+   sender of transactional messages only should say so in the campaign
+   description, which 4.4 does. If Review Application or A2P support still
+   asks for a marketing box, open a support ticket, quote the Informational use
+   case and keep the single box. Don't add a marketing box: it would collect
+   consent for texts this campaign can't send, and the Terms say none are sent.
 4. **Put the Terms and Privacy links inside the form**, directly under the
-   checkboxes (a Text element). The site footer doesn't count: the form is an
+   checkbox (a Text element). The site footer doesn't count: the form is an
    iframe, and the popup copy covers the page. Twilio has separate rejection
    codes for a missing Terms link, a missing Privacy link, and links placed
    away from the opt-in (30549, 30550, 30564).
@@ -58,30 +75,27 @@ fixing it in GHL fixes all of them.
 ### 2.2 Paste-ready form text
 
 Use the business name **exactly** as it appears on the IRS CP 575 / 147C letter
-(check "Inc." vs ", Inc."). Both boxes must be unchecked by default and
-**not** required. Keep "Message and data rates may apply" spelled out:
-Twilio 30569 looks for that exact phrase.
+(check "Inc." vs ", Inc."). If it differs from "Project Automate Inc.", update
+`siteInfo.legalName` (it feeds the Terms, Privacy Policy and footer) and every
+"Project Automate Inc." in this guide in the same change. The box must be
+unchecked by default and **not** required. Keep "Message and data rates may
+apply" spelled out: Twilio 30569 looks for that exact phrase.
 
-**Checkbox 1: non-marketing**
+**The checkbox** (replaces the current "Land Scaping" text). It lists the same
+five message types as the Terms and the campaign description (4.4), which
+HighLevel's review compares:
 
 > By checking this box, I consent to receive non-marketing text messages from
-> Project Automate Inc. (PROJECT: automate) about my consultation request,
-> appointment scheduling and reminders, project and installation updates, and
-> customer support. Message frequency varies. Message and data rates may apply.
-> Text HELP for assistance, reply STOP to opt out.
+> Project Automate Inc. (PROJECT: automate) at the phone number provided about
+> my consultation request, including replies to my inquiry, consultation
+> scheduling, appointment confirmations and reminders, project and
+> installation updates, and customer support. Message frequency varies.
+> Message and data rates may apply. Text HELP for assistance, reply STOP to
+> opt out.
 
-**Checkbox 2: marketing**
+**Text element directly below the checkbox** (links open in a new tab):
 
-> By checking this box, I consent to receive marketing text messages from
-> Project Automate Inc. (PROJECT: automate), such as special offers, event
-> invitations and new service announcements. Marketing messages may be sent
-> using automated technology. Message frequency varies. Message and data rates
-> may apply. Text HELP for assistance, reply STOP to opt out. Consent is not a
-> condition of purchase.
-
-**Text element directly below the checkboxes** (links open in a new tab):
-
-> Text messages are optional. You can submit this form without checking either
+> Text messages are optional. You can submit this form without checking the
 > box. Consent to receive text messages is not a condition of purchase.
 > PROJECT: automate is a DBA of Project Automate Inc.
 > [Terms & Conditions](https://projectautomate.com/terms-and-conditions/) |
@@ -90,8 +104,7 @@ Twilio 30569 looks for that exact phrase.
 **Submit button:** "Request my consultation" instead of "Submit" (optional, but
 clearer for reviewers).
 
-Store each checkbox as its own field, so workflows can filter on it. Save a
-dated screenshot of the old and new form.
+Save a dated screenshot of the old and new form.
 
 ### 2.3 Meta Pixel inside the form
 
@@ -100,43 +113,71 @@ The site has no Meta Pixel, but **the GHL form has one in its own settings**
 `PageView` and sets an `_fbp` cookie. It's not yet known whether it also fires
 when the form is embedded on the site: the site tells the form "essential
 cookies only" (`cookie-config=essential`), and GHL may respect that. The
-Privacy Policy and cookie notice currently say there are no advertising
-cookies. So either:
+Privacy Policy says there are no advertising cookies, and that no other company
+tracks visitors across websites through the site. CalOPPA requires that
+statement, so it has to be true.
 
-- remove the pixel ID from the form settings until the site's pixel goes in, or
-- keep it. Then update the Privacy Policy Cookies section, `CookieNotice.astro`
-  and the cookie rule in `CLAUDE.md`.
+**Recommended now:** remove the pixel ID from the form's settings until the
+site's own pixel is set up properly.
 
-When the pixel is added (on the site or in the form), **turn off Automatic
-Advanced Matching** for it in Meta Events Manager. Otherwise hashed phone
-numbers and emails from the opt-in form go to Meta, which breaks the SMS
-no-sharing promise (Twilio 30932). For the same reason, never upload SMS
-opt-in numbers to Meta Custom Audiences.
+**Before a Meta Pixel goes on the site (or back in the form):**
+
+- Load it only after the visitor clicks **Accept** on a banner with Accept and
+  Decline. Write `cookie-config=all` only on Accept. Today's notice is
+  notice-only and records `essential`.
+- Update the Privacy Policy: the Cookies section, the "no advertising cookies"
+  line, and "Tracking by other companies" (it must then say Meta collects
+  activity on this site and elsewhere). Update `CookieNotice.astro` and the
+  cookie rule in `CLAUDE.md`.
+- If the CCPA applies (question 11 in section 5), add a "Do Not Sell or Share
+  My Personal Information" link and honor Global Privacy Control.
+- **Turn off Automatic Advanced Matching** in Meta Events Manager. Otherwise
+  hashed phone numbers and emails from the opt-in form go to Meta, which breaks
+  the SMS no-sharing promise (Twilio 30932).
+- The same applies to GHL's **Facebook Conversion API** workflow action and
+  Conversion Leads: leave Phone unmapped under Customer Parameters. Check this
+  whenever a Meta integration is connected in GHL.
+- Never upload SMS opt-in numbers to Meta Custom Audiences.
 
 ---
 
 ## 3. To do in GHL settings and workflows
 
-1. **Only text people who ticked a box.** Every workflow that sends SMS
-   (including the one triggered by this form) must filter on the consent
-   field. Leads captured while the checkbox was *required* didn't give valid
-   consent: don't auto-text them. Reach them by phone or email, or ask them to
-   submit the form again. Confirm this approach with counsel.
+1. **Only text people who ticked the box.** Every workflow that sends SMS
+   (including the one triggered by this form) must filter on the form's
+   Terms & Conditions consent value. Leads captured while the checkbox was
+   *required* didn't give valid consent: don't auto-text them. Reach them by
+   phone or email, or ask them to submit the form again. Confirm this approach
+   with counsel.
 2. **Send the opt-in confirmation first**, straight after the form, before any
    other text.
-3. **Turn on SMS Compliance Settings** (Settings → Phone Numbers / SMS: sender
-   ID and opt-out wording on the first message). Test that it doesn't
-   duplicate the confirmation's wording or push it into two segments.
-4. **Opt-out keywords.** GHL handles STOP, STOPALL, CANCEL, UNSUBSCRIBE, END and
-   QUIT. The Terms also promise to honor "revoke", "opt out" and requests by
-   email or phone (FCC rule since 2025-04-11: any reasonable means, within 10
-   business days). Build a workflow: inbound SMS contains "revoke" or "opt out"
-   → set DND on SMS and send the STOP reply. Train whoever reads the inbox and
-   answers (310) 402-4818 to set DND by hand.
+3. **Turn on SMS Compliance Settings** (Settings → Phone System → Messaging
+   tab): turn on the opt-out message and sender information, and set Sender ID
+   to exactly "PROJECT: automate". GHL adds these lines to the first message in
+   a conversation regardless. Send the confirmation to a test phone. If it
+   arrives in two parts or repeats the STOP line, shorten it (e.g. drop "from
+   Project Automate Inc.", since the prefix already names the brand).
+4. **Opt-out requests.** GHL handles STOP, STOPALL, CANCEL, UNSUBSCRIBE, END and
+   QUIT itself. The Terms also promise to honor any other reasonable request
+   (FCC rule since 2025-04-11: any reasonable means, within 10 business days).
+   - Build a workflow: trigger Customer Replied (SMS), reply contains "revoke",
+     "opt out", "stop texting", "remove me" or "wrong number" → **Send SMS**
+     (the STOP reply below) → wait 1 minute → **Enable DND for SMS**. The send
+     has to come first, because GHL blocks SMS to contacts on DND.
+   - Every business day, someone reads all inbound replies in Conversations.
+     They set DND by hand on any other request to stop ("don't text me",
+     "leave me alone") *without* sending a text. Requests by email or phone
+     are handled the same way. Aim for the same day, never more than 10
+     business days.
+   - After a stop request, send at most one confirmation, only within five
+     minutes, and never with anything promotional in it.
 5. **Test START** clears DND, since the Terms and STOP reply promise it.
-6. **Quiet hours.** Send only between 9 a.m. and 8 p.m. in the recipient's
-   time zone. That's inside the federal 8 a.m.–9 p.m. window and covers the
-   stricter state rules (FL, OK, MD, TX, OR).
+   Ticking the box on the form again does *not* undo a STOP; only START does.
+   Don't remove DND by hand.
+6. **Quiet hours.** Send only 9 a.m.–8 p.m. Monday to Saturday and noon–8 p.m.
+   on Sunday, in the recipient's time zone. That fits the federal 8 a.m.–9 p.m.
+   window and the stricter state windows (FL, OK, MD: 8 a.m.–8 p.m.; TX: not
+   before noon on Sunday).
 7. **Register in the permanent sub-account.** The form and tracking are in a
    temporary sub-account (`src/data/ghl.ts`). Register A2P where the live form
    and the sending number will stay, or you'll re-register and pay again after
@@ -150,12 +191,25 @@ Unicode, which halves the characters per segment.
 
 | Message | Text | Length |
 | --- | --- | --- |
-| Opt-in confirmation | PROJECT: automate: You're subscribed to texts from Project Automate Inc. Msg frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to opt out. | 160 |
+| Opt-in confirmation | PROJECT: automate: You're subscribed to texts from Project Automate Inc. Msg frequency varies. Msg & data rates may apply. Reply STOP to opt out, HELP for help. | 160 |
 | HELP reply | PROJECT: automate (Project Automate Inc.): For help, call (310) 402-4818 or email josh@projectautomate.com. Msg & data rates may apply. Reply STOP to opt out. | 158 |
 | STOP reply (once only; no marketing) | PROJECT: automate: You are unsubscribed and will receive no further texts from us. Reply START to resubscribe. | 110 |
 
-Enter the same three texts in the A2P wizard's opt-in, HELP and opt-out
-message fields.
+How each one gets sent:
+
+- **Opt-in confirmation:** a workflow step straight after the form, for
+  contacts who ticked the box. Manual Setup has one message field, "Opt-in
+  Message" (the consent language shown to users): paste the checkbox wording
+  from 2.2 there. If the wizard also shows HELP or opt-out message fields, fill
+  them with the texts above.
+- **HELP reply:** build a workflow: Customer Replied (SMS), message is HELP or
+  INFO → Send SMS with the HELP reply.
+- **STOP reply:** GHL sends its own when it sets DND.
+
+Before submitting, text STOP, then START, then HELP from a real phone that
+ticked the box, and screenshot each reply. If the STOP confirmation doesn't
+name PROJECT: automate, or doesn't match the table, ask LC Phone support how to
+set it, and use the text that's actually sent in the registration and Terms.
 
 ---
 
@@ -172,18 +226,39 @@ start collecting phone numbers; those would need their own consent checkbox.
 | Legal name / EIN | Exactly as on the CP 575 / 147C: [Project Automate Inc.] / [EIN] |
 | DBA | PROJECT: automate |
 | Brand type | Low-Volume Standard ($22.50 one-time in GHL) or Standard. Not Sole Proprietor |
+| Address | The street address on the CP 575. It must match the site: 1600 Rosecrans Ave Building 7, Suite 400, Manhattan Beach, CA 90266. If it doesn't, fix one of them first |
 | Website | https://projectautomate.com/ |
-| Authorized representative | Josh Trevithick, josh@projectautomate.com, his own US mobile (not VoIP, not the LC Phone number) |
+| Business / support phone | (310) 402-4818 (same as the Terms, Privacy Policy and HELP reply) |
+| Business / support email | josh@projectautomate.com (same as above) |
+| Authorized representative | Joshua Trevithick (legal name), with his title, email and mobile number |
+
+HighLevel checks that the contacts in the Terms and Privacy Policy match the
+brand registration. Before running Review Application, set Settings →
+Business Profile phone and email to (310) 402-4818 and
+josh@projectautomate.com. The representative's personal number goes only in
+the representative fields. The ban on VoIP and LeadConnector numbers there
+applies only to Sole Proprietor brands.
 
 ### 4.2 Campaign use case
 
-**Recommended: Mixed** (GHL switches it to Low Volume Mixed, $1.50/month).
-Follow-ups to Meta leads usually include booking nudges or offers, which
-carriers and the FCC treat as marketing. Mixed also matches HighLevel's
-two-checkbox standard. **The use case can't be changed after the campaign is
-created.** Pick Informational / Non-Marketing only if the texts will never
-promote anything. Then drop checkbox 2, the marketing bullet in the Terms, and
-sample 5, and confirm with GHL A2P support first.
+**Informational / Non-Marketing** (the client's decision, 2026-09-29). In GHL
+this is a Standard campaign use case, at **$10/month** (Low Volume Mixed would
+have been $1.50/month). **The use case can't be changed after the campaign is
+created.** Sending promotional texts later means registering a new campaign
+and adding a separate marketing checkbox and Terms section first.
+
+Keep every text informational. That rules out:
+
+- offers, discounts or seasonal specials
+- newsletters and new-service announcements
+- event invitations
+- re-engaging old or cold leads
+- referral requests
+
+Replying to someone's own consultation request, including suggesting a time
+for it, is fine. Carriers audit live traffic against the registered use case,
+and promotional texts on an informational campaign can get the number
+suspended.
 
 ### 4.3 URLs and content flags
 
@@ -192,7 +267,7 @@ sample 5, and confirm with GHL A2P support first.
 | Privacy Policy URL | https://projectautomate.com/privacy-policy/ |
 | Terms & Conditions URL | https://projectautomate.com/terms-and-conditions/ |
 | Opt-in page | https://projectautomate.com/get-started/ (form inline on the page) |
-| Embedded links | Yes (samples 4 and 5) |
+| Embedded links | Yes (sample 4) |
 | Embedded phone number | Yes (sample 2) |
 | Age-gated / direct lending / affiliate marketing | No / No / No |
 
@@ -203,13 +278,16 @@ sample 5, and confirm with GHL A2P support first.
 > audio/video, outdoor lighting and audio, and security systems. We are doing
 > DBA as PROJECT: automate. We text homeowners and clients who request a
 > consultation through the form on our own website, projectautomate.com, and
-> check an optional SMS consent box. Non-marketing messages cover replies to
-> their inquiry, consultation scheduling, appointment confirmations and
-> reminders, project and installation updates, and customer support. Contacts
-> who also check our separate, optional marketing box may receive occasional
-> offers, event invitations and new service announcements. Our own team sends
-> the messages from our CRM. We do not buy, sell or share contact lists, and we
-> do not send messages on behalf of any other business.
+> check an optional SMS consent box. The messages are informational only:
+> replies to their inquiry, consultation scheduling, appointment confirmations
+> and reminders, project and installation updates, and customer support. We do
+> not send marketing or promotional messages. Messages are sent from our
+> HighLevel (LeadConnector) CRM. The opt-in confirmation and appointment
+> confirmations and reminders are sent automatically when a form is submitted
+> or an appointment is scheduled. Our staff send inquiry replies, project
+> updates and support messages through the CRM's conversation inbox. We do not
+> buy, sell or share contact lists, and we do not send messages on behalf of
+> any other business.
 
 ### 4.5 Message flow / call to action
 
@@ -222,16 +300,17 @@ sample 5, and confirm with GHL A2P support first.
 > inline on those pages, on https://projectautomate.com/schedule/ and on the
 > homepage, and in a pop-up opened by the "Book a Consultation" buttons across
 > the site. The form asks for name, phone, email, address and project details.
-> Directly above the submit button are two optional, unchecked checkboxes: one
-> for non-marketing texts (inquiry replies, scheduling, reminders, project
-> updates, support) and a separate one for marketing texts. Each names Project
-> Automate Inc. (PROJECT: automate) and states that message frequency varies,
-> message and data rates may apply, and to text HELP for help or STOP to opt
-> out. The form can be submitted without checking either box, and only
-> contacts who check a box are texted. Links to our Terms
+> Above the submit button is one optional, unchecked checkbox for
+> non-marketing texts: replies to their inquiry, consultation scheduling,
+> appointment confirmations and reminders, project and installation updates,
+> and customer support. It
+> names Project Automate Inc. (PROJECT: automate) and states that message
+> frequency varies, message and data rates may apply, and to text HELP for help
+> or STOP to opt out. The form can be submitted without checking the box, and
+> only contacts who check it are texted. Links to our Terms
 > (https://projectautomate.com/terms-and-conditions/) and Privacy Policy
 > (https://projectautomate.com/privacy-policy/) appear directly below the
-> checkboxes. After opting in, the contact receives a confirmation text with
+> checkbox. After opting in, the contact receives a confirmation text with
 > frequency, rates, HELP and STOP information. We never buy, sell or share
 > opt-in data. Screenshot of the form: [public URL of hosted screenshot]
 
@@ -247,8 +326,7 @@ Use [brackets] for variables, never GHL merge fields like `{{contact.first_name}
 | 1 | Non-marketing | PROJECT: automate: Hi [First Name], this is [Rep Name]. Thanks for your consultation request on projectautomate.com. When is a good time for a quick call this week? Reply STOP to opt out. |
 | 2 | Non-marketing | PROJECT: automate: Reminder: your design consultation is on [Date] at [Time] at [Address]. Questions or need to reschedule? Call (310) 402-4818. Reply STOP to opt out. |
 | 3 | Non-marketing | PROJECT: automate: Hi [First Name], a project update: [Technician Name] will arrive on [Date] between [Time Window] to install your [System]. Reply STOP to opt out. |
-| 4 | Non-marketing | PROJECT: automate: Hi [First Name], you can pick a consultation time that suits you here: https://projectautomate.com/schedule/ Reply HELP for help, STOP to opt out. |
-| 5 | Marketing | PROJECT: automate: This season, homeowners who book an outdoor lighting and audio design consultation receive [Offer]. Details: https://projectautomate.com/outdoor-lighting-audio/ Reply STOP to opt out. |
+| 4 | Non-marketing | PROJECT: automate: Hi [First Name], ahead of your consultation on [Date], here is an overview of the [System] you asked about: https://projectautomate.com/lighting-control-systems/ Reply STOP to opt out, HELP for help. |
 
 Links in real messages must use projectautomate.com, not bit.ly or other
 public shorteners. GHL trigger links need a branded domain, or turn them off.
@@ -262,9 +340,7 @@ nothing extra, but each round takes days, so fix everything first.
 
 ## 5. Open questions for the client
 
-1. Will any text ever promote something: offers, seasonal specials, "book your
-   free consultation" nudges, events, re-engaging old leads? This decides
-   Mixed vs Informational (4.2), and it can't be changed later.
+1. ~~Mixed or Informational?~~ Decided 2026-09-29: Informational only (4.2).
 2. Is (310) 402-4818 the LC Phone number that will *send* the texts, or only
    the support line? If it sends, does it also take calls, or play a voicemail
    naming PROJECT: automate?
@@ -274,19 +350,32 @@ nothing extra, but each round takes days, so fix everything first.
 4. Should (310) 740-5375 stay anywhere else? It's still the main number in the
    header, next to the form on /get-started/, /schedule/ and
    /outdoor-lighting-audio/, in CTAs, the thank-you page, the 404 page,
-   `public/llms.txt` and the JSON-LD schema.
+   `public/llms.txt` and the JSON-LD schema. Decide **before submitting**:
+   reviewers open the opt-in page (/get-started/), and HighLevel wants the
+   site's contacts to match the brand registration. Showing (310) 402-4818 and
+   josh@ there is the safest option.
 5. The exact legal name, EIN and address on the CP 575 / 147C. Is
    "PROJECT: automate" a filed fictitious business name (DBA)?
 6. Which GHL sub-account will own the form and the number permanently, and
    will the move happen before registering?
 7. Are numbers collected any other way (Meta Instant Forms, calls, signed
-   proposals, in person)? Existing clients who'll get installation updates
-   need a documented opt-in too, such as a consent line in the proposal.
+   proposals, in person)? The Terms and the campaign say people join **only**
+   through the website checkbox. Until another method is added to the Terms'
+   "How you opt in", the campaign's opt-in method and the message flow (4.5),
+   text only people who ticked the website box. That includes existing clients
+   who'll get installation updates.
 8. Is any lead data shared outside the company (subcontractors, manufacturers,
    design partners)? Have lead lists ever been bought or imported?
-9. Should the Meta Pixel in the GHL form stay (2.3)?
+9. OK to remove the Meta Pixel from the GHL form for now (2.3)?
 10. Is counsel OK with the 18+ clause, California governing law with a Los
     Angeles County venue, and the no-sharing promise?
+11. Did Project Automate Inc.'s gross revenue for 2025 exceed $26,625,000? If
+    so, the CCPA applies now. The Privacy Policy would then need CCPA sections:
+    - rights to know, delete and correct, and how to submit requests
+    - retention by category
+    - non-discrimination
+
+    The form would also need a notice at collection.
 
 ---
 
@@ -309,9 +398,14 @@ nothing extra, but each round takes days, so fix everything first.
   separately, including the carrier-liability sentence (30563).
 - **2026-06-30:** Twilio requires Privacy Policy and Terms URLs for every new
   campaign.
-- **2026-07-30:** HighLevel's current guide requires two optional checkboxes,
-  links inside the form, the DBA visible on the site, and policy contacts that
-  match the brand registration.
+- **2026-07-30:** HighLevel's current guide requires:
+  - optional, unticked checkboxes that name the campaign's own message types.
+    The template shows two boxes (marketing and non-marketing). HighLevel's
+    rejections article accepts a transactional-only sender that says so in its
+    campaign description (see 2.1 item 3).
+  - links inside the form
+  - the DBA visible on the site
+  - policy contacts that match the brand registration
 
 ## 7. Key sources
 

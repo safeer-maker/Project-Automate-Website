@@ -37,7 +37,8 @@ Checkbox = not started. Strike through / move to "Resolved" as you go.
   - IRS CP-575 or 147C letter — not yet provided
   - GHL form fixes: SMS checkbox is currently *required* (must be optional), wording
     says "Land Scaping", no marketing checkbox, no Terms/Privacy links in the form
-  - Use case (Mixed vs Informational) and sample wording — drafts in the checklist
+  - Use case decided: Informational / Non-Marketing (one checkbox, no marketing texts).
+    Paste-ready wording and sample messages are in the checklist
   - GHL workflows: consent filter, confirmation / HELP / STOP replies
 
 - [ ] **No deployment yet.** The Cloudflare Workers adapter (`@astrojs/cloudflare`)

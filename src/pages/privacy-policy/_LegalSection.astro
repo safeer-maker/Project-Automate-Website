@@ -7,7 +7,9 @@ import { siteInfo } from '../../data/site.ts';
 // don't reword it, and don't add sharing language next to it. SMS data is also
 // carved out of "Sharing Your Information", so the two sections can't conflict.
 // If a Meta Pixel (or any advertising tag) is added to the site or the GHL
-// form, the Cookies section and CookieNotice.astro must be updated with it.
+// form, update the Cookies section (including "Tracking by other companies",
+// which CalOPPA requires and which must then name Meta) and CookieNotice.astro
+// with it. See docs/a2p-10dlc.md §2.3.
 const { legalName, name, smsPhone, legalEmail, address } = siteInfo;
 const phoneHref = `tel:${smsPhone.replace(/[^0-9+]/g, '')}`;
 const smsTermsHref = withBase('/terms-and-conditions/#sms-terms');
@@ -37,8 +39,8 @@ const smsTermsHref = withBase('/terms-and-conditions/#sms-terms');
 		</ul>
 
 		<h2 id="sms">Text Messaging (SMS)</h2>
-		<p>If you check a text message consent box on one of our website forms, {name} will send you text messages about the topics you chose, as described in our <a href={smsTermsHref}>Text Messaging (SMS) Terms</a>. Message frequency varies. Message and data rates may apply. Reply STOP to any message to opt out, or reply HELP for help. You can also contact us at <a href={phoneHref}>{smsPhone}</a> or <a href={`mailto:${legalEmail}`}>{legalEmail}</a>.</p>
-		<p>When you opt in, we keep a record of your mobile number, the consent boxes you checked, the date, time and page of your opt-in, and any later opt-out request. We use this record only to run our text messaging program, honor your choices, and show that you consented.</p>
+		<p>If you check the text message consent box on one of our website forms, {name} will send you informational text messages about your inquiry, consultation, appointments, project, and customer support, as described in our <a href={smsTermsHref}>Text Messaging (SMS) Terms</a>. We do not send marketing or promotional text messages. Message frequency varies. Message and data rates may apply. Reply STOP to any message to opt out, or reply HELP for help. You can also contact us at <a href={phoneHref}>{smsPhone}</a> or <a href={`mailto:${legalEmail}`}>{legalEmail}</a>.</p>
+		<p>When you opt in, we keep a record of your mobile number, your consent, the date, time and page of your opt-in, and any later opt-out request. We use this record only to run our text messaging program, honor your choices, and show that you consented.</p>
 		<p><strong>No mobile information will be shared with third parties/affiliates for marketing/promotional purposes. Information sharing to subcontractors in support services, such as customer service, is permitted. All other use case categories exclude text messaging originator opt-in data and consent; this information will not be shared with any third parties.</strong></p>
 
 		<h2>Information We Collect</h2>
@@ -74,14 +76,14 @@ const smsTermsHref = withBase('/terms-and-conditions/#sms-terms');
 		<p>This information helps us improve our website performance and user experience.</p>
 
 		<h2 id="cookies">Cookies</h2>
-		<p>We use only necessary cookies. Apart from one cookie that remembers you have seen our cookie notice, they are set by our customer relationship platform, HighLevel (LeadConnector), which powers our inquiry forms. These cookies are used to:</p>
+		<p>We use cookies and similar browser storage (such as local storage) for two purposes. Apart from one cookie that remembers you have seen our cookie notice, they are set by our customer relationship platform, HighLevel (LeadConnector), which powers our inquiry forms and our visitor tracking.</p>
 		<ul>
-			<li>Make our inquiry and consultation forms work and protect them from spam</li>
-			<li>Recognize returning visitors so an inquiry can be linked to the pages visited on our website</li>
-			<li>Remember that you have acknowledged our cookie notice</li>
+			<li><strong>Necessary:</strong> to make our inquiry and consultation forms work, protect them from spam, and remember that you have acknowledged our cookie notice.</li>
+			<li><strong>Visitor identification:</strong> HighLevel’s visitor-tracking script stores an identifier in your browser and records the pages you visit, so an inquiry can be linked to your earlier visits and we can recognize returning visitors and clients.</li>
 		</ul>
 		<p>We do <strong>not</strong> use advertising, marketing, or social media cookies, and we do not share cookie data with advertising networks.</p>
-		<p>You can block or delete cookies at any time through your browser settings. Blocking them may prevent our inquiry forms from working correctly.</p>
+		<p>You can block or delete cookies and other site data at any time through your browser settings. Blocking them may prevent our inquiry forms from working correctly.</p>
+		<p><strong>Tracking by other companies.</strong> HighLevel collects the information described above only on our behalf. We do not allow advertising networks or other companies to collect personal information about your online activities over time and across different websites through our website.</p>
 		<p><strong>Do Not Track.</strong> Some browsers can send a “Do Not Track” signal to the websites you visit. There is no common standard for responding to these signals, so our website does not currently respond to them.</p>
 
 		<h2>How We Use Your Information</h2>
