@@ -39,7 +39,8 @@ import Button from '../../components/ui/Button.astro';
 		display: grid;
 		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
 		gap: clamp(2.5rem, 6vw, 6rem);
-		align-items: center;
+		/* Copy pinned to the bottom-left, level with the photo's bottom edge. */
+		align-items: end;
 	}
 
 	.hero-copy > * {

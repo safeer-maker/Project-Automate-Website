@@ -36,7 +36,7 @@ Site photography is a licensed Adobe Stock set. The originals (1–23MB each) li
 - `npm run images` renders responsive WebP to `public/images/library/<id>-<width>.webp`, a 1200×630 JPEG social preview to `public/images/og/<id>.jpg`, and `src/data/image-library.json`. It only renders missing files; `-- --force` re-renders all. Point `PA_IMAGE_SOURCE` at the originals folder if it isn't `C:/Users/Safeer/Downloads/pa`.
 - In pages use `<Picture id="…" alt="…" sizes="…" />` (`src/components/ui/Picture.astro`) with a `sizes` that matches the slot; `priority` only for the one above-the-fold LCP image. `imageUrl()` / `ogImageUrl()` in `src/lib/images.ts` cover CSS backgrounds, data files and `og:image`.
 - Raw video masters live in `media-src/videos/` — never in `public/` (Cloudflare Workers rejects assets over 25 MiB, and everything in `public/` is deployed).
-- Two films: the hero (`public/videos/hero*.{mp4,webm}`) and the homepage closing film (`closing*`, the site's previous hero). Encodes trim each master's fade from/to black, and each film's poster must be its encode's exact first frame (`ffmpeg -i hero.mp4 -frames:v 1`) — a poster from mid-clip followed by a fade from black read as the video "loading twice". Both start playing only once ~3s is buffered, fade in over the poster, pause off-screen, and have a pause button. Don't add `autoplay` back.
+- Two films: the hero (`public/videos/hero*.{mp4,webm}`) and the homepage closing film (`closing*`, the site's previous hero). Encodes trim each master's fade from/to black, and each film's poster must be its encode's exact first frame (`ffmpeg -i hero.mp4 -frames:v 1`) — a poster from mid-clip followed by a fade from black read as the video "loading twice". Both start playing only once ~3s is buffered, fade in over the poster, and pause off-screen. Don't add `autoplay` back. The hero has **no** pause/play button (client request); reduced-motion visitors get the still instead. The closing film keeps its button.
 
 ## Scrolling & motion
 
@@ -49,6 +49,13 @@ Site photography is a licensed Adobe Stock set. The originals (1–23MB each) li
 - Changed URLs keep a 301 in `public/_redirects` (Cloudflare) **and** an entry in `redirects` in `astro.config.mjs` (meta-refresh stubs for GitHub Pages). Add both when renaming a page, and update internal links so none go through a redirect. `trailingSlash` is `'always'`.
 - The GitHub Pages (staging) build sets `PUBLIC_NOINDEX=1`, so staging is never indexed.
 - Energy Management is deliberately unlinked (the page still exists at `/energy-management/`). Don't add it back to the nav, footer or homepage.
+
+## Copy & design
+
+- **No eyebrow text anywhere on the site.** An eyebrow (also called a kicker or overline) is the small label above a headline, like "Home Technology · Manhattan Beach" above the homepage hero title. Never add one to a new page, section or component. Headlines stand on their own. Generic section labels ("Our Approach", "Our Philosophy", "How We Work"…) read as templated/bot design. Labels that carry real content stay, e.g. the "01 Morning" scene captions in A Day at Home or the "Integrated with the world's finest platforms" marquee title.
+- **Space between sections comes from `--section-pad`** (`tokens.css`, ~94px at 1440 / 64px on phones) as each homepage section's top and bottom padding; `--section-pad-tight` where a section runs into a closely related one (Why → platforms marquee). Don't hand-roll bigger `padding-block` clamps per section; they stacked into ~280px gaps.
+- **A section's supporting text sits directly under its headline**, never in a column beside it, so the two read as one thought. Only a link (e.g. "Explore all solutions") may sit on the side.
+- **Full-bleed hero copy sits in the corners, never centered**, so the video or photo stays clear: the headline block (and its subtitle) in the bottom-right corner, the CTA actions in the bottom-left. Both hug the screen's own gutter (not capped at `--page-max`), `--hero-copy-bottom` (`tokens.css`) off the bottom edge. This applies to the homepage and every inner photo hero (ServiceLayout, BrandLayout, Solutions, Support). On phones (≤700px) everything stacks in one left-aligned column.
 
 ## Documentation
 

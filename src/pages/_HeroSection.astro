@@ -1,12 +1,13 @@
 ---
-// Desktop sources are re-encoded from media-src/videos/project-automate-hero-1080.mp4,
-// mobile sources from media-src/videos/project-automate-hero-720.mp4 (both raw
-// source clips, kept for reference/regeneration). Both masters open with a
-// fade up from black and close with a fade down; the encodes trim those off
-// (-ss 0.5 -to 49.65 desktop, -ss 0.6 -to 48.95 mobile) so the loop cuts
-// cleanly and frame 0 is a real picture. The posters are those exact first
-// frames (ffmpeg -i hero.mp4 -frames:v 1): a poster from mid-clip followed by
-// a fade from black read as the video "loading twice".
+// Every hero encode (desktop, mobile and portrait) comes from the 1920x1080
+// revised cut, media-src/videos/project-automate-hero-1080.mp4. Its 1280x720
+// sibling, project-automate-hero-720.mp4, is the same cut, kept for reference
+// only; the 1080 master is sharper at every output size. The master opens
+// with a fade up from black and closes with a fade down; the encodes trim
+// those off (-ss 0.6 -to 48.95) so the loop cuts cleanly and frame 0 is a
+// real picture. The posters are each encode's exact first frame
+// (ffmpeg -i hero.mp4 -frames:v 1 -c:v libwebp -quality 82): a poster from
+// mid-clip followed by a fade from black read as the video "loading twice".
 //
 // mp4/H.264 is listed before webm/VP9 in every <source> group on purpose: the
 // browser plays whichever source it hits first that it supports, it doesn't
@@ -21,7 +22,7 @@
 //   ffmpeg -ss <in> -to <out> -i <clip> -vf scale=1600:-2 -r 30 -c:v libx264 -preset slow -crf 26 \
 //     -maxrate 1800k -bufsize 3600k -g 60 -keyint_min 60 -pix_fmt yuv420p -an \
 //     -movflags +faststart public/videos/hero.mp4
-//   ffmpeg -i <clip> -vf scale=1600:-2 -r 30 -c:v libvpx-vp9 -crf 34 -b:v 1400k \
+//   ffmpeg -ss <in> -to <out> -i <clip> -vf scale=1600:-2 -r 30 -c:v libvpx-vp9 -crf 34 -b:v 1400k \
 //     -maxrate 1400k -bufsize 2800k -g 60 -keyint_min 60 -row-mt 1 -tile-columns 2 \
 //     -pix_fmt yuv420p -an public/videos/hero.webm
 //   (repeat at scale=960:-2 for hero-mobile.mp4 crf 28/maxrate 900k, and
@@ -29,8 +30,8 @@
 //
 // Portrait phones get their own 9:16 crop (hero-portrait.*): cover-fitting the
 // 16:9 mobile film into a portrait screen showed only ~250 source px across,
-// a 4.5x upscale. The crop is the centre of the 1920x1080 mobile master (the
-// same framing phones saw before), at the same pixel count and bitrate caps:
+// a 4.5x upscale. The crop is the centre of the 1920x1080 master (the same
+// framing phones saw before), at the same pixel count and bitrate caps:
 //   -vf crop=608:1080:656:0,scale=540:960:flags=lanczos, then the mobile
 //   x264/VP9 settings above. The 960x540 files stay for small landscape screens.
 import { withBase } from "../lib/paths.ts";
@@ -44,14 +45,31 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 <section class="hero" aria-labelledby="hero-title">
 	<div class="scroll-sentinel" data-hero-sentinel aria-hidden="true"></div>
 	<div class="hero-media">
-		<!-- The still under the film is each clip's exact first frame (desktop
-		     and mobile are different edits), so when the video fades in over it
-		     nothing jumps. It's the page's LCP image, hence fetchpriority. The
+		<!-- The still under the film is each encode's exact first frame (the
+		     portrait crop starts on a different framing), so when the video
+		     fades in over it nothing jumps. It's the page's LCP image, hence fetchpriority. The
 		     video's own `poster` isn't used: it can't vary by breakpoint. -->
 		<picture class="hero-poster">
-			<source media={portraitPhone} srcset={posterPortrait} width="540" height="960" />
-			<source media="(max-width: 700px)" srcset={posterMobile} width="960" height="540" />
-			<img src={poster} alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+			<source
+				media={portraitPhone}
+				srcset={posterPortrait}
+				width="540"
+				height="960"
+			/>
+			<source
+				media="(max-width: 700px)"
+				srcset={posterMobile}
+				width="960"
+				height="540"
+			/>
+			<img
+				src={poster}
+				alt=""
+				width="1600"
+				height="900"
+				fetchpriority="high"
+				decoding="async"
+			/>
 		</picture>
 		<!-- No autoplay attribute: the script starts playback once a few
 		     seconds are buffered (see below). preload="none" in the markup so
@@ -93,9 +111,12 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		</video>
 		<script is:inline>
 			{
-				const v = document.querySelector('[data-hero-video]');
-				if (v && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-					v.preload = 'auto';
+				const v = document.querySelector("[data-hero-video]");
+				if (
+					v &&
+					!matchMedia("(prefers-reduced-motion: reduce)").matches
+				) {
+					v.preload = "auto";
 					v.load();
 				}
 			}
@@ -105,93 +126,72 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 
 	<div class="hero-inner">
 		<div class="hero-box">
-			<!-- The h1 already names Los Angeles and luxury; the eyebrow says
-			     what the studio does and where it is instead of repeating them.
-			     Short enough to stay on one line on a phone. The literal spaces
-			     keep the phrases apart for screen readers (the gap is visual). -->
-			<p class="hero-eyebrow">
-				<span>Home Technology</span>{' '}
-				<span class="hero-eyebrow-dot" aria-hidden="true">·</span>{' '}
-				<span>Manhattan Beach</span>
-			</p>
 			<!-- Each line sits in its own overflow mask so it can rise into view.
 			     The literal space between them keeps the heading's text (and its
 			     accessible name) "Technology for", not "Technologyfor". -->
 			<h1 class="hero-title" id="hero-title">
-				<span class="line"><span>Tailored Luxury Technology</span></span>
-				{" "}
-				<span class="line"><span>for Los Angeles Residences</span></span>
-			</h1>
-			<p class="hero-lede">
-				Lighting, climate, sound and security, designed to work as one, and to disappear.
-			</p>
-			<div class="hero-actions" data-cookie-clear>
-				<a
-					class="hero-btn"
-					href={withBase("/schedule/")}
-					data-ghl-form-open>Book a Private Consultation</a
+				<span class="line"><span>Tailored Luxury Technology</span></span
 				>
-				<!-- Lenis (anchors: true) glides this to the statement below. -->
-				<a class="hero-link" href="#approach">
-					<span>Discover the approach</span>
-					<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-						<path
-							d="M8 3v10M4 9l4 4 4-4"
-							stroke="currentColor"
-							stroke-width="1.3"
-							stroke-linecap="round"
-							stroke-linejoin="round"></path>
-					</svg>
-				</a>
-			</div>
+				{" "}
+				<span class="line"><span>for Los Angeles Residences</span></span
+				>
+			</h1>
+			<!--<p class="hero-lede">
+				Lighting, climate, sound and security, designed to work as one, and to disappear.
+			</p>-->
+		</div>
+		<!-- After the headline in the markup so screen readers and the tab order
+		     meet the heading first; the grid places it bottom-left on screen. -->
+		<div class="hero-actions" data-cookie-clear>
+			<a class="hero-btn" href={withBase("/schedule/")} data-ghl-form-open
+				>Book a Private Consultation</a
+			>
+			<!-- Lenis (anchors: true) glides this to the statement below. -->
+			<a class="hero-link" href="#approach">
+				<span>Discover the approach</span>
+				<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+					<path
+						d="M8 3v10M4 9l4 4 4-4"
+						stroke="currentColor"
+						stroke-width="1.3"
+						stroke-linecap="round"
+						stroke-linejoin="round"></path>
+				</svg>
+			</a>
 		</div>
 	</div>
-
-	<!-- Moving backgrounds need a way to stop them (WCAG 2.2.2). Shown once
-	     the script runs; it's the only control for the film. After the copy in
-	     the markup so the tab order follows the reading order; it's absolutely
-	     positioned, so nothing moves on screen. -->
-	<button class="hero-toggle" type="button" data-hero-toggle data-cookie-clear aria-label="Pause background video" hidden>
-		<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
-		<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 3.8v8.4l6.6-4.2z" fill="currentColor" /></svg>
-	</button>
 </section>
 
 <script>
-	const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
-	const toggle = document.querySelector<HTMLButtonElement>('[data-hero-toggle]');
+	const video = document.querySelector<HTMLVideoElement>("[data-hero-video]");
 
-	if (video && toggle) {
+	// No pause control, by client request. Reduced-motion visitors are the
+	// ones who can't opt out any other way, so they only ever get the still.
+	if (
+		video &&
+		!window.matchMedia("(prefers-reduced-motion: reduce)").matches
+	) {
 		// Slightly under real time. Almost subliminal, but it stops the clip
 		// feeling like stock footage.
 		const settle = () => (video.playbackRate = 0.85);
 		settle();
 		// Some browsers reset playbackRate when the source finishes loading.
-		video.addEventListener('loadeddata', settle);
+		video.addEventListener("loadeddata", settle);
 
 		// The film fades in over its own first frame once it's genuinely
 		// playing, so the swap from still to motion is invisible.
-		video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+		video.addEventListener(
+			"playing",
+			() => video.classList.add("is-playing"),
+			{ once: true },
+		);
 
-		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		let userPaused = reduce;
 		let onScreen = true;
 
-		const syncToggle = () => {
-			const paused = video.paused;
-			toggle.classList.toggle('is-paused', paused);
-			toggle.setAttribute('aria-label', paused ? 'Play background video' : 'Pause background video');
-		};
-		video.addEventListener('play', syncToggle);
-		video.addEventListener('pause', syncToggle);
-
 		const play = () => {
-			if (userPaused || !onScreen) return;
-			video.play().catch(() => {
-				// Autoplay refused (e.g. Low Power Mode): the still stays, and the
-				// toggle offers play.
-				syncToggle();
-			});
+			if (!onScreen) return;
+			// Autoplay refused (e.g. Low Power Mode): the still stays.
+			video.play().catch(() => {});
 		};
 
 		// Autoplay used to start the instant the first frames arrived, then
@@ -201,30 +201,31 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		const bufferedAhead = () => {
 			const ranges = video.buffered;
 			for (let i = 0; i < ranges.length; i++) {
-				if (ranges.start(i) <= video.currentTime + 0.1) return ranges.end(i) - video.currentTime;
+				if (ranges.start(i) <= video.currentTime + 0.1)
+					return ranges.end(i) - video.currentTime;
 			}
 			return 0;
 		};
 		const startWhenReady = () => {
 			if (started) return;
 			const ahead = bufferedAhead();
-			const whole = Number.isFinite(video.duration) && ahead >= video.duration - 0.5;
+			const whole =
+				Number.isFinite(video.duration) &&
+				ahead >= video.duration - 0.5;
 			if (ahead >= 3 || whole) {
 				started = true;
 				play();
 			}
 		};
-		if (!reduce) {
-			video.addEventListener('progress', startWhenReady);
-			video.addEventListener('canplaythrough', startWhenReady);
-			startWhenReady();
-			window.setTimeout(() => {
-				if (!started) {
-					started = true;
-					play();
-				}
-			}, 6000);
-		}
+		video.addEventListener("progress", startWhenReady);
+		video.addEventListener("canplaythrough", startWhenReady);
+		startWhenReady();
+		window.setTimeout(() => {
+			if (!started) {
+				started = true;
+				play();
+			}
+		}, 6000);
 
 		// No point decoding a film nobody can see.
 		new IntersectionObserver(([entry]) => {
@@ -232,25 +233,6 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 			if (!onScreen) video.pause();
 			else if (started) play();
 		}).observe(video);
-
-		toggle.addEventListener('click', () => {
-			if (video.paused) {
-				userPaused = false;
-				started = true;
-				// Reduced motion: the film was never fetched (preload="none").
-				if (video.readyState === 0) {
-					video.preload = 'auto';
-					video.load();
-				}
-				play();
-			} else {
-				userPaused = true;
-				video.pause();
-			}
-		});
-
-		syncToggle();
-		toggle.hidden = false;
 	}
 </script>
 
@@ -309,61 +291,14 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		opacity: 1;
 	}
 
-	.hero-toggle {
-		position: absolute;
-		z-index: 2;
-		/* On the content grid's right edge, not the screen's: past the 1440
-		   page width it drifted up to 200px outside the layout. */
-		right: max(var(--page-gutter), calc((100% - var(--page-max)) / 2 + var(--page-gutter)));
-		bottom: clamp(1.25rem, 3vh, 2rem);
-		display: grid;
-		place-items: center;
-		width: 40px;
-		height: 40px;
-		padding: 0;
-		border: 1px solid rgba(255, 255, 255, 0.35);
-		border-radius: 50%;
-		background: rgba(10, 10, 10, 0.25);
-		color: var(--color-white);
-		cursor: pointer;
-		opacity: 0.7;
-		transition:
-			opacity var(--dur-fast) ease,
-			border-color var(--dur-fast) ease,
-			background-color var(--dur-fast) ease;
-	}
-
-	.hero-toggle:hover,
-	.hero-toggle:focus-visible {
-		opacity: 1;
-		border-color: var(--color-accent-hover);
-		background: rgba(10, 10, 10, 0.45);
-	}
-
-	.hero-toggle:focus-visible {
-		outline: 2px solid var(--color-accent-hover);
-		outline-offset: 3px;
-	}
-
-	.hero-toggle svg {
-		width: 14px;
-		height: 14px;
-	}
-
-	.hero-toggle .icon-play,
-	.hero-toggle.is-paused .icon-pause {
-		display: none;
-	}
-
-	.hero-toggle.is-paused .icon-play {
-		display: block;
-	}
-
 	/* The film moves between bright aerial daylight and dusk, so the copy
 	   can't rely on text-shadow alone. A low, warm-black falloff under the
 	   copy plus a band behind the transparent header, nothing mid-frame. The
 	   band holds ~0.55 across the header's own height (white nav over bright
-	   sky was 2.6:1 at 0.42) and is gone by a quarter of the way down. */
+	   sky was 2.6:1 at 0.42) and is gone by a quarter of the way down.
+	   The falloff only has to cover the copy (~180px up from the bottom), so
+	   it's gone by 40%: when it ran to 64% at 0.74 it dulled the lower half of
+	   the film for contrast the copy didn't need (worst frame was ~8:1). */
 	.hero-scrim {
 		position: absolute;
 		inset: 0;
@@ -375,40 +310,55 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 				rgba(10, 10, 10, 0.55) var(--header-height, 96px),
 				rgba(10, 10, 10, 0) 26%
 			),
-			linear-gradient(0deg, rgba(10, 10, 10, 0.74) 0%, rgba(10, 10, 10, 0.4) 36%, rgba(10, 10, 10, 0) 64%);
+			linear-gradient(
+				0deg,
+				rgba(10, 10, 10, 0.55) 0%,
+				rgba(10, 10, 10, 0.28) max(20%, 12rem),
+				rgba(10, 10, 10, 0) max(40%, 22rem)
+			);
 	}
 
 	.hero-inner {
 		position: relative;
 		z-index: 1;
+		/* Not capped at the page width: past 1440 that left the headline up
+		   to 240px short of the corner. The copy hugs the screen's gutter. */
 		width: 100%;
-		max-width: var(--page-max);
-		margin-inline: auto;
 		padding-inline: var(--page-gutter);
-		padding-bottom: clamp(3.5rem, 10vh, 7rem);
-		display: flex;
-		flex-direction: column;
-		align-items: flex-end;
+		padding-bottom: var(--hero-copy-bottom);
+		/* Headline bottom-right, actions bottom-left. Stacked (headline over
+		   actions) until there's room for both on one row. */
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		row-gap: var(--space-8);
 	}
 
-	/* The pause toggle shares the page gutter with "Discover the approach",
-	   and on 720–900px-tall laptops 10vh left it only 10–23px under the
-	   link's arrow. Always clear the toggle (its offset + 40px) by 1.5rem. */
-	@media (min-width: 701px) {
+	/* Side by side, bottoms aligned: the actions take whatever width the
+	   headline leaves and wrap the link under the button if they must. */
+	@media (min-width: 901px) {
 		.hero-inner {
-			padding-bottom: max(clamp(3.5rem, 10vh, 7rem), calc(clamp(1.25rem, 3vh, 2rem) + 40px + 1.5rem));
+			grid-template-columns: minmax(0, 1fr) auto;
+			column-gap: clamp(2rem, 5vw, 5rem);
+			align-items: end;
+		}
+		.hero-box {
+			grid-column: 2;
+			grid-row: 1;
+		}
+		.hero-actions {
+			grid-column: 1;
+			grid-row: 1;
 		}
 	}
 
-	/* The block sits right, but the type inside reads left-to-right like any
-	   other English copy — a right-aligned ragged edge fought the reading order.
-	   It shrink-wraps the headline so its right edge always lands on the page
-	   gutter, whatever size the type resolves to. */
+	/* Shrink-wrapped and set ragged-left, so every line ends flush on the
+	   right gutter, in the corner, whatever size the type resolves to. */
 	.hero-box {
 		position: relative;
+		justify-self: end;
 		width: fit-content;
 		max-width: 100%;
-		text-align: left;
+		text-align: right;
 	}
 
 	/* The copy lands on the white house and pool deck, where the low falloff
@@ -416,7 +366,7 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 	   rather than a heavier full-width band, keeps the rest of the frame
 	   bright. Wide enough that its edge never reads as a shape. */
 	.hero-box::before {
-		content: '';
+		content: "";
 		position: absolute;
 		inset: -9rem -5rem -5rem -12rem;
 		z-index: -1;
@@ -427,42 +377,6 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 			rgba(10, 10, 10, 0.45) 55%,
 			rgba(10, 10, 10, 0)
 		);
-	}
-
-	/* A hairline leads the eyebrow in: the bronze of the brand without asking
-	   bronze text to hold its own against a moving image. Full white, since
-	   at 12px the eyebrow has no size to lean on. */
-	.hero-eyebrow {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: var(--space-2) var(--space-3);
-		margin: 0 0 var(--space-6);
-		font-size: var(--text-xs);
-		font-weight: var(--fw-semibold);
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-		color: var(--color-white);
-		text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
-		animation: fade-in 1s var(--ease-out-expo) 0.3s both;
-	}
-
-	/* If the line has to wrap it breaks between the two phrases, never
-	   inside one. */
-	.hero-eyebrow span {
-		white-space: nowrap;
-	}
-
-	.hero-eyebrow-dot {
-		color: var(--color-accent-hover);
-	}
-
-	.hero-eyebrow::before {
-		content: '';
-		flex: none;
-		width: 2rem;
-		height: 1px;
-		background: var(--color-accent-hover);
 	}
 
 	.hero-title {
@@ -516,7 +430,8 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 
 	.hero-lede {
 		max-width: 34ch;
-		margin: 0 0 var(--space-8);
+		/* Narrower than the headline: pushed to the box's right edge. */
+		margin: 0 0 0 auto;
 		font-size: clamp(1rem, 1.3vw, 1.1875rem);
 		font-weight: var(--fw-regular);
 		line-height: 1.6;
@@ -528,6 +443,7 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 	}
 
 	.hero-actions {
+		justify-self: start;
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
@@ -565,6 +481,8 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		font-weight: var(--fw-medium);
 		letter-spacing: 0.02em;
 		color: rgba(255, 255, 255, 0.86);
+		/* Off the headline's shade pool, over the bare bottom falloff. */
+		text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
 		transition: color var(--dur-fast) ease;
 	}
 
@@ -597,32 +515,40 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 	}
 
 	@media (max-width: 700px) {
-		/* On a tall phone crop the copy climbs to ~60% of the frame, right
-		   over the bright white house, so the falloff has to hold ~0.65
-		   up to the eyebrow. The max() stops keep that true on short phones
-		   too, where the same copy reaches higher up the frame. */
+		/* On a tall phone the copy block climbs ~350px (about 42% of the
+		   frame), over the bright white house, so the falloff holds ~0.45
+		   up to the headline, then clears. The max() stops keep that true on
+		   short phones too, where the same copy reaches higher up the frame.
+		   It used to hold 0.65 to 62% and run to 90%, which left almost the
+		   whole portrait film at a third of its brightness. */
 		.hero-scrim {
 			background:
-				linear-gradient(180deg, rgba(10, 10, 10, 0.5) 0%, rgba(10, 10, 10, 0) 18%),
+				linear-gradient(
+					180deg,
+					rgba(10, 10, 10, 0.5) 0%,
+					rgba(10, 10, 10, 0) 18%
+				),
 				linear-gradient(
 					0deg,
-					rgba(10, 10, 10, 0.82) 0%,
-					rgba(10, 10, 10, 0.65) max(62%, 36rem),
-					rgba(10, 10, 10, 0) max(90%, 48rem)
+					rgba(10, 10, 10, 0.62) 0%,
+					rgba(10, 10, 10, 0.45) max(40%, 22rem),
+					rgba(10, 10, 10, 0) max(62%, 32rem)
 				);
 		}
-		.hero-inner {
-			align-items: flex-start;
+		/* One left-aligned column on a phone: a right-hand headline over a
+		   left-hand button would zigzag down a 390px screen. */
+		.hero-box {
+			justify-self: start;
+			text-align: left;
+		}
+		.hero-lede {
+			margin-left: 0;
 		}
 		.hero-title {
 			font-size: clamp(2rem, 8.6vw, 2.5rem);
 		}
-		.hero-eyebrow {
-			letter-spacing: 0.14em;
-		}
-		/* No lead-in hairline on a phone, and no shade pool: the scrim
-		   above already sits under the whole copy block. */
-		.hero-eyebrow::before,
+		/* No shade pool on a phone: the scrim above already sits under the
+		   whole copy block. */
 		.hero-box::before {
 			display: none;
 		}
@@ -632,7 +558,6 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.hero-eyebrow,
 		.hero-title .line > span,
 		.hero-lede,
 		.hero-actions {

@@ -141,7 +141,7 @@ const schema = [
 
 	.hero-content {
 		position: relative;
-		padding-block: calc(var(--header-height, 96px) + var(--space-16)) clamp(3rem, 8vw, 6.5rem);
+		padding-block: calc(var(--header-height, 96px) + var(--space-16)) var(--hero-copy-bottom);
 	}
 
 	.hero-content > * {
@@ -255,10 +255,51 @@ const schema = [
 		}
 	}
 
-	@media (max-width: 600px) {
+	/* Corners, as on the homepage: the headline block bottom-right, the
+	   actions bottom-left, so the photograph stays clear. Not capped at the
+	   page width, so the copy reaches the screen's own gutter. Stacked with
+	   the actions underneath until the phone link fits beside the subtitle;
+	   one left-aligned column on a phone. */
+	.hero-content {
+		max-width: none;
+	}
+
+	@media (min-width: 701px) {
 		.hero-content {
-			padding-bottom: var(--space-12);
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto;
+			grid-template-rows: repeat(3, auto);
+			column-gap: clamp(2rem, 5vw, 5rem);
 		}
+		/* Flush to the right gutter: ragged-left, so short headline lines
+		   still end in the corner. */
+		.hero-content > * {
+			grid-column: 2;
+			justify-self: end;
+			text-align: right;
+		}
+		.hero-content > .hero-actions {
+			grid-column: 1 / -1;
+			grid-row: 4;
+			justify-self: start;
+			text-align: left;
+			margin-top: var(--space-8);
+		}
+		.hero-subtitle {
+			margin-bottom: 0;
+		}
+	}
+
+	@media (min-width: 1101px) {
+		.hero-content > .hero-actions {
+			grid-column: 1;
+			grid-row: 1 / -1;
+			align-self: end;
+			margin-top: 0;
+		}
+	}
+
+	@media (max-width: 600px) {
 		.hero-content h1 {
 			margin-bottom: var(--space-4);
 		}

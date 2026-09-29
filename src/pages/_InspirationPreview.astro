@@ -61,10 +61,7 @@ const sizes = {
 <section class="residences" aria-labelledby="residences-title">
 	<div class="page">
 		<header class="residences-head">
-			<div>
-				<span class="eyebrow">Selected Residences</span>
-				<h2 id="residences-title">Homes we have shaped.</h2>
-			</div>
+			<h2 id="residences-title">Homes we have shaped.</h2>
 			<p>
 				From the Malibu coast to the South Bay, each residence is designed around how its owners
 				live, then made to disappear into the architecture.
@@ -112,17 +109,13 @@ const sizes = {
 <style>
 	.residences {
 		background: var(--color-surface);
-		padding-block: clamp(4.5rem, 10vw, 8.5rem);
+		padding-block: var(--section-pad);
 	}
 
 	/* Heading left, the short intro sitting on its baseline to the right —
 	   the magazine opener rather than a centred block. */
+	/* Headline and its line together, stacked, so they read as one thought. */
 	.residences-head {
-		display: grid;
-		grid-template-columns: minmax(0, 1.72fr) minmax(0, 1fr);
-		column-gap: clamp(1.25rem, 2.6vw, 2.5rem);
-		row-gap: var(--space-6);
-		align-items: end;
 		margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
 	}
 
@@ -138,8 +131,8 @@ const sizes = {
 	}
 
 	.residences-head p {
-		margin: 0;
-		max-width: 26rem;
+		margin: var(--space-4) 0 0;
+		max-width: 32rem;
 		font-size: var(--text-body-lg);
 		line-height: 1.65;
 		color: var(--color-charcoal-2);
@@ -298,7 +291,6 @@ const sizes = {
 	}
 
 	@media (max-width: 899px) {
-		.residences-head,
 		.residences-foot {
 			grid-template-columns: 1fr;
 		}

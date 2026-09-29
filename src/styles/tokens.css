@@ -87,6 +87,15 @@
 	/* Layout */
 	--page-max: 1440px; /* full-bleed section width cap */
 	--page-gutter: clamp(1.25rem, 5.5vw, 5rem); /* 80px at 1440 */
+	/* The space above and below a section's content. Neighbouring sections
+	   on the same cream add theirs together, so this is half the gap the eye
+	   reads between them (~190px at 1440, 128px on a phone). */
+	--section-pad: clamp(4rem, 6.5vw, 6rem); /* 94px at 1440, 64px on phones */
+	--section-pad-tight: clamp(3rem, 4.5vw, 4rem); /* where a section runs straight into a related one */
+	/* Full-bleed heroes keep their copy in the corners (headline bottom-right,
+	   actions bottom-left) so the picture stays clear: on the screen's own
+	   gutter horizontally, this far off the hero's bottom edge. */
+	--hero-copy-bottom: clamp(1.75rem, 4vh, 3rem); /* 36px at 900 tall */
 	/* One site grid: .container (header, footer, inner-page sections) used to
 	   be 1280px with a fixed 24px gutter while .page sections were 1440px with
 	   the gutter above, so the header's logo and CTA sat 18–32px off every

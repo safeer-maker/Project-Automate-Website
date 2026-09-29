@@ -14,7 +14,6 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 <section class="consult" id="consultation" aria-labelledby="consult-title">
 	<div class="page consult-grid">
 		<div class="consult-copy">
-			<span class="eyebrow">Private Consultation</span>
 			<h2 id="consult-title">Begin with a<br />conversation.</h2>
 			<p>
 				Tell us about your residence, your design team and your timeline. A senior specialist will
@@ -52,7 +51,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 <style>
 	.consult {
 		background: var(--color-bg);
-		padding-block: clamp(4.5rem, 10vw, 8.5rem);
+		padding-block: var(--section-pad);
 		scroll-margin-top: var(--header-height, 96px);
 	}
 
@@ -190,9 +189,6 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			display: contents;
 		}
 
-		.consult-copy > .eyebrow {
-			align-self: flex-start;
-		}
 
 		.consult-form {
 			margin-top: var(--space-12);

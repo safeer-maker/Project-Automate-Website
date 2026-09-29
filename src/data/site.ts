@@ -2,6 +2,9 @@ import { withBase } from '../lib/paths.ts';
 
 type Link = { label: string; href: string };
 
+const studioPhone = '(310) 740-5375';
+const smsPhone = '(310) 402-4818';
+
 /** Apply the deploy base to every internal href once, at the source. */
 const linkify = (links: Link[]): Link[] =>
 	links.map((link) => ({ ...link, href: withBase(link.href) }));
@@ -15,7 +18,12 @@ export const siteInfo = {
 	tagline: 'The art of invisible intelligence. Custom smart home systems for the world’s most refined residences.',
 	url: 'https://projectautomate.com',
 	email: 'sales@projectautomate.com',
-	phones: ['(310) 740-5375', '(310) 402-4818'],
+	phones: [studioPhone, smsPhone],
+	// Contact details for the SMS program, quoted in the Terms and Privacy
+	// Policy. A2P 10DLC reviewers check that they match the brand registration,
+	// so the footer shows this number only, and the legal pages use this email.
+	smsPhone,
+	legalEmail: 'josh@projectautomate.com',
 	address: {
 		line1: '1600 Rosecrans Ave Building 7, Suite 400',
 		line2: 'Manhattan Beach, CA 90266',

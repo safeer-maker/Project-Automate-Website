@@ -76,9 +76,7 @@ const addressLine1 = siteInfo.address.line1.replace(/(Building|Suite) /g, '$1\u0
 			<h3>Concierge</h3>
 			<ul class="contact-list">
 				<li><a href={`mailto:${siteInfo.email}`}>{siteInfo.email}</a></li>
-				{siteInfo.phones.map((phone) => (
-					<li><a href={`tel:${phone.replace(/[^0-9+]/g, '')}`}>{phone}</a></li>
-				))}
+				<li><a href={`tel:${siteInfo.smsPhone.replace(/[^0-9+]/g, '')}`}>{siteInfo.smsPhone}</a></li>
 				<li>{addressLine1}<br />{siteInfo.address.line2}</li>
 			</ul>
 			<Button href={withBase('/schedule/')} data-ghl-form-open variant="outline" size="md" class="footer-cta">Book a Consultation</Button>
@@ -94,7 +92,9 @@ const addressLine1 = siteInfo.address.line1.replace(/(Building|Suite) /g, '$1\u0
 	</div>
 
 	<div class="container footer-bottom">
-		<p>&copy; {year} {siteInfo.legalName} All rights reserved.</p>
+		{/* The DBA line is an A2P 10DLC requirement: the brand is registered under
+		    the legal name, and the site has to show which name it trades as. */}
+		<p>&copy; {year} {siteInfo.legalName}, doing business as {siteInfo.name.replace(' ', ' ')}. All rights reserved.</p>
 		<ul class="legal-links">
 			{legalLinks.map((item) => (
 				<li><a href={item.href}>{item.label}</a></li>
