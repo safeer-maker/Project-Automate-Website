@@ -24,12 +24,13 @@ const tel = (value: string) => `tel:${value.replace(/[^\d+]/g, '')}`;
 <section class="schedule">
 	<div class="container schedule-grid">
 		<div class="schedule-info">
-			<span class="eyebrow">Private Consultation</span>
 			<h1>Begin With a Private Consultation</h1>
+			{/* No time picker here yet: the GHL calendar that will let visitors book
+			    a slot directly isn't set up (see docs/known-issues.md). Until it is,
+			    don't promise one — the team replies to arrange the time. */}
 			<p class="lede">
-				Share a little about your residence and choose a time that suits you. A senior
-				specialist will review the details personally and help you plan the right systems for
-				your home.
+				Share a little about your residence and your plans. A senior specialist will review the
+				details personally and reply to arrange your consultation at a time that suits you.
 			</p>
 
 			<ol class="steps">
