@@ -28,10 +28,15 @@ export const siteInfo = {
 		line1: '1600 Rosecrans Ave Building 7, Suite 400',
 		line2: 'Manhattan Beach, CA 90266',
 	},
+	// Also the business node's sameAs in BaseLayout. Each `icon` names its
+	// logo in public/images/social/ (sized in Footer.astro).
 	social: [
-		{ label: 'Instagram', href: 'https://instagram.com/project_automate' },
-		{ label: 'Facebook', href: 'https://facebook.com/projectautomate' },
-	],
+		{ label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/project_automate' },
+		{ label: 'LinkedIn', icon: 'linkedin', href: 'https://www.linkedin.com/company/projectautomate/' },
+		{ label: 'Facebook', icon: 'facebook', href: 'https://www.facebook.com/ProjectAutomate' },
+		{ label: 'YouTube', icon: 'youtube', href: 'https://www.youtube.com/project-automate' },
+		{ label: 'TikTok', icon: 'tiktok', href: 'https://www.tiktok.com/@projectautomate' },
+	] as const,
 	credit: { label: 'Powered by AI Media', href: 'https://aimedia.design/' },
 };
 

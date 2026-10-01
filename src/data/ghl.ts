@@ -17,5 +17,27 @@ export const ghl = {
 };
 
 export const ghlFormUrl = `https://api.leadconnectorhq.com/widget/form/${ghl.formId}`;
+
+// GHL booking calendars (Calendars → (calendar) → Share → Embed code), served
+// from the studio's own links.projectautomate.com domain. Each calendar has
+// its own page so its URL can be shared on its own:
+//
+// - consultation: the public booking link, at /schedule/. For visitors who
+//   arrive from outside the site (Google Business Profile, email signatures,
+//   directories): they see the studio's availability and give their details
+//   in the calendar's own form, in one step.
+// - inResidence: the in-residence consultation, at /schedule/in-residence/
+//   (noindex). A senior specialist meets the client at their home, walks it
+//   with them and shares completed work. Not linked on the site; the GHL
+//   automation sends a contact there once the consultation form is submitted.
+//
+// NOTE: these calendars must sit in the same sub-account as `trackingId`
+// above, or bookings can't be tied to the visitor's page history.
+export const ghlCalendars = {
+	consultation: { id: '073T0gB9DGXALoeGcQuN', title: 'Private consultation booking calendar' },
+	inResidence: { id: '5zoC3ppxdGURWHcdmufT', title: 'In-residence consultation booking calendar' },
+} as const;
+
+export const ghlCalendarUrl = (id: string) => `https://links.projectautomate.com/widget/booking/${id}`;
 export const ghlFormEmbedScript = 'https://link.msgsndr.com/js/form_embed.js';
 export const ghlTrackingScript = 'https://link.msgsndr.com/js/external-tracking.js';

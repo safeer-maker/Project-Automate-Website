@@ -1,0 +1,31 @@
+---
+// Second step after the consultation form: the GHL automation sends a contact
+// here to book an in-residence consultation, where a senior specialist comes
+// to the client's home, walks it with them and shares completed work. Not
+// linked anywhere on the site, noindex, and kept out of the sitemap
+// (astro.config.mjs).
+import PageLayout from '../../../layouts/PageLayout.astro';
+import BookingSection from '../_BookingSection.astro';
+---
+
+<PageLayout
+	title="Arrange Your In-Residence Consultation"
+	description="Choose a date and time for a PROJECT: automate specialist to meet you at your residence, walk it with you and share our completed work."
+	breadcrumbTitle="In-Residence Consultation"
+	noindex
+>
+	<BookingSection
+		heading="Arrange Your In-Residence Consultation"
+		lede="Thank you, your details are with us. Now choose a time for us to come to you. A senior specialist will meet you at the residence, walk it with you and share work from homes we have completed."
+		image={{
+			id: 'process/understand',
+			alt: 'A specialist and homeowners reviewing material samples and plans together at their kitchen table',
+		}}
+		steps={[
+			'Choose a date and time that suits you.',
+			'We walk the residence together, room by room, at your pace.',
+			'We share completed residences and talk through what is possible for yours.',
+		]}
+		calendar="inResidence"
+	/>
+</PageLayout>
