@@ -48,33 +48,30 @@ Checkbox = not started. Strike through / move to "Resolved" as you go.
 
 ## Priority 2 — Real gaps vs. the live site
 
-- [ ] **Two-step booking on `/schedule/`: on hold until the GHL calendar exists.**
-      Today `/schedule/` is only the details form, and the team replies to set a
-      time. (Its copy used to say "choose a time that suits you"; that was fixed
-      2026-09-29 because there is no time picker.) Planned flow:
-      1. **Details:** the visitor fills in the existing GHL form.
-      2. **Book:** on submit, they land on a booking page with a GHL calendar
-         embed and pick a slot.
-      3. **Confirmed:** after booking, they go on to `/thank-you/`.
-
-      When the calendar is ready:
-  - Create it in the **permanent** GHL sub-account, the same one as the form and
-    `trackingId`. Add its ID to `src/data/ghl.ts` next to the form's.
-  - Pick the URLs (e.g. keep `/schedule/` for the form and add
-    `/schedule/book/`). Any renamed URL needs a redirect in both
-    `public/_redirects` and `astro.config.mjs`.
-  - Change the form's On submit redirect from `/thank-you/` to the booking page.
-    Set the calendar's confirmation to redirect to `/thank-you/`.
-  - Don't pre-fill the calendar through URL parameters. That would put personal
-    data in the query string ("add form values to URL" must stay off). Rely on
-    GHL recognizing the contact instead.
-  - If the calendar widget shows its own SMS consent checkbox, it must be
-    optional, unticked and word-for-word the same as the form's (see
-    `docs/a2p-10dlc.md` §2.2). A calendar with a checkbox is another opt-in
-    point, so add it to the A2P message flow (§4.5) before going live.
-  - Only then bring back time-picking copy on `/schedule/` ("choose a time that
-    suits you"). Also update the `/thank-you/` page and the "What happens next"
-    steps if booking replaces the team's reply.
+- [ ] **Booking calendars: finish the GHL side.** (Built 2026-10-01.)
+      `/schedule/` now embeds the `consultation` calendar (the public booking
+      link, with its own form inside), and `/schedule/in-residence/` embeds the
+      `inResidence` calendar for the post-form step. IDs live in
+      `src/data/ghl.ts`. Still to do in GHL:
+  - The `inResidence` calendar (`5zoC3ppxdGURWHcdmufT`) returned **404** on
+    links.projectautomate.com on 2026-10-01. Until it is published, the page
+    shows the "taking longer than usual" fallback with the studio's phone and email.
+  - Point the consultation form's On submit redirect (and/or the automation)
+    at `/schedule/in-residence/`. Set each calendar's confirmation to redirect to
+    `/thank-you/`, and update that page's "What happens next" steps if booking
+    replaces the team's reply.
+  - Rename both calendars in GHL to match the site: the consultation one's
+    public title is the internal name "PA-calendar-direct-share"; call the
+    second "In-Residence Consultation" (not "site visit").
+  - The calendars are on the studio's own domain, while the form and
+    `trackingId` are still on the temporary sub-account. Move all three to
+    the same sub-account (see the GHL section of `CLAUDE.md`).
+  - Don't pre-fill a calendar through URL parameters (personal data in the
+    query string); rely on GHL recognizing the contact.
+  - If a calendar's form shows an SMS consent checkbox, it must be optional,
+    unticked and word-for-word the same as the website form's (see
+    `docs/a2p-10dlc.md` §2.2), and it is another opt-in point to add to the A2P
+    message flow (§4.5).
 
 - [ ] **9 pages exist but aren't linked from anywhere on the site**: `/brands/`,
       `/outdoor-lighting-audio/`, `/access-control-and-intercom/`,

@@ -1,12 +1,24 @@
 ---
+// The public booking link: shared on Google Business Profile, email
+// signatures and anywhere else outside the site. Visitors see the studio's
+// availability and give their details in the calendar's own form.
 import PageLayout from '../../layouts/PageLayout.astro';
-import ScheduleFormSection from './_ScheduleFormSection.astro';
+import BookingSection from './_BookingSection.astro';
 ---
 
 <PageLayout
 	title="Schedule a Private Consultation"
-	description="Arrange a private consultation with PROJECT: automate. Share your residence, architect and timeline, and a senior specialist will plan the right systems."
+	description="Book a private consultation with PROJECT: automate. Choose a time that suits you, share your residence, architect and timeline, and a senior specialist will plan the right systems."
 	breadcrumbTitle="Schedule a Consultation"
 >
-	<ScheduleFormSection />
+	<BookingSection
+		heading="Begin With a Private Consultation"
+		lede="Choose a time that suits you, then share a little about your residence and your plans. A senior specialist will review the details personally before you meet."
+		steps={[
+			'Choose a date and time for your consultation.',
+			'Share your residence, your design team and your timeline.',
+			'Together we plan the systems that suit the way you live.',
+		]}
+		calendar="consultation"
+	/>
 </PageLayout>

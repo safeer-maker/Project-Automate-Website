@@ -38,7 +38,8 @@ const redirects = {
 const withBasePath = (to) => (base ? `${base.replace(/\/$/, '')}${to}` : to);
 
 // Pages kept out of search results never belong in the sitemap: the thank-you
-// page, the 404, and any blog post flagged `noindex: true` in its frontmatter.
+// page, the in-residence booking step, the 404, and any blog post flagged
+// `noindex: true` in its frontmatter.
 const blogDir = path.resolve('src/content/blog');
 const noindexPosts = fs.existsSync(blogDir)
 	? fs
@@ -47,7 +48,7 @@ const noindexPosts = fs.existsSync(blogDir)
 			.filter((file) => /^noindex:\s*true\s*$/m.test(fs.readFileSync(path.join(blogDir, file), 'utf8').split(/^---\s*$/m)[1] ?? ''))
 			.map((file) => file.replace(/\.md$/, ''))
 	: [];
-const excludedFromSitemap = new Set(['thank-you', '404', ...noindexPosts]);
+const excludedFromSitemap = new Set(['thank-you', 'schedule/in-residence', '404', ...noindexPosts]);
 
 // https://astro.build/config
 export default defineConfig({

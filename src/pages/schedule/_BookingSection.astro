@@ -1,7 +1,26 @@
 ---
+// The layout both booking pages share: an introduction beside a GHL booking
+// calendar. /schedule/ is the public consultation booking (its own GHL form
+// sits inside the calendar); /schedule/in-residence/ is where the GHL
+// automation sends a contact after the consultation form, to book a specialist
+// to meet them at home.
 import { withBase } from '../../lib/paths.ts';
 import { siteInfo } from '../../data/site.ts';
-import GhlForm from '../../components/ghl/GhlForm.astro';
+import { ghlCalendars } from '../../data/ghl.ts';
+import GhlCalendar from '../../components/ghl/GhlCalendar.astro';
+import Picture from '../../components/ui/Picture.astro';
+import type { LibraryImageId } from '../../lib/images.ts';
+
+interface Props {
+	heading: string;
+	lede: string;
+	steps: string[];
+	calendar: keyof typeof ghlCalendars;
+	/** A photograph under the introduction, to set the scene for the meeting. */
+	image?: { id: LibraryImageId; alt: string };
+}
+
+const { heading, lede, steps, calendar, image } = Astro.props;
 
 // The HTA Design Partner mark is white-on-transparent, so it sits on a dark chip.
 const badges = [
@@ -11,27 +30,21 @@ const badges = [
 	{ src: withBase('/images/badges/hta-design-partner.webp'), alt: 'HTA Design Partner', width: 280, height: 40, dark: true },
 ];
 
-const steps = [
-	'Share your residence, your design team and your timeline.',
-	'A senior specialist reviews the details and replies personally.',
-	'Together we plan the systems that suit the way you live.',
-];
-
 const [phone] = siteInfo.phones;
 const tel = (value: string) => `tel:${value.replace(/[^\d+]/g, '')}`;
 ---
 
 <section class="schedule">
 	<div class="container schedule-grid">
-		<div class="schedule-info">
-			<h1>Begin With a Private Consultation</h1>
-			{/* No time picker here yet: the GHL calendar that will let visitors book
-			    a slot directly isn't set up (see docs/known-issues.md). Until it is,
-			    don't promise one — the team replies to arrange the time. */}
-			<p class="lede">
-				Share a little about your residence and your plans. A senior specialist will review the
-				details personally and reply to arrange your consultation at a time that suits you.
-			</p>
+		<div class:list={['schedule-info', { 'has-image': image }]}>
+			<h1>{heading}</h1>
+			<p class="lede">{lede}</p>
+
+			{image && (
+				<figure class="scene">
+					<Picture id={image.id} alt={image.alt} sizes="(max-width: 960px) calc(100vw - 2.5rem), (min-width: 1440px) 480px, 34vw" />
+				</figure>
+			)}
 
 			<ol class="steps">
 				{steps.map((step, i) => (
@@ -66,10 +79,10 @@ const tel = (value: string) => `tel:${value.replace(/[^\d+]/g, '')}`;
 			</ul>
 		</div>
 
-		<div class="schedule-form">
+		<div class="schedule-calendar">
 			{/* Keeps the outline h1 → h2 → h3: the footer's column headings are h3s. */}
-			<h2 class="visually-hidden">Consultation request form</h2>
-			<GhlForm primary />
+			<h2 class="visually-hidden">Choose a date and time</h2>
+			<GhlCalendar calendar={calendar} />
 		</div>
 	</div>
 </section>
@@ -86,10 +99,10 @@ const tel = (value: string) => `tel:${value.replace(/[^\d+]/g, '')}`;
 		align-items: start;
 	}
 
-	/* The form is ~1200px tall; on screens tall enough to show the whole
-	   introduction, it stays in view beside the form. */
+	/* The calendar (and its form) runs long; on screens tall enough to show
+	   the whole introduction, it stays in view beside it. */
 	@media (min-width: 961px) and (min-height: 1000px) {
-		.schedule-info {
+		.schedule-info:not(.has-image) {
 			position: sticky;
 			top: calc(var(--header-height, 96px) + var(--space-8));
 		}
@@ -110,6 +123,31 @@ const tel = (value: string) => `tel:${value.replace(/[^\d+]/g, '')}`;
 		margin-bottom: var(--space-8);
 		font-size: var(--text-body-lg);
 		line-height: 1.65;
+	}
+
+	/* The photograph makes the column ~1300px tall: sticky only where it fits. */
+	@media (min-width: 961px) and (min-height: 1400px) {
+		.schedule-info.has-image {
+			position: sticky;
+			top: calc(var(--header-height, 96px) + var(--space-8));
+		}
+	}
+
+	.scene {
+		position: relative;
+		margin: 0 0 var(--space-8);
+		aspect-ratio: 3 / 2;
+		overflow: hidden;
+		border-radius: var(--radius-md);
+		background: var(--color-surface-2);
+	}
+
+	.scene :global(img) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 
 	.steps {

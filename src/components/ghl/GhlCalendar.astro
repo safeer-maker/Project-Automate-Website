@@ -1,0 +1,185 @@
+---
+// A GHL booking calendar iframe (ids in src/data/ghl.ts). form_embed.js, loaded
+// once in BaseLayout, sizes it to its content. A calendar is always the point
+// of the page it sits on, so its src is in the HTML from the start (it begins
+// loading while the page parses), and it is marked data-ghl-primary: on that
+// page GhlFormModal stands down and data-ghl-form-open CTAs scroll here
+// instead of opening the popup form.
+import { ghlCalendars, ghlCalendarUrl } from '../../data/ghl.ts';
+import { siteInfo } from '../../data/site.ts';
+
+interface Props {
+	calendar: keyof typeof ghlCalendars;
+}
+
+const { calendar } = Astro.props;
+const { id, title } = ghlCalendars[calendar];
+const [phone] = siteInfo.phones;
+---
+
+<div class="ghl-calendar-shell" data-ghl-shell data-ghl-calendar>
+	<!-- Holds the calendar's space while it loads, so the page below doesn't
+	     jump when it arrives. -->
+	<div class="ghl-calendar-loading" aria-hidden="true">
+		<span class="ghl-calendar-loading-bar"></span>
+		<span class="ghl-calendar-loading-label">Loading available times…</span>
+	</div>
+	<!-- Shown only if the calendar hasn't appeared after a while (GHL down,
+	     blocked, or the calendar unpublished), so nobody waits on a spinner. -->
+	<p class="ghl-calendar-fallback">
+		The calendar is taking longer than usual to load. Please call the studio on{' '}
+		<a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>{phone}</a> or email{' '}
+		<a href={`mailto:${siteInfo.email}`}>{siteInfo.email}</a> and we'll find a time with you.
+	</p>
+	<iframe
+		class="ghl-calendar"
+		src={ghlCalendarUrl(id)}
+		id={`${id}_${calendar}`}
+		data-ghl-primary
+		allow="payment"
+		scrolling="no"
+		title={title}
+	></iframe>
+</div>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-ghl-calendar]').forEach((shell) => {
+		const frame = shell.querySelector<HTMLIFrameElement>('iframe')!;
+		// form_embed.js parks the iframe off-screen (position:absolute) while
+		// the widget boots, then shows it at the calendar's own height. The
+		// shell keeps its reserved space until then (same as GhlForm), or the
+		// page collapses for a beat and jumps back when the calendar arrives.
+		const parked = () => frame.style.position === 'absolute';
+		const revealed = () => !parked() && frame.style.visibility === 'visible';
+		const done = () => {
+			shell.classList.add('is-loaded');
+			reveal.disconnect();
+		};
+		const reveal = new MutationObserver(() => {
+			if (revealed()) done();
+		});
+		reveal.observe(frame, { attributes: true, attributeFilter: ['style'] });
+		// If form_embed.js never runs (blocked), the iframe is never parked and
+		// its load event is the only signal. The grace period lets a late
+		// form_embed.js (it's async) park it first, and the observer takes over.
+		frame.addEventListener('load', () => {
+			setTimeout(() => {
+				if (!parked()) done();
+			}, 2000);
+		});
+		if (revealed()) done();
+		setTimeout(() => {
+			if (!shell.classList.contains('is-loaded')) shell.classList.add('is-slow');
+		}, 10000);
+	});
+</script>
+
+<style>
+	.ghl-calendar-shell {
+		position: relative;
+		min-height: 760px;
+		scroll-margin-top: calc(var(--header-height, 96px) + var(--space-6));
+	}
+
+	.ghl-calendar-shell.is-loaded {
+		min-height: 0;
+	}
+
+	.ghl-calendar {
+		position: relative;
+		display: block;
+		width: 100%;
+		/* form_embed.js replaces this with the calendar's own height. */
+		height: 760px;
+		border: none;
+		overflow: hidden;
+	}
+
+	.ghl-calendar-loading {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		padding: clamp(1.5rem, 3vw, 2rem);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background: var(--color-surface);
+		pointer-events: none;
+		transition: opacity var(--dur-base) var(--ease-in-out-soft);
+	}
+
+	.ghl-calendar-shell.is-loaded .ghl-calendar-loading {
+		opacity: 0;
+		visibility: hidden;
+		transition:
+			opacity var(--dur-base) var(--ease-in-out-soft),
+			visibility 0s linear var(--dur-base);
+	}
+
+	.ghl-calendar-fallback {
+		display: none;
+	}
+
+	.ghl-calendar-shell.is-slow .ghl-calendar-fallback {
+		position: absolute;
+		inset: 4.5rem clamp(1.5rem, 3vw, 2rem) auto;
+		z-index: 1;
+		display: block;
+		max-width: 30rem;
+		margin: 0;
+		font-size: var(--text-base);
+		line-height: 1.6;
+		color: var(--color-text);
+	}
+
+	.ghl-calendar-shell.is-slow .ghl-calendar-loading-label {
+		visibility: hidden;
+	}
+
+	.ghl-calendar-fallback a {
+		color: var(--color-bronze-text);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.ghl-calendar-loading-bar {
+		position: relative;
+		display: block;
+		height: 1px;
+		overflow: hidden;
+		background: var(--color-border);
+	}
+
+	.ghl-calendar-loading-bar::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		width: 40%;
+		background: var(--color-accent);
+		animation: ghl-calendar-loading 1.6s var(--ease-in-out-soft) infinite;
+	}
+
+	.ghl-calendar-loading-label {
+		font-size: var(--text-sm);
+		letter-spacing: 0.04em;
+		color: var(--color-text-muted);
+	}
+
+	@keyframes ghl-calendar-loading {
+		from {
+			transform: translateX(-100%);
+		}
+		to {
+			transform: translateX(250%);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ghl-calendar-loading-bar::after {
+			animation: none;
+			width: 100%;
+			opacity: 0.4;
+		}
+	}
+</style>
