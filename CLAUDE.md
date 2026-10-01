@@ -41,7 +41,8 @@ Site photography is a licensed Adobe Stock set. The originals (1–23MB each) li
 ## Scrolling & motion
 
 - Lenis (`src/components/layout/SmoothScroll.astro`, mounted in `BaseLayout`) eases wheel input only; touch stays native and reduced-motion disables it. It drives native scroll, so `position: sticky` and `window` scroll listeners work unchanged. Use `window.lenis?.scrollTo(target)` for programmatic scrolls, and add `data-lenis-prevent` to any nested scroll container.
-- The homepage has exactly two pinned scenes: `_TechnicalSilence` (frame scrub, then a hold on the lit frame — `SCRUB_END`) and `_ProcessSteps` (Understand → Design → Integrate → Deliver). Keep it at two.
+- The homepage has exactly one pinned scene: `_TechnicalSilence` (frame scrub, then a hold on the lit frame — `SCRUB_END`). Don't add another.
+- `_ProcessSteps` (Understand → Design → Integrate → Deliver) is deliberately **not** scroll-linked (client request: visitors could scroll past it without seeing the steps). It auto-advances every `DWELL_MS` while in view, any step is clickable, and mouse hover / keyboard focus holds it. The bronze rail's CSS animation *is* the timer (`animationend` advances), so don't drive it from JS or the scroll. Reduced motion: no autoplay.
 
 ## SEO & URLs
 

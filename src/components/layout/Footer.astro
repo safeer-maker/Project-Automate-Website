@@ -19,6 +19,19 @@ const badges = [
 	{ src: '/images/badges/17-years-badge-sm.webp', alt: '17+ Years of Smart Home Expertise', width: 126, height: 150 },
 ];
 
+// Each network's own full-colour logo (public/images/social/, keys match
+// siteInfo.social[].icon), at its rendered size. The marks have different
+// shapes, so each is sized to carry the same visual weight: the squares and
+// circle at 28px, the wider YouTube button a little shorter, the TikTok note
+// a little narrower. TikTok is its dark-background lockup (white note).
+const socialLogos: Record<(typeof siteInfo.social)[number]['icon'], { width: number; height: number }> = {
+	instagram: { width: 28, height: 28 },
+	linkedin: { width: 28, height: 28 },
+	facebook: { width: 28, height: 28 },
+	youtube: { width: 34, height: 24 },
+	tiktok: { width: 25, height: 28 },
+};
+
 // "Building 7" and "Suite 400" never split across lines. Only here: line1
 // also feeds the JSON-LD streetAddress, which should stay plain.
 const addressLine1 = siteInfo.address.line1.replace(/(Building|Suite) /g, '$1\u00a0');
@@ -34,9 +47,14 @@ const addressLine1 = siteInfo.address.line1.replace(/(Building|Suite) /g, '$1\u0
 			    "you're on the list" but sent the address nowhere. Removed until
 			    there is a real list to connect it to. */}
 
-			<ul class="social">
+			<ul class="social" aria-label="Follow PROJECT: automate">
 				{siteInfo.social.map((s) => (
-					<li><a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a></li>
+					<li>
+						<a href={s.href} target="_blank" rel="noopener noreferrer" title={s.label}>
+							<img src={withBase(`/images/social/${s.icon}.svg`)} alt="" width={socialLogos[s.icon].width} height={socialLogos[s.icon].height} loading="lazy" decoding="async" />
+							<span class="visually-hidden">{s.label} (opens in a new tab)</span>
+						</a>
+					</li>
 				))}
 			</ul>
 		</div>
@@ -149,20 +167,47 @@ const addressLine1 = siteInfo.address.line1.replace(/(Building|Suite) /g, '$1\u0
 		text-wrap: pretty;
 	}
 
+	/* The logos sit bare in their own colours; each link is a 44px tap
+	   target around a ~28px mark, so the row keeps an even rhythm while the
+	   marks keep their own shapes. The negative margin lines the first
+	   logo up with the tagline's left edge. */
 	.social {
 		display: flex;
-		gap: var(--space-4);
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		margin-top: var(--space-6);
+		margin-left: -8px;
 	}
 	.social a {
-		/* Padding brings the tap target to ~44px without moving the text. */
-		display: inline-block;
-		padding-block: 0.75rem;
-		margin-block: -0.75rem;
-		color: var(--color-text-on-dark-muted);
-		font-size: var(--text-sm);
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: var(--radius-sm);
+		transition: transform var(--dur-base) var(--ease-out-expo);
 	}
-	.social a:hover {
-		color: var(--color-accent-hover);
+	.social img {
+		display: block;
+		opacity: 0.92;
+		transition: opacity var(--dur-fast) var(--ease-in-out-soft);
+	}
+	.social a:hover,
+	.social a:focus-visible {
+		transform: translateY(-2px);
+	}
+	.social a:hover img,
+	.social a:focus-visible img {
+		opacity: 1;
+	}
+	.social a:focus-visible {
+		outline: 2px solid var(--color-accent-hover);
+		outline-offset: 2px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.social a:hover,
+		.social a:focus-visible {
+			transform: none;
+		}
 	}
 
 	/* Gold-light, not the brand bronze: 14px caps on charcoal need 4.5:1,
