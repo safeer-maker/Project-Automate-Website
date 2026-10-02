@@ -15,7 +15,8 @@ Checkbox = not started. Strike through / move to "Resolved" as you go.
       Outdoor Lighting & Audio forms, the new homepage section, and a site-wide
       popup now all embed the GoHighLevel form (`src/components/ghl/`, IDs in
       `src/data/ghl.ts`). The Footer newsletter is still a client-side placeholder.
-      Note the GHL IDs point at a temporary sub-account — see CLAUDE.md.
+      The form and tracking moved off the temporary sub-account to
+      links.projectautomate.com on 2026-10-02 — see CLAUDE.md.
 
 - [ ] **Point the GHL form at `/thank-you/`.** The page is now a full client-facing
       page (what happens next, what to prepare, direct line). In the GHL form
@@ -63,9 +64,6 @@ Checkbox = not started. Strike through / move to "Resolved" as you go.
   - Rename both calendars in GHL to match the site: the consultation one's
     public title is the internal name "PA-calendar-direct-share"; call the
     second "In-Residence Consultation" (not "site visit").
-  - The calendars are on the studio's own domain, while the form and
-    `trackingId` are still on the temporary sub-account. Move all three to
-    the same sub-account (see the GHL section of `CLAUDE.md`).
   - Don't pre-fill a calendar through URL parameters (personal data in the
     query string); rely on GHL recognizing the contact.
   - If a calendar's form shows an SMS consent checkbox, it must be optional,

@@ -41,7 +41,7 @@ optional box), so the form and the site must change together:
 
 ---
 
-## 2. To do in the GHL form (form `1k0f27S2E7AnT195u3ly`)
+## 2. To do in the GHL form (form `XaeKKkCsK5HaQQ1YFjHq`)
 
 Every copy of the form on the site (inline and the popup) is this one form, so
 fixing it in GHL fixes all of them.
@@ -178,11 +178,11 @@ site's own pixel is set up properly.
    on Sunday, in the recipient's time zone. That fits the federal 8 a.m.–9 p.m.
    window and the stricter state windows (FL, OK, MD: 8 a.m.–8 p.m.; TX: not
    before noon on Sunday).
-7. **Register in the permanent sub-account.** The form and tracking are in a
-   temporary sub-account (`src/data/ghl.ts`). Register A2P where the live form
-   and the sending number will stay, or you'll re-register and pay again after
-   the move. When the form moves, update `formId` **and** `trackingId` in
-   `src/data/ghl.ts` together.
+7. **Register in the permanent sub-account.** The form and tracking now live
+   in the links.projectautomate.com sub-account (`src/data/ghl.ts`). Register
+   A2P where the live form and the sending number will stay, or you'll
+   re-register and pay again after a move. If the form ever moves, update
+   `formId` **and** `trackingId` in `src/data/ghl.ts` together.
 
 ### Auto-replies
 
