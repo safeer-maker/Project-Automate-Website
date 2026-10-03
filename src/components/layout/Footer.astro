@@ -3,6 +3,7 @@ import { withBase } from '../../lib/paths.ts';
 import { siteInfo, footerQuickLinks, footerMenu, legalLinks } from '../../data/site.ts';
 import { serviceGroups, solutionsHub } from '../../data/nav.ts';
 import Button from '../ui/Button.astro';
+import CtaLabel from '../ui/CtaLabel.astro';
 
 const year = new Date().getFullYear();
 
@@ -97,7 +98,7 @@ const addressLine1 = siteInfo.address.line1.replace(/(Building|Suite) /g, '$1\u0
 				<li><a href={`tel:${siteInfo.smsPhone.replace(/[^0-9+]/g, '')}`}>{siteInfo.smsPhone}</a></li>
 				<li>{addressLine1}<br />{siteInfo.address.line2}</li>
 			</ul>
-			<Button href={withBase('/schedule/')} data-ghl-form-open variant="outline" size="md" class="footer-cta cta-lux">Request Your Complimentary Consultation</Button>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="outline" size="md" class="footer-cta cta-lux"><CtaLabel /></Button>
 		</div>
 	</div>
 
@@ -398,7 +399,7 @@ const addressLine1 = siteInfo.address.line1.replace(/(Building|Suite) /g, '$1\u0
 		.footer-col ul {
 			gap: 0;
 		}
-		.footer-col a,
+		.footer-col a:not(.btn),
 		.contact-list a,
 		.legal-links a {
 			display: inline-block;

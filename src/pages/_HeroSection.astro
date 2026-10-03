@@ -35,6 +35,7 @@
 //   -vf crop=608:1080:656:0,scale=540:960:flags=lanczos, then the mobile
 //   x264/VP9 settings above. The 960x540 files stay for small landscape screens.
 import { withBase } from "../lib/paths.ts";
+import CtaLabel from "../components/ui/CtaLabel.astro";
 
 const poster = withBase("/images/home/hero/poster.webp");
 const posterMobile = withBase("/images/home/hero/poster-mobile.webp");
@@ -82,6 +83,8 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 			muted
 			loop
 			playsinline
+			disableremoteplayback
+			disablepictureinpicture
 			preload="none"
 			aria-hidden="true"
 			tabindex="-1"
@@ -114,8 +117,21 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 				const v = document.querySelector("[data-hero-video]");
 				if (
 					v &&
-					!matchMedia("(prefers-reduced-motion: reduce)").matches
+					!matchMedia("(prefers-reduced-motion: reduce)").matches &&
+					!(navigator.connection && navigator.connection.saveData)
 				) {
+					// The same pick as pickFilmSource() in src/lib/film.ts, made
+					// here during parse so the download starts as early as it can:
+					// the first source this screen and browser match, set as src
+					// (older Android Chrome ignores <source media> on its own).
+					for (const s of v.querySelectorAll("source")) {
+						const m = s.getAttribute("media");
+						if (m && !matchMedia(m).matches) continue;
+						if (s.type && !v.canPlayType(s.type)) continue;
+						v.src = s.getAttribute("src");
+						break;
+					}
+					v.muted = true;
 					v.preload = "auto";
 					v.load();
 				}
@@ -144,7 +160,7 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		     meet the heading first; the grid places it bottom-left on screen. -->
 		<div class="hero-actions" data-cookie-clear>
 			<a class="hero-btn cta-lux cta-lux-beacon" href={withBase("/schedule/")} data-ghl-form-open
-				>Request Your Complimentary Consultation</a
+				><CtaLabel /></a
 			>
 			<!-- Lenis (anchors: true) glides this to the statement below. -->
 			<a class="hero-link" href="#approach">
@@ -163,14 +179,26 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 </section>
 
 <script>
+	import {
+		keepFilmFitted,
+		playFilm,
+		prepareFilm,
+		resumeFilmOnReturn,
+		saveData,
+	} from "../lib/film.ts";
+
 	const video = document.querySelector<HTMLVideoElement>("[data-hero-video]");
 
 	// No pause control, by client request. Reduced-motion visitors are the
-	// ones who can't opt out any other way, so they only ever get the still.
+	// ones who can't opt out any other way, so they only ever get the still;
+	// so do visitors with Data Saver on.
 	if (
 		video &&
-		!window.matchMedia("(prefers-reduced-motion: reduce)").matches
+		!window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+		!saveData()
 	) {
+		prepareFilm(video);
+
 		// Slightly under real time. Almost subliminal, but it stops the clip
 		// feeling like stock footage.
 		const settle = () => (video.playbackRate = 0.85);
@@ -190,8 +218,9 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 
 		const play = () => {
 			if (!onScreen) return;
-			// Autoplay refused (e.g. Low Power Mode): the still stays.
-			video.play().catch(() => {});
+			// If autoplay is refused (Low Power Mode, battery saver), the still
+			// stays until the visitor's first tap, then the film starts.
+			playFilm(video);
 		};
 
 		// Autoplay used to start the instant the first frames arrived, then
@@ -233,6 +262,10 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 			if (!onScreen) video.pause();
 			else if (started) play();
 		}).observe(video);
+
+		const shouldPlay = () => started && onScreen;
+		resumeFilmOnReturn(video, shouldPlay);
+		keepFilmFitted(video, shouldPlay);
 	}
 </script>
 
@@ -455,11 +488,13 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		min-height: 48px;
-		font-size: var(--text-base);
+		/* Grows with the screen alongside the headline: 48px tall with a 16px
+		   label on a phone, ~58px with ~18px at 1440, capped at 64px / 19px. */
+		min-height: clamp(48px, 2.4rem + 1.4vw, 64px);
+		font-size: clamp(var(--text-base), 0.6rem + 0.6vw, 1.1875rem);
 		font-weight: var(--fw-medium);
-		padding: 0.75rem 1.5rem;
-		border-radius: var(--radius-sm);
+		padding: 0.75rem clamp(1.5rem, 1rem + 1.2vw, 2.5rem);
+		border-radius: var(--radius-pill);
 		/* White on the lighter gold was 3.25:1; the fill bronze clears 4.5. */
 		background: var(--color-bronze-fill);
 		color: var(--color-white);

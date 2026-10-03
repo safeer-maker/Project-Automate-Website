@@ -1,6 +1,7 @@
 ---
 import { withBase } from '../../lib/paths.ts';
 import { siteInfo } from '../../data/site.ts';
+import CtaLabel from './CtaLabel.astro';
 
 interface Props {
 	/**
@@ -34,7 +35,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 				<source media="(max-width: 700px)" srcset={withBase('/images/home/closing/poster-mobile.webp')} width="960" height="540" />
 				<img src={withBase('/images/home/closing/poster.webp')} alt="" width="1600" height="900" loading="lazy" decoding="async" />
 			</picture>
-			<video class="cta-video" data-cta-video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+			<video class="cta-video" data-cta-video muted loop playsinline disableremoteplayback disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1">
 				<source media="(max-width: 700px) and (orientation: portrait)" src={withBase('/videos/closing-portrait.mp4')} type="video/mp4" />
 				<source media="(max-width: 700px) and (orientation: portrait)" src={withBase('/videos/closing-portrait.webm')} type="video/webm" />
 				<source media="(max-width: 700px)" src={withBase('/videos/closing-mobile.mp4')} type="video/mp4" />
@@ -51,7 +52,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			<h2>Your home, composed.</h2>
 			<p class="cta-body">Intelligent technology, designed around the way you live.</p>
 			<div class="cta-actions">
-				<a class="cta-btn cta-lux cta-lux-beacon" href={withBase('/schedule/')} data-ghl-form-open>Request Your Complimentary Consultation</a>
+				<a class="cta-btn cta-lux cta-lux-beacon" href={withBase('/schedule/')} data-ghl-form-open><CtaLabel /></a>
 				<a class="cta-phone" href={phoneHref}>
 					or call the studio <span>{phone}</span>
 				</a>
@@ -61,7 +62,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		<div class="page cta-inner">
 			<h2>Design your<br />Living Experience</h2>
 			<p class="cta-body">Intelligent technology, designed around your lifestyle.</p>
-			<a class="cta-btn cta-lux cta-lux-beacon" href={withBase('/schedule/')} data-ghl-form-open>Request Your Complimentary Consultation</a>
+			<a class="cta-btn cta-lux cta-lux-beacon" href={withBase('/schedule/')} data-ghl-form-open><CtaLabel /></a>
 		</div>
 	)}
 
@@ -77,6 +78,8 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 </section>
 
 <script>
+	import { keepFilmFitted, pickFilmSource, playFilm, prepareFilm, resumeFilmOnReturn, saveData } from '../../lib/film.ts';
+
 	// preload="none" keeps the clip off the initial load. It starts fetching a
 	// screen or so before the section arrives, plays once a few seconds are
 	// buffered (so it never starts, stalls and restarts), fades in over its
@@ -86,9 +89,12 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	if (video && toggle) {
+		prepareFilm(video);
 		video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
 
-		let userPaused = reduceMotion;
+		// Reduced motion or Data Saver: the still, until the visitor presses play.
+		const holdStill = reduceMotion || saveData();
+		let userPaused = holdStill;
 		let onScreen = false;
 		let ready = false;
 
@@ -101,7 +107,16 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 
 		const play = () => {
 			if (userPaused || !onScreen || !ready) return;
-			video.play().catch(syncToggle);
+			playFilm(video);
+		};
+
+		// The encode for this screen (see src/lib/film.ts), fetched once.
+		const loadFilm = () => {
+			if (video.getAttribute('src')) return;
+			const src = pickFilmSource(video);
+			if (src) video.src = src;
+			video.preload = 'auto';
+			video.load();
 		};
 
 		const bufferedAhead = () => {
@@ -124,12 +139,11 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 
 		// Start downloading ahead of arrival (unless motion is reduced, where
 		// the still is the experience and the film only loads on request).
-		if (!reduceMotion) {
+		if (!holdStill) {
 			const warm = new IntersectionObserver(
 				([entry]) => {
 					if (!entry.isIntersecting) return;
-					video.preload = 'auto';
-					video.load();
+					loadFilm();
 					window.setTimeout(() => {
 						ready = true;
 						play();
@@ -153,10 +167,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		toggle.addEventListener('click', () => {
 			if (video.paused) {
 				userPaused = false;
-				if (video.preload !== 'auto') {
-					video.preload = 'auto';
-					video.load();
-				}
+				loadFilm();
 				ready = true;
 				play();
 			} else {
@@ -164,6 +175,10 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 				video.pause();
 			}
 		});
+
+		const shouldPlay = () => !userPaused && onScreen && ready;
+		resumeFilmOnReturn(video, shouldPlay);
+		keepFilmFitted(video, shouldPlay);
 
 		syncToggle();
 		toggle.hidden = false;
@@ -340,7 +355,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		font-size: var(--text-base);
 		font-weight: var(--fw-medium);
 		padding: 0.7rem 1.6rem;
-		border-radius: var(--radius-sm);
+		border-radius: var(--radius-pill);
 		transition: background-color var(--transition-base), transform var(--dur-base) var(--ease-out-expo),
 			box-shadow var(--dur-base) var(--ease-out-expo);
 	}

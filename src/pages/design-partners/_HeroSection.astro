@@ -2,6 +2,7 @@
 import { withBase } from '../../lib/paths.ts';
 import Picture from '../../components/ui/Picture.astro';
 import Button from '../../components/ui/Button.astro';
+import CtaLabel from '../../components/ui/CtaLabel.astro';
 ---
 
 <section class="dp-hero">
@@ -14,7 +15,7 @@ import Button from '../../components/ui/Button.astro';
 				coordinated early, concealed in the architecture, and handed over cleanly.
 			</p>
 			<div class="hero-actions">
-				<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon">Schedule a Lunch &amp; Learn</Button>
+				<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon"><CtaLabel label="Schedule a Lunch & Learn" /></Button>
 				<a class="hero-link" href="#partners">Who we partner with</a>
 			</div>
 		</div>

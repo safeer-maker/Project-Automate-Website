@@ -58,6 +58,9 @@ export default defineConfig({
 	// Every URL ends in "/" — matches Cloudflare's auto-trailing-slash handling,
 	// so internal links, canonicals and the sitemap never pass through its 307.
 	trailingSlash: 'always',
+	// Fetch an internal page as soon as a visitor points at (or focuses) its
+	// link, so the click usually lands on a page that's already in the cache.
+	prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
 	redirects: Object.fromEntries(Object.entries(redirects).map(([from, to]) => [from, withBasePath(to)])),
 	integrations: [
 		sitemap({

@@ -11,6 +11,7 @@ import PillarNav from '../components/services/PillarNav.astro';
 import ProcessStrip from '../components/services/ProcessStrip.astro';
 import ServiceIntegrations from '../components/services/ServiceIntegrations.astro';
 import ServiceFaq from '../components/services/ServiceFaq.astro';
+import CtaLabel from '../components/ui/CtaLabel.astro';
 
 /**
  * Legacy cross-links: pages that don't pass `serviceKey` can still list
@@ -117,7 +118,7 @@ const {
 	eyebrow,
 	heroTitle,
 	heroSubtitle,
-	ctaLabel = 'Request Your Complimentary Consultation',
+	ctaLabel,
 	ctaHref,
 	intro,
 	serviceName,
@@ -197,9 +198,9 @@ const heroSizes = heroEntry ? coverSizes(heroEntry.width / heroEntry.height) : '
 			{heroSubtitle && <p class="hero-subtitle">{heroSubtitle}</p>}
 			<div class="hero-actions">
 				{ctaHref ? (
-					<Button href={ctaHref} variant="primary" size="lg" class="cta-lux cta-lux-beacon">{ctaLabel}</Button>
+					<Button href={ctaHref} variant="primary" size="lg" class="cta-lux cta-lux-beacon"><CtaLabel label={ctaLabel} /></Button>
 				) : (
-					<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon">{ctaLabel}</Button>
+					<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon"><CtaLabel label={ctaLabel} /></Button>
 				)}
 				<a class="hero-phone" href={`tel:${studioPhone.replace(/[^\d+]/g, '')}`}>
 					<span>or call the studio</span>

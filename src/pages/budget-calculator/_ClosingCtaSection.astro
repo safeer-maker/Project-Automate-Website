@@ -2,6 +2,7 @@
 import { withBase } from '../../lib/paths.ts';
 import { siteInfo } from '../../data/site.ts';
 import Button from '../../components/ui/Button.astro';
+import CtaLabel from '../../components/ui/CtaLabel.astro';
 
 const studioPhone = siteInfo.phones[0];
 ---
@@ -12,7 +13,7 @@ const studioPhone = siteInfo.phones[0];
 		<h2 id="closing-heading">Turn a range into a considered plan.</h2>
 		<p>Our team will refine your estimate into a detailed, buildable proposal, shaped around the residence and the way you live.</p>
 		<div class="closing-actions">
-			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon">Request Your Complimentary Consultation</Button>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon"><CtaLabel /></Button>
 			<a class="closing-phone" href={`tel:${studioPhone.replace(/[^\d+]/g, '')}`}>
 				<span>or call the studio</span>
 				{studioPhone}

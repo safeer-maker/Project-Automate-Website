@@ -1,0 +1,15 @@
+# Cloudflare Workers static-asset headers (ignored by GitHub Pages).
+# Without this file every asset is revalidated on every visit.
+
+# Content-hashed by Vite (CSS, JS, fonts): a changed file gets a new name.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Not hashed (npm run images / video encodes reuse their names), so cache a
+# week and keep serving the cached copy while a fresh one is fetched.
+/images/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+/videos/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+/favicon.*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
