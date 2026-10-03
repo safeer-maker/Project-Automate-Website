@@ -1,111 +1,143 @@
 /* Consultation CTAs: the one action on every page, so it gets the one piece
    of ambient motion a button is allowed. Every --cta-cycle a slow band of
-   light crosses the bronze (like light moving over brushed metal) and the
-   arrow leans forward as it leaves. `.cta-lux-beacon` adds a hairline of
-   champagne that breathes out from the edge on the same beat, for the
-   page's lead CTA. Nothing bounces or pulses in size: it should read as
-   light catching a finish, not as an ad asking to be clicked.
+   light crosses the bronze (light moving over brushed metal) and the arrow
+   leans forward as it leaves. `.cta-lux-beacon` adds a hairline of champagne
+   that breathes out from the edge on the same beat, for a page's lead CTA.
+   Nothing bounces: it should read as light catching a finish, not an ad.
+
+   Markup comes from CtaLabel.astro (light layer, label, arrow). Every loop
+   animates only transform and opacity, so it runs on the compositor: no
+   style, layout or paint work per frame, even on a phone. Hover effects
+   are for mouse pointers only; on touch a tap gets a brief press instead,
+   and nothing stays stuck in its hover state after the tap.
 
    Works on top of each button's own fill (Button, .hero-btn, .cta-btn), so
-   those keep their colours and contrast. They list transform and
-   box-shadow in their own transitions, which outrank these selectors.
-   `.cta-lux-compact` drops the arrow where space is tight (the header). */
+   those keep their colours and contrast. `.cta-lux-compact` (the header)
+   gets the light only, on a slower beat. */
 
 .cta-lux {
-	position: relative;
-	isolation: isolate;
 	--cta-cycle: 9s;
 	--cta-delay: 2.2s;
+	position: relative;
+	isolation: isolate;
+	gap: 0.6em;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
 }
 
-.cta-lux::before {
-	content: '';
+.cta-lux:not(.cta-lux-compact) {
+	min-height: 48px;
+}
+
+/* ---------- Label: full on wider screens, short on phones ---------- */
+
+.cta-label-short {
+	display: none;
+}
+
+@media (max-width: 700px) {
+	.cta-label-full {
+		display: none;
+	}
+	.cta-label-short {
+		display: inline;
+	}
+}
+
+/* ---------- The light ---------- */
+
+/* Below the label (z-index -1 inside the button's own stacking context),
+   above its fill, so the text keeps full contrast as the light passes. */
+.cta-sheen {
 	position: absolute;
 	inset: 0;
+	z-index: -1;
+	overflow: hidden;
 	border-radius: inherit;
 	pointer-events: none;
-	/* A 250%-wide layer: at 100% its band sits just off the left edge, at 0%
-	   just off the right, so animating the position sweeps it across. */
-	background: linear-gradient(
-			105deg,
-			transparent 43%,
-			rgba(255, 244, 224, 0.4) 50%,
-			transparent 57%
-		)
-		100% 0 / 250% 100% no-repeat;
+}
+
+.cta-sheen::before {
+	content: '';
+	position: absolute;
+	inset-block: 0;
+	left: 0;
+	width: 45%;
+	background: linear-gradient(105deg, transparent 15%, rgba(255, 244, 224, 0.42) 50%, transparent 85%);
+	transform: translateX(-110%);
 	animation: cta-sheen var(--cta-cycle) var(--ease-in-out-soft) var(--cta-delay) infinite;
 }
 
-.cta-lux::after {
-	content: '';
+/* ---------- Arrow ---------- */
+
+.cta-arrow {
 	flex: none;
 	width: 1em;
 	height: 1em;
-	margin-inline-start: 0.6em;
-	background: currentColor;
-	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 8h12.5M9.5 3.5 14 8l-4.5 4.5'/%3E%3C/svg%3E") center / contain no-repeat;
-	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 8h12.5M9.5 3.5 14 8l-4.5 4.5'/%3E%3C/svg%3E") center / contain no-repeat;
 	transition: transform var(--dur-base) var(--ease-out-expo);
 	animation: cta-lean var(--cta-cycle) var(--ease-in-out-soft) var(--cta-delay) infinite;
 }
 
-/* Button already spaces its children with a gap. */
-.btn.cta-lux::after {
-	margin-inline-start: 0.1em;
-}
+/* ---------- Halo (lead CTA) ---------- */
 
-.cta-lux-compact::after {
-	content: none;
-}
-
-/* An outline rather than a box-shadow: the button's own shadow stays free
-   for the hover lift, and an outline isn't clipped by anything around it. */
-.cta-lux-beacon {
-	outline: 1px solid transparent;
+.cta-lux-beacon::after {
+	content: '';
+	position: absolute;
+	inset: -1px;
+	border: 1px solid rgb(214, 182, 132);
+	border-radius: inherit;
+	opacity: 0;
+	pointer-events: none;
 	animation: cta-halo var(--cta-cycle) var(--ease-out-expo) var(--cta-delay) infinite;
 }
 
-/* Hover answers at once: the light crosses immediately (a new animation
-   name restarts it), the button lifts a pixel onto a soft bronze shadow,
-   and the arrow steps forward. */
-.cta-lux:hover {
-	transform: translateY(-1px);
-	box-shadow: 0 14px 30px -14px rgba(90, 64, 28, 0.7);
+/* ---------- Interaction ---------- */
+
+@media (hover: hover) and (pointer: fine) {
+	/* Hover answers at once: the light crosses immediately (a new animation
+	   name restarts it), the button lifts a pixel onto a soft bronze shadow,
+	   and the arrow steps forward. */
+	.cta-lux:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 14px 30px -14px rgba(90, 64, 28, 0.7);
+	}
+	.cta-lux:hover .cta-sheen::before {
+		animation: cta-sheen-once 0.9s var(--ease-in-out-soft) both;
+	}
+	.cta-lux:hover .cta-arrow {
+		animation: none;
+		transform: translateX(4px);
+	}
+	.cta-lux-beacon:hover::after {
+		animation: none;
+	}
 }
-.cta-lux:hover::before {
-	animation: cta-sheen-once 0.9s var(--ease-in-out-soft) both;
-}
-.cta-lux:hover::after {
-	animation: none;
-	transform: translateX(4px);
-}
+
 .cta-lux:active {
-	transform: translateY(0);
+	transform: scale(0.98);
 	box-shadow: none;
 }
 
-/* The halo animates the outline, so it stands down for the focus ring. */
-.cta-lux-beacon:hover,
-.cta-lux-beacon:focus-visible {
+.cta-lux-beacon:focus-visible::after {
 	animation: none;
 }
 
 @keyframes cta-sheen {
 	0% {
-		background-position: 100% 0;
+		transform: translateX(-110%);
 	}
 	22%,
 	100% {
-		background-position: 0% 0;
+		transform: translateX(235%);
 	}
 }
 
 @keyframes cta-sheen-once {
 	from {
-		background-position: 100% 0;
+		transform: translateX(-110%);
 	}
 	to {
-		background-position: 0% 0;
+		transform: translateX(235%);
 	}
 }
 
@@ -123,47 +155,37 @@
 	}
 }
 
+/* Wider than tall in proportion, so the ring opens out about evenly on
+   every side of a ~330×50 pill. */
 @keyframes cta-halo {
 	0%,
 	12% {
-		outline-color: rgba(214, 182, 132, 0);
-		outline-offset: 0;
+		opacity: 0;
+		transform: none;
 	}
 	16% {
-		outline-color: rgba(214, 182, 132, 0.8);
-		outline-offset: 1px;
+		opacity: 0.85;
+		transform: scale(1.005, 1.03);
 	}
 	42%,
 	100% {
-		outline-color: rgba(214, 182, 132, 0);
-		outline-offset: 12px;
-	}
-}
-
-/* The full label is ~390px set on one line, wider than a phone. Rather than
-   drop "Complimentary", it breaks into two even lines there, the arrow
-   centred beside them. Doubled class to outrank the buttons' own nowrap. */
-@media (max-width: 520px) {
-	.cta-lux.cta-lux:not(.cta-lux-compact) {
-		max-width: 100%;
-		white-space: normal;
-		text-wrap: balance;
-		text-align: center;
-		line-height: 1.35;
+		opacity: 0;
+		transform: scale(1.06, 1.42);
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.cta-lux,
-	.cta-lux::before,
-	.cta-lux::after {
+	.cta-sheen::before,
+	.cta-arrow,
+	.cta-lux-beacon::after {
+		animation: none;
+	}
+	.cta-lux:hover .cta-sheen::before {
 		animation: none;
 	}
 	.cta-lux:hover,
-	.cta-lux:hover::after {
+	.cta-lux:active,
+	.cta-lux:hover .cta-arrow {
 		transform: none;
-	}
-	.cta-lux:hover::before {
-		animation: none;
 	}
 }

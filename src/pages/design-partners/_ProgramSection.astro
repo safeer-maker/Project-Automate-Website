@@ -1,6 +1,7 @@
 ---
 import { withBase } from '../../lib/paths.ts';
 import Button from '../../components/ui/Button.astro';
+import CtaLabel from '../../components/ui/CtaLabel.astro';
 ---
 
 <section class="program" aria-labelledby="program-heading">
@@ -21,7 +22,7 @@ import Button from '../../components/ui/Button.astro';
 				helping you meet continuing education requirements while staying current on best
 				practices in luxury residential technology integration.
 			</p>
-			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon">Schedule a Lunch &amp; Learn Event</Button>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon"><CtaLabel label="Schedule a Lunch & Learn Event" short="Schedule a Lunch & Learn" /></Button>
 		</div>
 	</div>
 </section>
