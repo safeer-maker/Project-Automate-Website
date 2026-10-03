@@ -117,7 +117,7 @@ const {
 	eyebrow,
 	heroTitle,
 	heroSubtitle,
-	ctaLabel = 'Book a Private Consultation',
+	ctaLabel = 'Request Your Complimentary Consultation',
 	ctaHref,
 	intro,
 	serviceName,
@@ -197,9 +197,9 @@ const heroSizes = heroEntry ? coverSizes(heroEntry.width / heroEntry.height) : '
 			{heroSubtitle && <p class="hero-subtitle">{heroSubtitle}</p>}
 			<div class="hero-actions">
 				{ctaHref ? (
-					<Button href={ctaHref} variant="primary" size="lg">{ctaLabel}</Button>
+					<Button href={ctaHref} variant="primary" size="lg" class="cta-lux cta-lux-beacon">{ctaLabel}</Button>
 				) : (
-					<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">{ctaLabel}</Button>
+					<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux cta-lux-beacon">{ctaLabel}</Button>
 				)}
 				<a class="hero-phone" href={`tel:${studioPhone.replace(/[^\d+]/g, '')}`}>
 					<span>or call the studio</span>

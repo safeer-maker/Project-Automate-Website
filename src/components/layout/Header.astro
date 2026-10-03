@@ -65,7 +65,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		</nav>
 
 		<div class="header-actions">
-			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" class="cta-schedule" aria-label="Book a Consultation"><span class="cta-schedule-verb">Book</span><span class="cta-schedule-rest">a Consultation</span></Button>
+			<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" class="cta-schedule cta-lux cta-lux-compact" aria-label="Request a Consultation"><span class="cta-schedule-verb">Request</span><span class="cta-schedule-rest">a Consultation</span></Button>
 			<button class="menu-trigger" data-menu-open aria-haspopup="dialog" aria-expanded="false" aria-controls="site-offcanvas" aria-label="Open menu">
 				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 34 34" fill="none">
 					<path d="M1.41602 5.66666H32.5827V8.62318H1.41602V5.66666ZM1.41602 25.3768H32.5827V28.3333H1.41602V25.3768ZM1.41602 15.5217H32.5827V18.4783H1.41602V15.5217Z" fill="currentColor"></path>
@@ -124,7 +124,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			</video>
 		</div>
 
-		<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg">Book a Consultation</Button>
+		<Button href={withBase('/schedule/')} data-ghl-form-open variant="primary" size="lg" class="cta-lux">Request Your Complimentary Consultation</Button>
 	</nav>
 </div>
 
@@ -402,9 +402,13 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		flex-shrink: 0;
 	}
 
+	/* Always on screen, so its light comes round less often than the page's
+	   lead CTA, and starts after the hero's own has crossed. */
 	.header-actions :global(.cta-schedule) {
 		gap: 0;
 		white-space: nowrap;
+		--cta-cycle: 14s;
+		--cta-delay: 5.5s;
 	}
 
 	.header-actions :global(.cta-schedule-verb) {
