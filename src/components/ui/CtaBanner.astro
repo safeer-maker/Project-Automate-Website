@@ -51,7 +51,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 			<h2>Your home, composed.</h2>
 			<p class="cta-body">Intelligent technology, designed around the way you live.</p>
 			<div class="cta-actions">
-				<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Book a Consultation</a>
+				<a class="cta-btn cta-lux cta-lux-beacon" href={withBase('/schedule/')} data-ghl-form-open>Request Your Complimentary Consultation</a>
 				<a class="cta-phone" href={phoneHref}>
 					or call the studio <span>{phone}</span>
 				</a>
@@ -61,7 +61,7 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		<div class="page cta-inner">
 			<h2>Design your<br />Living Experience</h2>
 			<p class="cta-body">Intelligent technology, designed around your lifestyle.</p>
-			<a class="cta-btn" href={withBase('/schedule/')} data-ghl-form-open>Book a Consultation</a>
+			<a class="cta-btn cta-lux cta-lux-beacon" href={withBase('/schedule/')} data-ghl-form-open>Request Your Complimentary Consultation</a>
 		</div>
 	)}
 
@@ -341,7 +341,8 @@ const phoneHref = `tel:${phone.replace(/[^0-9+]/g, '')}`;
 		font-weight: var(--fw-medium);
 		padding: 0.7rem 1.6rem;
 		border-radius: var(--radius-sm);
-		transition: background-color var(--transition-base);
+		transition: background-color var(--transition-base), transform var(--dur-base) var(--ease-out-expo),
+			box-shadow var(--dur-base) var(--ease-out-expo);
 	}
 
 	.cta-btn:hover {

@@ -143,8 +143,8 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		<!-- After the headline in the markup so screen readers and the tab order
 		     meet the heading first; the grid places it bottom-left on screen. -->
 		<div class="hero-actions" data-cookie-clear>
-			<a class="hero-btn" href={withBase("/schedule/")} data-ghl-form-open
-				>Book a Private Consultation</a
+			<a class="hero-btn cta-lux cta-lux-beacon" href={withBase("/schedule/")} data-ghl-form-open
+				>Request Your Complimentary Consultation</a
 			>
 			<!-- Lenis (anchors: true) glides this to the statement below. -->
 			<a class="hero-link" href="#approach">
@@ -464,7 +464,8 @@ const portraitPhone = "(max-width: 700px) and (orientation: portrait)";
 		background: var(--color-bronze-fill);
 		color: var(--color-white);
 		white-space: nowrap;
-		transition: background-color var(--transition-base);
+		transition: background-color var(--transition-base), transform var(--dur-base) var(--ease-out-expo),
+			box-shadow var(--dur-base) var(--ease-out-expo);
 	}
 	.hero-btn:hover {
 		background: var(--color-bronze-fill-hover);

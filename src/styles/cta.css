@@ -1,0 +1,169 @@
+/* Consultation CTAs: the one action on every page, so it gets the one piece
+   of ambient motion a button is allowed. Every --cta-cycle a slow band of
+   light crosses the bronze (like light moving over brushed metal) and the
+   arrow leans forward as it leaves. `.cta-lux-beacon` adds a hairline of
+   champagne that breathes out from the edge on the same beat, for the
+   page's lead CTA. Nothing bounces or pulses in size: it should read as
+   light catching a finish, not as an ad asking to be clicked.
+
+   Works on top of each button's own fill (Button, .hero-btn, .cta-btn), so
+   those keep their colours and contrast. They list transform and
+   box-shadow in their own transitions, which outrank these selectors.
+   `.cta-lux-compact` drops the arrow where space is tight (the header). */
+
+.cta-lux {
+	position: relative;
+	isolation: isolate;
+	--cta-cycle: 9s;
+	--cta-delay: 2.2s;
+}
+
+.cta-lux::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	/* A 250%-wide layer: at 100% its band sits just off the left edge, at 0%
+	   just off the right, so animating the position sweeps it across. */
+	background: linear-gradient(
+			105deg,
+			transparent 43%,
+			rgba(255, 244, 224, 0.4) 50%,
+			transparent 57%
+		)
+		100% 0 / 250% 100% no-repeat;
+	animation: cta-sheen var(--cta-cycle) var(--ease-in-out-soft) var(--cta-delay) infinite;
+}
+
+.cta-lux::after {
+	content: '';
+	flex: none;
+	width: 1em;
+	height: 1em;
+	margin-inline-start: 0.6em;
+	background: currentColor;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 8h12.5M9.5 3.5 14 8l-4.5 4.5'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 8h12.5M9.5 3.5 14 8l-4.5 4.5'/%3E%3C/svg%3E") center / contain no-repeat;
+	transition: transform var(--dur-base) var(--ease-out-expo);
+	animation: cta-lean var(--cta-cycle) var(--ease-in-out-soft) var(--cta-delay) infinite;
+}
+
+/* Button already spaces its children with a gap. */
+.btn.cta-lux::after {
+	margin-inline-start: 0.1em;
+}
+
+.cta-lux-compact::after {
+	content: none;
+}
+
+/* An outline rather than a box-shadow: the button's own shadow stays free
+   for the hover lift, and an outline isn't clipped by anything around it. */
+.cta-lux-beacon {
+	outline: 1px solid transparent;
+	animation: cta-halo var(--cta-cycle) var(--ease-out-expo) var(--cta-delay) infinite;
+}
+
+/* Hover answers at once: the light crosses immediately (a new animation
+   name restarts it), the button lifts a pixel onto a soft bronze shadow,
+   and the arrow steps forward. */
+.cta-lux:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 14px 30px -14px rgba(90, 64, 28, 0.7);
+}
+.cta-lux:hover::before {
+	animation: cta-sheen-once 0.9s var(--ease-in-out-soft) both;
+}
+.cta-lux:hover::after {
+	animation: none;
+	transform: translateX(4px);
+}
+.cta-lux:active {
+	transform: translateY(0);
+	box-shadow: none;
+}
+
+/* The halo animates the outline, so it stands down for the focus ring. */
+.cta-lux-beacon:hover,
+.cta-lux-beacon:focus-visible {
+	animation: none;
+}
+
+@keyframes cta-sheen {
+	0% {
+		background-position: 100% 0;
+	}
+	22%,
+	100% {
+		background-position: 0% 0;
+	}
+}
+
+@keyframes cta-sheen-once {
+	from {
+		background-position: 100% 0;
+	}
+	to {
+		background-position: 0% 0;
+	}
+}
+
+@keyframes cta-lean {
+	0%,
+	14% {
+		transform: none;
+	}
+	20% {
+		transform: translateX(4px);
+	}
+	30%,
+	100% {
+		transform: none;
+	}
+}
+
+@keyframes cta-halo {
+	0%,
+	12% {
+		outline-color: rgba(214, 182, 132, 0);
+		outline-offset: 0;
+	}
+	16% {
+		outline-color: rgba(214, 182, 132, 0.8);
+		outline-offset: 1px;
+	}
+	42%,
+	100% {
+		outline-color: rgba(214, 182, 132, 0);
+		outline-offset: 12px;
+	}
+}
+
+/* The full label is ~390px set on one line, wider than a phone. Rather than
+   drop "Complimentary", it breaks into two even lines there, the arrow
+   centred beside them. Doubled class to outrank the buttons' own nowrap. */
+@media (max-width: 520px) {
+	.cta-lux.cta-lux:not(.cta-lux-compact) {
+		max-width: 100%;
+		white-space: normal;
+		text-wrap: balance;
+		text-align: center;
+		line-height: 1.35;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cta-lux,
+	.cta-lux::before,
+	.cta-lux::after {
+		animation: none;
+	}
+	.cta-lux:hover,
+	.cta-lux:hover::after {
+		transform: none;
+	}
+	.cta-lux:hover::before {
+		animation: none;
+	}
+}

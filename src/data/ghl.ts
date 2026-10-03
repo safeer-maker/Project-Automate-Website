@@ -1,22 +1,24 @@
 // GoHighLevel (GHL) integration — the lead form and the visitor-tracking script.
 //
-// IMPORTANT: the form and the tracking ID belong to the SAME GHL sub-account.
-// These values currently point at a TEMPORARY sub-account. When moving to the
-// permanent one, update formId/formName/formHeight AND trackingId together —
+// IMPORTANT: the form and the tracking ID belong to the SAME GHL sub-account,
+// served from the studio's own links.projectautomate.com domain. If the form
+// ever moves, update formId/formName/formHeight AND trackingId together —
 // changing only the form leaves tracking reporting to the old sub-account, and
 // GHL can no longer tie a visitor's page history to their form submission.
-// Get both from the new sub-account: Sites → Forms → (form) → Integrate, and
+// Get both from the sub-account: Sites → Forms → (form) → Integrate, and
 // Settings → External Tracking.
 
 export const ghl = {
-	formId: '1k0f27S2E7AnT195u3ly',
+	formId: 'XaeKKkCsK5HaQQ1YFjHq',
 	formName: 'ProjectAutomateLP-Form - Website',
 	/** Initial iframe height in px, from GHL's embed code; form_embed.js resizes it after load. */
-	formHeight: 1238,
-	trackingId: 'tk_9d37ae1b083b4d7f96de4bc2b7f4e6b0',
+	formHeight: 1347,
+	trackingId: 'tk_b81ba4b6c2404a5c85eef5b4a25e33fb',
 };
 
-export const ghlFormUrl = `https://api.leadconnectorhq.com/widget/form/${ghl.formId}`;
+const ghlHost = 'https://links.projectautomate.com';
+
+export const ghlFormUrl = `${ghlHost}/widget/form/${ghl.formId}`;
 
 // GHL booking calendars (Calendars → (calendar) → Share → Embed code), served
 // from the studio's own links.projectautomate.com domain. Each calendar has
@@ -38,6 +40,6 @@ export const ghlCalendars = {
 	inResidence: { id: '5zoC3ppxdGURWHcdmufT', title: 'In-residence consultation booking calendar' },
 } as const;
 
-export const ghlCalendarUrl = (id: string) => `https://links.projectautomate.com/widget/booking/${id}`;
-export const ghlFormEmbedScript = 'https://link.msgsndr.com/js/form_embed.js';
-export const ghlTrackingScript = 'https://link.msgsndr.com/js/external-tracking.js';
+export const ghlCalendarUrl = (id: string) => `${ghlHost}/widget/booking/${id}`;
+export const ghlFormEmbedScript = `${ghlHost}/js/form_embed.js`;
+export const ghlTrackingScript = `${ghlHost}/js/external-tracking.js`;
